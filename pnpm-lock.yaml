@@ -64,7 +64,7 @@ overrides:
 
 patchedDependencies:
   '@msviderok/base-ui-solid@1.0.0-beta.12':
-    hash: 125b1b11f63100166abf1e8d6be0fd246cbc0d268bb8e1b0543bbe788c427e81
+    hash: a5e644d69924ca3cbfd3d7bc75b50f144e17c6b0289d410c9473d05f8410d0a9
     path: patches/@msviderok__base-ui-solid@1.0.0-beta.12.patch
 
 importers:
@@ -255,12 +255,12 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.3
         version: 3.7.3
-      '@photon-ai/kumo-solid':
-        specifier: workspace:*
-        version: link:../kumo-solid
       '@phosphor-icons/core':
         specifier: ^2.1.1
         version: 2.1.1
+      '@photon-ai/kumo-solid':
+        specifier: workspace:*
+        version: link:../kumo-solid
       '@tailwindcss/typography':
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@4.3.3)
@@ -392,7 +392,7 @@ importers:
     dependencies:
       '@msviderok/base-ui-solid':
         specifier: ^1.0.0-beta.12
-        version: 1.0.0-beta.12(patch_hash=125b1b11f63100166abf1e8d6be0fd246cbc0d268bb8e1b0543bbe788c427e81)(solid-js@1.9.14)
+        version: 1.0.0-beta.12(patch_hash=a5e644d69924ca3cbfd3d7bc75b50f144e17c6b0289d410c9473d05f8410d0a9)(solid-js@1.9.14)
       '@shikijs/langs':
         specifier: ^4.0.0
         version: 4.3.1
@@ -7420,7 +7420,7 @@ snapshots:
 
   '@mixmark-io/domino@2.2.0': {}
 
-  '@msviderok/base-ui-solid@1.0.0-beta.12(patch_hash=125b1b11f63100166abf1e8d6be0fd246cbc0d268bb8e1b0543bbe788c427e81)(solid-js@1.9.14)':
+  '@msviderok/base-ui-solid@1.0.0-beta.12(patch_hash=a5e644d69924ca3cbfd3d7bc75b50f144e17c6b0289d410c9473d05f8410d0a9)(solid-js@1.9.14)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@floating-ui/dom': 1.7.6

@@ -8,6 +8,7 @@ import {
 import { createSignal } from "solid-js";
 import { hydrate } from "solid-js/web";
 import { describe, expect, it, vi } from "vite-plus/test";
+import { userEvent } from "vite-plus/test/browser";
 import {
   Autocomplete as BuiltAutocomplete,
   Banner as BuiltBanner,
@@ -447,17 +448,60 @@ describe("Kumo Solid browser behavior", () => {
     expect(onCheckedChange).toHaveBeenCalledWith(true, expect.any(Event));
   });
 
-  it("opens a tooltip on hover", async () => {
+  it("opens a rendered tooltip on real pointer hover", async () => {
     render(() => (
-      <Tooltip content="Browser tooltip" delay={0}>
-        Details
-      </Tooltip>
+      <Tooltip
+        content="Browser tooltip"
+        delay={0}
+        render={(triggerProps) => (
+          <Button {...triggerProps}>Details</Button>
+        )}
+      />
     ));
     const trigger = screen.getByRole("button", { name: "Details" });
 
-    fireEvent.mouseEnter(trigger);
-    fireEvent.mouseMove(trigger);
-    expect(await screen.findByText("Browser tooltip")).toBeTruthy();
+    await userEvent.hover(trigger);
+    const popup = await screen.findByText("Browser tooltip");
+    await userEvent.hover(popup);
+    expect(screen.getByText("Browser tooltip")).toBeTruthy();
+    await userEvent.unhover(popup);
+    await waitFor(() => {
+      expect(screen.queryByText("Browser tooltip")).toBeNull();
+    });
+  });
+
+  it("opens only the innermost nested tooltip on hover", async () => {
+    render(() => (
+      <Tooltip
+        content="Parent tooltip"
+        delay={0}
+        render={(parentProps) => (
+          <span {...parentProps}>
+            <span data-testid="parent-trigger-area">Parent trigger</span>
+            <Tooltip content="Child tooltip" delay={0}>
+              Child trigger
+            </Tooltip>
+          </span>
+        )}
+      />
+    ));
+    const child = screen.getByRole("button", { name: "Child trigger" });
+
+    await userEvent.hover(child);
+    expect(await screen.findByText("Child tooltip")).toBeTruthy();
+    expect(screen.queryByText("Parent tooltip")).toBeNull();
+
+    await userEvent.hover(screen.getByTestId("parent-trigger-area"));
+    expect(await screen.findByText("Parent tooltip")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.queryByText("Child tooltip")).toBeNull();
+    });
+
+    await userEvent.hover(child);
+    expect(await screen.findByText("Child tooltip")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.queryByText("Parent tooltip")).toBeNull();
+    });
   });
 
   it("updates a loading button after mount", () => {

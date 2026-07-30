@@ -10,6 +10,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
+      "vite-plus/test/browser",
       "@msviderok/base-ui-solid/checkbox",
       "@msviderok/base-ui-solid/checkbox-group",
       "@msviderok/base-ui-solid/collapsible",
