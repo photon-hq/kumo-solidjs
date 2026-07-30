@@ -1,4 +1,4 @@
-import { Fieldset } from "@msviderok/base-ui-solid/fieldset";
+import { Fieldset } from "@photon-ai/base-ui-solid/fieldset";
 import {
   createContext,
   createSignal,

@@ -1,5 +1,5 @@
-import { mergeProps as mergeBaseUIProps } from "@msviderok/base-ui-solid/merge-props";
-import { useRender } from "@msviderok/base-ui-solid/use-render";
+import { mergeProps as mergeBaseUIProps } from "@photon-ai/base-ui-solid/merge-props";
+import { useRender } from "@photon-ai/base-ui-solid/use-render";
 import { onMount, splitProps, type JSX } from "solid-js";
 import { cn } from "../../utils/cn";
 import {

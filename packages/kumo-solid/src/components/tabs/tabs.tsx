@@ -1,4 +1,4 @@
-import { Tabs as TabsBase } from "@msviderok/base-ui-solid/tabs";
+import { Tabs as TabsBase } from "@photon-ai/base-ui-solid/tabs";
 import {
   createEffect,
   createMemo,

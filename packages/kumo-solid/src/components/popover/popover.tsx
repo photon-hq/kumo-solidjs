@@ -1,4 +1,4 @@
-import { Popover as PopoverBase } from "@msviderok/base-ui-solid/popover";
+import { Popover as PopoverBase } from "@photon-ai/base-ui-solid/popover";
 import {
   createContext,
   createSignal,

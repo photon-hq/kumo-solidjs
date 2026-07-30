@@ -1,4 +1,4 @@
-import { Select as SelectBase } from "@msviderok/base-ui-solid/select";
+import { Select as SelectBase } from "@photon-ai/base-ui-solid/select";
 import {
   For,
   Show,

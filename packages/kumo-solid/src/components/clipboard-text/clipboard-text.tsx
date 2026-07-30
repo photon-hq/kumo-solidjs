@@ -1,4 +1,4 @@
-import { mergeProps as mergeBaseUIProps } from "@msviderok/base-ui-solid/merge-props";
+import { mergeProps as mergeBaseUIProps } from "@photon-ai/base-ui-solid/merge-props";
 import { Show, createSignal, onCleanup, splitProps, type JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 import { CheckIcon, CopyIcon } from "../../internal/icons";

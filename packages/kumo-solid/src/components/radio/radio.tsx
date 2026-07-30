@@ -1,6 +1,6 @@
-import { Fieldset } from "@msviderok/base-ui-solid/fieldset";
-import { Radio as BaseRadio } from "@msviderok/base-ui-solid/radio";
-import { RadioGroup as BaseRadioGroup } from "@msviderok/base-ui-solid/radio-group";
+import { Fieldset } from "@photon-ai/base-ui-solid/fieldset";
+import { Radio as BaseRadio } from "@photon-ai/base-ui-solid/radio";
+import { RadioGroup as BaseRadioGroup } from "@photon-ai/base-ui-solid/radio-group";
 import {
   createContext,
   createSignal,

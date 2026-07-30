@@ -1,4 +1,4 @@
-import { Menu as DropdownMenuPrimitive } from "@msviderok/base-ui-solid/menu";
+import { Menu as DropdownMenuPrimitive } from "@photon-ai/base-ui-solid/menu";
 import {
   Show,
   splitProps,

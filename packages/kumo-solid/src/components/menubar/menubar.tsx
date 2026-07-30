@@ -1,4 +1,4 @@
-import { mergeProps as mergeBaseUIProps } from "@msviderok/base-ui-solid/merge-props";
+import { mergeProps as mergeBaseUIProps } from "@photon-ai/base-ui-solid/merge-props";
 import { For, type JSX } from "solid-js";
 import { cn } from "../../utils/cn";
 import { Tooltip } from "../tooltip";

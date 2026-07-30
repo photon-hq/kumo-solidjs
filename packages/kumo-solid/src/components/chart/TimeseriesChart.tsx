@@ -1,5 +1,5 @@
-import { mergeProps as mergeBaseUIProps } from "@msviderok/base-ui-solid/merge-props";
-import { Tooltip as TooltipPrimitive } from "@msviderok/base-ui-solid/tooltip";
+import { mergeProps as mergeBaseUIProps } from "@photon-ai/base-ui-solid/merge-props";
+import { Tooltip as TooltipPrimitive } from "@photon-ai/base-ui-solid/tooltip";
 import type { BarSeriesOption, LineSeriesOption } from "echarts/charts";
 import type { EChartsOption, SeriesOption, SetOptionOpts } from "echarts";
 import type * as echarts from "echarts/core";

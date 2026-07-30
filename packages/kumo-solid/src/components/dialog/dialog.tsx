@@ -1,5 +1,5 @@
-import { AlertDialog as AlertDialogBase } from "@msviderok/base-ui-solid/alert-dialog";
-import { Dialog as DialogBase } from "@msviderok/base-ui-solid/dialog";
+import { AlertDialog as AlertDialogBase } from "@photon-ai/base-ui-solid/alert-dialog";
+import { Dialog as DialogBase } from "@photon-ai/base-ui-solid/dialog";
 import {
   createContext,
   Show,

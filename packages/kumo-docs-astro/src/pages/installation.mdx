@@ -81,20 +81,20 @@ import { Input } from "@photon-ai/kumo-solid/components/input";
 ## Base UI Primitives
 
 Kumo Solid is built on
-[Base UI Solid](https://github.com/msviderok/base-ui-solid), an accessible,
+[Base UI Solid](https://github.com/photon-hq/base-ui-solid), an accessible,
 unstyled primitive library for SolidJS. Kumo consumes
-`@msviderok/base-ui-solid` internally.
+`@photon-ai/base-ui-solid` internally.
 
 The Solid package does not currently re-export raw primitives. Import a styled
 Kumo component whenever one exists. For an advanced custom component, install
 Base UI Solid directly and compose its primitive with Kumo semantic tokens:
 
 ```bash
-pnpm add @msviderok/base-ui-solid
+pnpm add @photon-ai/base-ui-solid
 ```
 
 ```tsx
-import { Popover } from "@msviderok/base-ui-solid/popover";
+import { Popover } from "@photon-ai/base-ui-solid/popover";
 ```
 
 <Callout type="warning">

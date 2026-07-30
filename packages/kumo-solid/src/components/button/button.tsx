@@ -1,4 +1,4 @@
-import { mergeProps as mergeBaseUIProps } from "@msviderok/base-ui-solid/merge-props";
+import { mergeProps as mergeBaseUIProps } from "@photon-ai/base-ui-solid/merge-props";
 import { children, splitProps, type Component, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { ArrowsClockwiseIcon } from "../../internal/icons";

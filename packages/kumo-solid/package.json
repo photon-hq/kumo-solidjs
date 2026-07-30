@@ -110,7 +110,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@msviderok/base-ui-solid": "^1.0.0-beta.12",
+    "@photon-ai/base-ui-solid": "^1.0.0-beta.12",
     "@shikijs/langs": "^4.0.0",
     "@shikijs/themes": "^4.0.0",
     "cnfast": "^0.0.8",

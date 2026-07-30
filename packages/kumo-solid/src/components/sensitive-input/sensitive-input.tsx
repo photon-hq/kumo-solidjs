@@ -1,4 +1,4 @@
-import { Input as BaseInput } from "@msviderok/base-ui-solid/input";
+import { Input as BaseInput } from "@photon-ai/base-ui-solid/input";
 import {
   createEffect,
   createSignal,

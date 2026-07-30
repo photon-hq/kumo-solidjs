@@ -1,5 +1,5 @@
 import { splitProps, type ValidComponent } from "solid-js";
-import { useRender } from "@msviderok/base-ui-solid/use-render";
+import { useRender } from "@photon-ai/base-ui-solid/use-render";
 import { cn } from "../../utils/cn";
 import { resolveVariant } from "../../utils/resolve-variant";
 import { LayerCard, type LayerCardProps } from "../layer-card";

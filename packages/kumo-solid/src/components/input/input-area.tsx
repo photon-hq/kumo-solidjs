@@ -1,4 +1,4 @@
-import { Field as FieldBase } from "@msviderok/base-ui-solid/field";
+import { Field as FieldBase } from "@photon-ai/base-ui-solid/field";
 import {
   createEffect,
   createSignal,

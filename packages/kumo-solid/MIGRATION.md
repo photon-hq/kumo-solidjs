@@ -15,7 +15,7 @@ A component can be marked `complete` only after all of the following are true:
    the React component where those concepts apply.
 2. Interactive behavior, keyboard handling, focus management, ARIA state, and
    portal behavior are preserved using Solid primitives from
-   `@msviderok/base-ui-solid`.
+   `@photon-ai/base-ui-solid`.
 3. Props remain reactive after mount; tests exercise changes through signals.
 4. Browser rendering and Solid SSR/hydration are verified for relevant
    components.

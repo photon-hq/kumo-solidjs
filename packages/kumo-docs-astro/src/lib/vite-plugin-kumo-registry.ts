@@ -11,10 +11,10 @@ function solidifyRegistryString(value: string): string {
   return value
     .replace(
       /https:\/\/base-ui\.com\/react\/components\/([a-z-]+)/g,
-      "https://github.com/msviderok/base-ui-solid/tree/master/packages/solid/src/$1",
+      "https://github.com/photon-hq/base-ui-solid/tree/master/packages/solid/src/$1",
     )
     .replace(/@cloudflare\/kumo(?!-solid)/g, "@photon-ai/kumo-solid")
-    .replace(/@base-ui\/react/g, "@msviderok/base-ui-solid")
+    .replace(/@base-ui\/react/g, "@photon-ai/base-ui-solid")
     .replace(
       /@phosphor-icons\/react/g,
       "a Solid-compatible Phosphor icon package",

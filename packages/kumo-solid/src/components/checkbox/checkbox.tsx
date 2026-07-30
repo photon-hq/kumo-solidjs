@@ -1,7 +1,7 @@
-import { Checkbox as BaseCheckbox } from "@msviderok/base-ui-solid/checkbox";
-import { CheckboxGroup as BaseCheckboxGroup } from "@msviderok/base-ui-solid/checkbox-group";
-import { Field as FieldBase } from "@msviderok/base-ui-solid/field";
-import { Fieldset } from "@msviderok/base-ui-solid/fieldset";
+import { Checkbox as BaseCheckbox } from "@photon-ai/base-ui-solid/checkbox";
+import { CheckboxGroup as BaseCheckboxGroup } from "@photon-ai/base-ui-solid/checkbox-group";
+import { Field as FieldBase } from "@photon-ai/base-ui-solid/field";
+import { Fieldset } from "@photon-ai/base-ui-solid/fieldset";
 import {
   createContext,
   createEffect,

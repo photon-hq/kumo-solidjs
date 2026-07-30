@@ -1,4 +1,4 @@
-import { Collapsible as CollapsibleBase } from "@msviderok/base-ui-solid/collapsible";
+import { Collapsible as CollapsibleBase } from "@photon-ai/base-ui-solid/collapsible";
 import { splitProps, type ComponentProps, type JSX } from "solid-js";
 import { CaretDownIcon } from "../../internal/icons";
 import { cn } from "../../utils/cn";

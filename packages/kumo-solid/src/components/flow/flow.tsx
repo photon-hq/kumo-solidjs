@@ -1,4 +1,4 @@
-import { useRender } from "@msviderok/base-ui-solid/use-render";
+import { useRender } from "@photon-ai/base-ui-solid/use-render";
 import {
   Show,
   createContext,

@@ -62,11 +62,6 @@ overrides:
   vite: npm:@voidzero-dev/vite-plus-core@0.2.6
   vitest: 4.1.10
 
-patchedDependencies:
-  '@msviderok/base-ui-solid@1.0.0-beta.12':
-    hash: a5e644d69924ca3cbfd3d7bc75b50f144e17c6b0289d410c9473d05f8410d0a9
-    path: patches/@msviderok__base-ui-solid@1.0.0-beta.12.patch
-
 importers:
 
   .:
@@ -390,9 +385,9 @@ importers:
 
   packages/kumo-solid:
     dependencies:
-      '@msviderok/base-ui-solid':
+      '@photon-ai/base-ui-solid':
         specifier: ^1.0.0-beta.12
-        version: 1.0.0-beta.12(patch_hash=a5e644d69924ca3cbfd3d7bc75b50f144e17c6b0289d410c9473d05f8410d0a9)(solid-js@1.9.14)
+        version: 1.0.0-beta.12(solid-js@1.9.14)
       '@shikijs/langs':
         specifier: ^4.0.0
         version: 4.3.1
@@ -1803,8 +1798,8 @@ packages:
   '@mixmark-io/domino@2.2.0':
     resolution: {integrity: sha512-Y28PR25bHXUg88kCV7nivXrP2Nj2RueZ3/l/jdx6J9f8J4nsEGcgX0Qe6lt7Pa+J79+kPiJU3LguR6O/6zrLOw==}
 
-  '@msviderok/base-ui-solid@1.0.0-beta.12':
-    resolution: {integrity: sha512-MP44XO5FdUoXrPO+Rzj7pG1+r4H4xnVvBtgEQV0V0OrnE9oyQ0lhg0/aLaHHot5dGjbGozpqVD9sUUWAWWgEKg==}
+  '@photon-ai/base-ui-solid@1.0.0-beta.12':
+    resolution: {integrity: sha512-0+hnI0eXEEk0Oqu6ljZKo5PvYxW1a7rMf4L2XZOcdHAgy5SMJ3R1IkYSQtXfc6cifeTXf8aQ4JaDUSc/C3lDIA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       solid-js: ^1.8
@@ -7420,7 +7415,7 @@ snapshots:
 
   '@mixmark-io/domino@2.2.0': {}
 
-  '@msviderok/base-ui-solid@1.0.0-beta.12(patch_hash=a5e644d69924ca3cbfd3d7bc75b50f144e17c6b0289d410c9473d05f8410d0a9)(solid-js@1.9.14)':
+  '@photon-ai/base-ui-solid@1.0.0-beta.12(solid-js@1.9.14)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@floating-ui/dom': 1.7.6

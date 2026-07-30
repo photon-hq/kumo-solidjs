@@ -1,4 +1,4 @@
-import { Tooltip as TooltipBase } from "@msviderok/base-ui-solid/tooltip";
+import { Tooltip as TooltipBase } from "@photon-ai/base-ui-solid/tooltip";
 import {
   createMemo,
   splitProps,

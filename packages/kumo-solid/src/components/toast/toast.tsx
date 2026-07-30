@@ -1,4 +1,4 @@
-import { Toast } from "@msviderok/base-ui-solid/toast";
+import { Toast } from "@photon-ai/base-ui-solid/toast";
 import {
   For,
   Show,

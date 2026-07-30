@@ -1,4 +1,4 @@
-import { Field as FieldBase } from "@msviderok/base-ui-solid/field";
+import { Field as FieldBase } from "@photon-ai/base-ui-solid/field";
 import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it } from "vite-plus/test";

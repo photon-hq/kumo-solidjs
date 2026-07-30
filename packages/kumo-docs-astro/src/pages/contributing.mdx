@@ -24,7 +24,7 @@ Requirements:
 - pnpm `>=10.21.0`
 
 The local
-[`base-ui-solid`](https://github.com/msviderok/base-ui-solid) project is the
+[`base-ui-solid`](https://github.com/photon-hq/base-ui-solid) project is the
 reference for primitive behavior and Solid render-prop conventions.
 
 ## 2. Pick the Right Location
@@ -60,7 +60,7 @@ pnpm --filter @cloudflare/kumo-docs-astro build
 When porting or fixing a component:
 
 1. Compare its public API and styling with `packages/kumo/src/`.
-2. Use the matching primitive from `@msviderok/base-ui-solid` when available.
+2. Use the matching primitive from `@photon-ai/base-ui-solid` when available.
 3. Model local state with Solid signals, memos, effects, and cleanup.
 4. Preserve semantic HTML, ARIA attributes, focus behavior, and keyboard
    interactions.

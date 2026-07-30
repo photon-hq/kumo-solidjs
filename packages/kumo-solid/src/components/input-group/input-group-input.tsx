@@ -1,5 +1,5 @@
-import { mergeProps as mergeBaseUIProps } from "@msviderok/base-ui-solid/merge-props";
-import { Toolbar as ToolbarBase } from "@msviderok/base-ui-solid/toolbar";
+import { mergeProps as mergeBaseUIProps } from "@photon-ai/base-ui-solid/merge-props";
+import { Toolbar as ToolbarBase } from "@photon-ai/base-ui-solid/toolbar";
 import { splitProps, useContext, type JSX } from "solid-js";
 import { cn } from "../../utils/cn";
 import { Input as InputExternal, type InputProps } from "../input";

@@ -1,4 +1,4 @@
-import { Meter as BaseMeter } from "@msviderok/base-ui-solid/meter";
+import { Meter as BaseMeter } from "@photon-ai/base-ui-solid/meter";
 import { splitProps, type ComponentProps } from "solid-js";
 import { cn } from "../../utils/cn";
 
