@@ -468,20 +468,18 @@ describe("Kumo Solid browser behavior", () => {
     });
   });
 
-  it("lets a hovered tooltip replace a default-open sibling", async () => {
+  it("opens a hovered tooltip alongside a controlled-open sibling", async () => {
     render(() => (
       <TooltipProvider>
         <Tooltip
           content="Initially open tooltip"
-          defaultOpen
-          delay={0}
+          open
           render={(triggerProps) => (
             <Button {...triggerProps}>Initial trigger</Button>
           )}
         />
         <Tooltip
           content="Hovered tooltip"
-          delay={0}
           render={(triggerProps) => (
             <Button {...triggerProps}>Hovered trigger</Button>
           )}
@@ -494,9 +492,15 @@ describe("Kumo Solid browser behavior", () => {
       screen.getByRole("button", { name: "Hovered trigger" }),
     );
     expect(await screen.findByText("Hovered tooltip")).toBeTruthy();
+    expect(screen.getByText("Initially open tooltip")).toBeTruthy();
+
+    await userEvent.unhover(
+      screen.getByRole("button", { name: "Hovered trigger" }),
+    );
     await waitFor(() => {
-      expect(screen.queryByText("Initially open tooltip")).toBeNull();
+      expect(screen.queryByText("Hovered tooltip")).toBeNull();
     });
+    expect(screen.getByText("Initially open tooltip")).toBeTruthy();
   });
 
   it("opens only the innermost nested tooltip on hover", async () => {
