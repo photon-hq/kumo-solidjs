@@ -1,4 +1,4 @@
-import { BubbleMap, type MapGeoJson } from "@cloudflare/kumo";
+import { BubbleMap, type MapGeoJson } from "@photon-ai/kumo-solid";
 import * as echarts from "echarts/core";
 import { MapChart, ScatterChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
@@ -110,7 +110,7 @@ export function BubbleMapCloudflareLocationsDemo({
       tooltipFormatter={(row) =>
         `<span style="font-size:12px"><strong>${row.city}</strong><span style="color:var(--text-color-kumo-subtle);margin-left:8px">${row.iata}</span></span>`
       }
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -134,7 +134,7 @@ export function BubbleMapBasicDemo({ geoJson }: BubbleMapDemoProps) {
       value="requests"
       valueFormat={fmt}
       minRadius={8}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -154,7 +154,7 @@ export function BubbleMapManyPointsDemo({ geoJson }: BubbleMapDemoProps) {
       name="city"
       value="requests"
       valueFormat={fmt}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }

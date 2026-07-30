@@ -42,9 +42,7 @@ Never capitalize or uppercase headings. Product names must be title-cased.
 ```
 
 ```tsx
-<Text as="h2" DANGEROUS_className="uppercase">
-  Recent requests
-</Text>
+<Text as="h2" DANGEROUS_className="uppercase">Recent requests</Text>
 ```
 
 ### `font-tracking` Never change the font's tracking
@@ -54,13 +52,13 @@ Do not use the `tracking-*` classes to change the spacing between characters.
 **Good**
 
 ```tsx
-<span className="text-lg">Worker Metrics</span>
+() => <span class="text-lg">Worker Metrics</span>
 ```
 
 **Avoid**
 
 ```tsx
-<span className="text-lg tracking-tight">Worker Metrics</span>
+() => <span class="text-lg tracking-tight">Worker Metrics</span>
 ```
 
 ### `font-weight` Never use `font-bold`
@@ -88,8 +86,8 @@ Related text should have smaller spacing around it than the content it belongs t
 **Good**
 
 ```tsx
-<div className="grid gap-6">
-  <div className="grid gap-1.5">
+<div class="grid gap-6">
+  <div class="grid gap-1.5">
     <Text as="h3">Web Analytics</Text>
     <Text>Measure site traffic without changing your code.</Text>
   </div>
@@ -100,7 +98,7 @@ Related text should have smaller spacing around it than the content it belongs t
 **Avoid**
 
 ```tsx
-<div className="grid gap-4">
+<div class="grid gap-4">
   <Text as="h3">Web Analytics</Text>
   <Text>Measure site traffic without changing your code.</Text>
   <Button>Configure</Button>
@@ -114,13 +112,13 @@ Spacing around text should take into account its line height. Typically this mea
 **Good**
 
 ```tsx
-<LayerCard className="px-5 py-4">...</LayerCard>
+<LayerCard class="px-5 py-4">...</LayerCard>
 ```
 
 **Avoid**
 
 ```tsx
-<LayerCard className="p-5">...</LayerCard>
+<LayerCard class="p-5">...</LayerCard>
 ```
 
 ### `hover-color-transitions` Never transition colors for hover states
@@ -130,15 +128,13 @@ Color changes on hover must be immediate. Transitions on fast interactions make 
 **Good**
 
 ```tsx
-<button className="hover:bg-kumo-tint">...</button>
+<button class="hover:bg-kumo-tint">...</button>
 ```
 
 **Avoid**
 
 ```tsx
-<button className="transition-colors duration-300 hover:bg-kumo-tint">
-  ...
-</button>
+<button class="transition-colors duration-300 hover:bg-kumo-tint">...</button>
 ```
 
 ### `shadow-borders` Never use borders with drop shadows
@@ -148,13 +144,13 @@ Use `ring ring-kumo-line` to create a transparent border that maintains sharp ed
 **Good**
 
 ```tsx
-<LayerCard className="shadow-md ring ring-kumo-line">...</LayerCard>
+<LayerCard class="shadow-md ring ring-kumo-line">...</LayerCard>
 ```
 
 **Avoid**
 
 ```tsx
-<LayerCard className="border border-kumo-line shadow-md">...</LayerCard>
+<LayerCard class="border border-kumo-line shadow-md">...</LayerCard>
 ```
 
 ### `concentric-border-radius` Use concentric border radii
@@ -164,16 +160,16 @@ When borders or rings are 8px or less apart, their corner radii must be mathemat
 **Good**
 
 ```tsx
-<div className="rounded-xl p-1">
-  <div className="rounded-lg">...</div>
+<div class="rounded-xl p-1">
+  <div class="rounded-lg">...</div>
 </div>
 ```
 
 **Avoid**
 
 ```tsx
-<div className="rounded-xl p-1">
-  <div className="rounded-xl">...</div>
+<div class="rounded-xl p-1">
+  <div class="rounded-xl">...</div>
 </div>
 ```
 
@@ -184,10 +180,8 @@ Inline icons must be optically the same size as and be center-aligned with text.
 **Good**
 
 ```tsx
-<div className="flex items-start gap-2">
-  <span className="h-lh flex items-center">
-    <Icon />
-  </span>
+<div class="flex items-start gap-2">
+  <span class="h-lh flex items-center"><Icon /></span>
   <Text>Text that may wrap onto multiple lines</Text>
 </div>
 ```
@@ -195,16 +189,14 @@ Inline icons must be optically the same size as and be center-aligned with text.
 **Avoid**
 
 ```tsx
-<div className="flex items-start gap-2">
-  <span className="flex items-center">
-    <Icon />
-  </span>
+<div class="flex items-start gap-2">
+  <span class="flex items-center"><Icon /></span>
   <Text>Text that may wrap onto multiple lines</Text>
 </div>
 ```
 
 ```tsx
-<div className="flex items-center gap-2">
+<div class="flex items-center gap-2">
   <Icon />
   <Text>Text that may wrap onto multiple lines</Text>
 </div>
@@ -217,18 +209,22 @@ Monospaced text should have a slightly smaller font size (~0.9em) when mixed wit
 **Good**
 
 ```tsx
-<Text size="lg">
-  Edit <span className="font-mono text-[0.9em]">wrangler.toml</span> to
-  continue.
-</Text>
+() => (
+  <Text size="lg">
+    Edit <span class="font-mono text-[0.9em]">wrangler.toml</span> to
+    continue.
+  </Text>
+)
 ```
 
 **Avoid**
 
 ```tsx
-<Text size="lg">
-  Edit <span className="font-mono">wrangler.toml</span> to continue.
-</Text>
+() => (
+  <Text size="lg">
+    Edit <span class="font-mono">wrangler.toml</span> to continue.
+  </Text>
+)
 ```
 
 ### `sticky-borders` Use `border` to separate sticky elements from the content
@@ -236,13 +232,13 @@ Monospaced text should have a slightly smaller font size (~0.9em) when mixed wit
 **Good**
 
 ```tsx
-<div className="sticky top-0 border-b border-kumo-line">...</div>
+<div class="sticky top-0 border-b border-kumo-line">...</div>
 ```
 
 **Avoid**
 
 ```tsx
-<div className="sticky top-0">...</div>
+<div class="sticky top-0">...</div>
 ```
 
 ### `collapse-content-size` Maintain content size during collapse animations
@@ -253,7 +249,7 @@ Collapsible content must maintain its content size while closing to avoid its co
 
 ```tsx
 <motion.div animate={{ width: open ? 256 : 0 }}>
-  <div className="w-64">...</div>
+  <div class="w-64">...</div>
 </motion.div>
 ```
 
@@ -261,7 +257,7 @@ Collapsible content must maintain its content size while closing to avoid its co
 
 ```tsx
 <motion.div animate={{ width: open ? 256 : 0 }}>
-  <div className="w-full min-w-0">...</div>
+  <div class="w-full min-w-0">...</div>
 </motion.div>
 ```
 
@@ -292,24 +288,30 @@ Conditionally rendering dialogs disables their open/close animation. Use the `op
 **Good**
 
 ```tsx
-<Dialog.Root open={open} onOpenChange={setOpen}>
+() => (
+  <CodeExample
+    code={`<Dialog.Root open={open} onOpenChange={setOpen}>
   <Dialog>
     <Dialog.Title>Edit Worker</Dialog.Title>
     <Dialog.Description>Update this Worker's settings.</Dialog.Description>
   </Dialog>
-</Dialog.Root>
+</Dialog.Root>`}
+  />
+)
 ```
 
 **Avoid**
 
 ```tsx
-{
-  open && (
-    <Dialog.Root open>
-      <Dialog>
-        <Dialog.Title>Edit Worker</Dialog.Title>
-      </Dialog>
-    </Dialog.Root>
-  );
-}
+() => (
+  <CodeExample
+    code={`{open && (
+  <Dialog.Root open>
+    <Dialog>
+      <Dialog.Title>Edit Worker</Dialog.Title>
+    </Dialog>
+  </Dialog.Root>
+)}`}
+  />
+)
 ```

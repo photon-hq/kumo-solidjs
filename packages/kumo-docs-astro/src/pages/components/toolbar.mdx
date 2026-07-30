@@ -29,12 +29,12 @@ import {
 
 ### Barrel
 
-<CodeBlock code={`import { Toolbar } from "@cloudflare/kumo";`} lang="tsx" />
+<CodeBlock code={`import { Toolbar } from "@photon-ai/kumo-solid";`} lang="tsx" />
 
 ### Granular
 
 <CodeBlock
-  code={`import { Toolbar } from "@cloudflare/kumo/components/toolbar";`}
+  code={`import { Toolbar } from "@photon-ai/kumo-solid/components/toolbar";`}
   lang="tsx"
 />
 </ComponentSection>
@@ -48,8 +48,8 @@ filter card. Use `Toolbar.Button`, `Toolbar.Input`, and `Toolbar.InputGroup` to
 opt supported controls into toolbar sizing, button styling, borders, and radii.
 
 ```tsx
-import { InputGroup, Toolbar } from "@cloudflare/kumo";
-import { FunnelSimpleIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
+import { InputGroup, Toolbar } from "@photon-ai/kumo-solid";
+import { FunnelSimpleIcon, MagnifyingGlassIcon } from "~/components/icons";
 
 export default function Example() {
   return (
@@ -147,7 +147,7 @@ Use `aria-label` for compact toolbar controls that do not have visible labels.
   <tbody>
     <tr>
       <td><code>children</code></td>
-      <td><code>ReactNode</code></td>
+      <td><code>JSX.Element</code></td>
       <td>-</td>
       <td>Toolbar controls rendered as one grouped card.</td>
     </tr>

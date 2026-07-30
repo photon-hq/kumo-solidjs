@@ -46,9 +46,9 @@ import {
   <ComponentSection>
     <Heading level={2}>Installation</Heading>
     <Heading level={3} class="mb-2 text-lg">Barrel</Heading>
-    <CodeBlock code={`import { Sidebar } from "@cloudflare/kumo";`} lang="tsx" />
+    <CodeBlock code={`import { Sidebar } from "@photon-ai/kumo-solid";`} lang="tsx" />
     <h3 class="mt-4 mb-2 text-lg font-semibold">Granular</h3>
-    <CodeBlock code={`import { Sidebar } from "@cloudflare/kumo/components/sidebar";`} lang="tsx" />
+    <CodeBlock code={`import { Sidebar } from "@photon-ai/kumo-solid/components/sidebar";`} lang="tsx" />
   </ComponentSection>
 
   <ComponentSection>
@@ -64,8 +64,8 @@ import {
       Use <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">Group</code> +
       <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">GroupLabel</code> to organize sections.
     </p>
-    <CodeBlock code={`import { Sidebar } from "@cloudflare/kumo";
-import { HouseIcon, CodeIcon, GearIcon } from "@phosphor-icons/react";
+    <CodeBlock code={`import { Sidebar } from "@photon-ai/kumo-solid";
+import { HouseIcon, CodeIcon, GearIcon } from "~/components/icons";
 
 function AppLayout({ children }) {
   return (
@@ -100,7 +100,7 @@ function AppLayout({ children }) {
           <Sidebar.Trigger />
         </Sidebar.Footer>
       </Sidebar>
-      <div className="flex-1">{children}</div>
+      <div class="flex-1">{children}</div>
     </Sidebar.Provider>
   );
 }`} lang="tsx" />
@@ -192,7 +192,7 @@ const { toggleSidebar } = useSidebar();`}>
           Use <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">side="right"</code> for a sidebar on the right edge. Place <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">&lt;main&gt;</code> before <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">&lt;Sidebar&gt;</code> in the DOM.
         </p>
         <ComponentExample code={`<Sidebar.Provider defaultOpen side="right">
-  <main className="flex-1">...</main>
+  <main class="flex-1">...</main>
   <Sidebar>
     <Sidebar.Content>
       <Sidebar.Group>
@@ -262,9 +262,9 @@ const { state, isPeeking } = useSidebar();
           Inactive views are automatically marked with <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">aria-hidden</code> and <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">inert</code>.
           Animation respects <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">prefers-reduced-motion</code>.
         </p>
-        <ComponentExample code={`const [surface, setSurface] = useState("account");
+        <ComponentExample code={`const [surface, setSurface] = createSignal("account");
 
-<Sidebar.SlidingViews activeKey={surface} direction="left">
+<Sidebar.SlidingViews activeKey={surface()} direction="left">
   <Sidebar.SlidingView value="account">
     <Sidebar.Content>...account nav...</Sidebar.Content>
   </Sidebar.SlidingView>

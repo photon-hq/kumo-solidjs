@@ -1,10 +1,10 @@
-import { Banner, Text, Link } from "@cloudflare/kumo";
-import { Info, WarningCircle, Warning, X } from "@phosphor-icons/react";
+import { Banner, Text, Link } from "@photon-ai/kumo-solid";
+import { Info, WarningCircle, Warning, X } from "~/components/icons";
 
 /** Shows all banner variants with structured title and description. */
 export function BannerVariantsDemo() {
   return (
-    <div className="w-full space-y-3">
+    <div class="w-full space-y-3">
       <Banner
         icon={<Info weight="fill" />}
         title="Update available"
@@ -101,7 +101,7 @@ export function BannerWithIconDemo() {
   );
 }
 
-/** Banner with custom React content in description. */
+/** Banner with custom JSX content in its description. */
 export function BannerCustomContentDemo() {
   return (
     <Banner
@@ -119,7 +119,7 @@ export function BannerCustomContentDemo() {
 /** Banner with action buttons: CTA and dismissable. */
 export function BannerWithActionDemo() {
   return (
-    <div className="w-full space-y-3">
+    <div class="w-full space-y-3">
       <Banner
         icon={<Info weight="fill" />}
         title="Update available"
@@ -174,7 +174,7 @@ export function BannerWithActionDemo() {
 /** Banner with multiple action buttons. */
 export function BannerWithActionsDemo() {
   return (
-    <div className="w-full space-y-3">
+    <div class="w-full space-y-3">
       <Banner
         icon={<Warning weight="fill" />}
         variant="error"
@@ -194,7 +194,7 @@ export function BannerWithActionsDemo() {
 /* Accent-aware CTAs via the `Banner.Action` compound. */
 export function BannerActionCompoundDemo() {
   return (
-    <div className="w-full space-y-3">
+    <div class="w-full space-y-3">
       <Banner
         icon={<Info weight="fill" />}
         title="Update available"

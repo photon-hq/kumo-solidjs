@@ -1,4 +1,4 @@
-import { InputArea } from "@cloudflare/kumo";
+import { InputArea } from "@photon-ai/kumo-solid";
 
 export function InputAreaBasicDemo() {
   return (
@@ -47,7 +47,7 @@ export function InputAreaErrorObjectDemo() {
 
 export function InputAreaSizesDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <InputArea
         size="xs"
         label="Extra Small"
@@ -72,7 +72,7 @@ export function InputAreaBareDemo() {
 
 export function InputAreaRowsDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <InputArea label="2 rows" placeholder="Small area" rows={2} />
       <InputArea label="4 rows (default)" placeholder="Medium area" rows={4} />
       <InputArea label="8 rows" placeholder="Large area" rows={8} />
@@ -116,7 +116,7 @@ export function InputAreaLabelTooltipDemo() {
   );
 }
 
-export function InputAreaReactNodeLabelDemo() {
+export function InputAreaRichLabelDemo() {
   return (
     <InputArea
       label={

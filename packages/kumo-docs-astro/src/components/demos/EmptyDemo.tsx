@@ -1,4 +1,4 @@
-import { Empty, Button } from "@cloudflare/kumo";
+import { Empty, Button } from "@photon-ai/kumo-solid";
 import {
   Database,
   FolderOpen,
@@ -6,7 +6,7 @@ import {
   PackageIcon,
   CodeIcon,
   GlobeIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 export function EmptyDemo() {
   return (
@@ -14,9 +14,9 @@ export function EmptyDemo() {
       icon={<PackageIcon size={48} />}
       title="No packages found"
       description="Get started by installing your first package."
-      commandLine="npm install @cloudflare/kumo"
+      commandLine="npm install @photon-ai/kumo-solid solid-js"
       contents={
-        <div className="flex items-center gap-2">
+        <div class="flex items-center gap-2">
           <Button icon={<CodeIcon />}>See examples</Button>
           <Button icon={<GlobeIcon />} variant="primary">
             View documentation
@@ -29,9 +29,9 @@ export function EmptyDemo() {
 
 export function EmptySizesDemo() {
   return (
-    <div className="flex flex-col gap-8">
+    <div class="flex flex-col gap-8">
       <div>
-        <p className="mb-2 text-sm text-kumo-subtle">Small</p>
+        <p class="mb-2 text-sm text-kumo-subtle">Small</p>
         <Empty
           size="sm"
           icon={<Database size={32} className="text-kumo-inactive" />}
@@ -40,7 +40,7 @@ export function EmptySizesDemo() {
         />
       </div>
       <div>
-        <p className="mb-2 text-sm text-kumo-subtle">Base</p>
+        <p class="mb-2 text-sm text-kumo-subtle">Base</p>
         <Empty
           size="base"
           icon={<Database size={48} className="text-kumo-inactive" />}
@@ -49,7 +49,7 @@ export function EmptySizesDemo() {
         />
       </div>
       <div>
-        <p className="mb-2 text-sm text-kumo-subtle">Large</p>
+        <p class="mb-2 text-sm text-kumo-subtle">Large</p>
         <Empty
           size="lg"
           icon={<Database size={64} className="text-kumo-inactive" />}
@@ -79,7 +79,7 @@ export function EmptyWithActionsDemo() {
       title="No connection"
       description="Unable to connect to the server. Please check your connection and try again."
       contents={
-        <div className="flex gap-2">
+        <div class="flex gap-2">
           <Button variant="primary">Retry</Button>
           <Button variant="secondary">Go Back</Button>
         </div>

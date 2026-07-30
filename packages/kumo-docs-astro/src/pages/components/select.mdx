@@ -46,12 +46,12 @@ import {
 
 ### Barrel
 
-<CodeBlock code={`import { Select } from "@cloudflare/kumo";`} lang="tsx" />
+<CodeBlock code={`import { Select } from "@photon-ai/kumo-solid";`} lang="tsx" />
 
 ### Granular
 
   <CodeBlock
-    code={`import { Select } from "@cloudflare/kumo/components/select";`}
+    code={`import { Select } from "@photon-ai/kumo-solid/components/select";`}
     lang="tsx"
   />
 </ComponentSection>
@@ -63,15 +63,16 @@ import {
 ## Usage
 
 ```tsx
-import { Select } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+import { Select } from "@photon-ai/kumo-solid";
 
 export default function Example() {
-  const [value, setValue] = useState("apple");
+  const [value, setValue] = createSignal("apple");
 
   return (
     <Select
       label="Favorite Fruit"
-      value={value}
+      value={value()}
       onValueChange={(v) => setValue(v ?? "apple")}
       items={{ apple: "Apple", banana: "Banana", cherry: "Cherry" }}
     />
@@ -232,7 +233,7 @@ export default function Example() {
 
 ```tsx
 <Select
-  className="w-[200px]"
+  class="w-[200px]"
   placeholder="Select a language..."
   renderValue={(v) => (
     <span>
@@ -245,7 +246,7 @@ export default function Example() {
   isItemEqualToValue={(item, value) => item.value === value.value}
 >
   {languages.map((language) => (
-    <Select.Option key={language.value} value={language}>
+    <Select.Option value={language}>
       {language.emoji} {language.label}
     </Select.Option>
   ))}

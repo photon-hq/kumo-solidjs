@@ -1,14 +1,20 @@
-import { useState, useRef } from "react";
-import { Popover, Button } from "@cloudflare/kumo";
-import { BellIcon, DotsThree } from "@phosphor-icons/react";
+import { createSignal } from "solid-js";
+
+import { Popover, Button } from "@photon-ai/kumo-solid";
+import { BellIcon, DotsThree } from "~/components/icons";
 
 export function PopoverHeroDemo() {
   return (
     <Popover>
       <Popover.Trigger
-        render={
-          <Button shape="square" icon={BellIcon} aria-label="Notifications" />
-        }
+        render={(renderProps) => (
+          <Button
+            {...renderProps}
+            shape="square"
+            icon={BellIcon}
+            aria-label="Notifications"
+          />
+        )}
       />
       <Popover.Content>
         <Popover.Title>Notifications</Popover.Title>
@@ -23,7 +29,9 @@ export function PopoverHeroDemo() {
 export function PopoverBasicDemo() {
   return (
     <Popover>
-      <Popover.Trigger render={<Button />}>Open Popover</Popover.Trigger>
+      <Popover.Trigger render={(renderProps) => <Button {...renderProps} />}>
+        Open Popover
+      </Popover.Trigger>
       <Popover.Content>
         <Popover.Title>Popover Title</Popover.Title>
         <Popover.Description>
@@ -37,14 +45,20 @@ export function PopoverBasicDemo() {
 export function PopoverWithCloseDemo() {
   return (
     <Popover>
-      <Popover.Trigger render={<Button />}>Open Settings</Popover.Trigger>
+      <Popover.Trigger render={(renderProps) => <Button {...renderProps} />}>
+        Open Settings
+      </Popover.Trigger>
       <Popover.Content>
         <Popover.Title>Settings</Popover.Title>
         <Popover.Description>
           Configure your preferences below.
         </Popover.Description>
-        <div className="mt-3">
-          <Popover.Close render={<Button variant="secondary" size="sm" />}>
+        <div class="mt-3">
+          <Popover.Close
+            render={(renderProps) => (
+              <Button {...renderProps} variant="secondary" size="sm" />
+            )}
+          >
             Close
           </Popover.Close>
         </div>
@@ -55,9 +69,13 @@ export function PopoverWithCloseDemo() {
 
 export function PopoverPositionDemo() {
   return (
-    <div className="flex flex-wrap gap-4">
+    <div class="flex flex-wrap gap-4">
       <Popover>
-        <Popover.Trigger render={<Button variant="secondary" />}>
+        <Popover.Trigger
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
+        >
           Bottom
         </Popover.Trigger>
         <Popover.Content side="bottom">
@@ -69,7 +87,11 @@ export function PopoverPositionDemo() {
       </Popover>
 
       <Popover>
-        <Popover.Trigger render={<Button variant="secondary" />}>
+        <Popover.Trigger
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
+        >
           Top
         </Popover.Trigger>
         <Popover.Content side="top">
@@ -79,7 +101,11 @@ export function PopoverPositionDemo() {
       </Popover>
 
       <Popover>
-        <Popover.Trigger render={<Button variant="secondary" />}>
+        <Popover.Trigger
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
+        >
           Left
         </Popover.Trigger>
         <Popover.Content side="left">
@@ -89,7 +115,11 @@ export function PopoverPositionDemo() {
       </Popover>
 
       <Popover>
-        <Popover.Trigger render={<Button variant="secondary" />}>
+        <Popover.Trigger
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
+        >
           Right
         </Popover.Trigger>
         <Popover.Content side="right">
@@ -104,21 +134,30 @@ export function PopoverPositionDemo() {
 export function PopoverCustomContentDemo() {
   return (
     <Popover>
-      <Popover.Trigger render={<Button />}>User Profile</Popover.Trigger>
+      <Popover.Trigger render={(renderProps) => <Button {...renderProps} />}>
+        User Profile
+      </Popover.Trigger>
       <Popover.Content className="w-64">
-        <div className="flex items-center gap-3">
-          <div className="size-10 rounded-full bg-kumo-recessed" />
+        <div class="flex items-center gap-3">
+          <div class="size-10 rounded-full bg-kumo-recessed" />
           <div>
             <Popover.Title>Jane Doe</Popover.Title>
-            <p className="text-sm text-kumo-subtle">jane@example.com</p>
+            <p class="text-sm text-kumo-subtle">jane@example.com</p>
           </div>
         </div>
-        <div className="mt-3 flex gap-2 border-t border-kumo-hairline pt-3">
+        <div class="mt-3 flex gap-2 border-t border-kumo-hairline pt-3">
           <Button variant="secondary" size="sm" className="flex-1">
             Profile
           </Button>
           <Popover.Close
-            render={<Button variant="ghost" size="sm" className="flex-1" />}
+            render={(renderProps) => (
+              <Button
+                {...renderProps}
+                variant="ghost"
+                size="sm"
+                className="flex-1"
+              />
+            )}
           >
             Sign Out
           </Popover.Close>
@@ -134,7 +173,9 @@ export function PopoverOpenOnHoverDemo() {
       <Popover.Trigger
         openOnHover
         delay={200}
-        render={<Button variant="secondary" />}
+        render={(renderProps) => (
+          <Button {...renderProps} variant="secondary" />
+        )}
       >
         Hover Me
       </Popover.Trigger>
@@ -144,8 +185,12 @@ export function PopoverOpenOnHoverDemo() {
           This popover opens on hover with a 200ms delay. It can still contain
           interactive content like buttons and links.
         </Popover.Description>
-        <div className="mt-3">
-          <Popover.Close render={<Button variant="secondary" size="sm" />}>
+        <div class="mt-3">
+          <Popover.Close
+            render={(renderProps) => (
+              <Button {...renderProps} variant="secondary" size="sm" />
+            )}
+          >
             Got it
           </Popover.Close>
         </div>
@@ -156,9 +201,9 @@ export function PopoverOpenOnHoverDemo() {
 
 /** Popover anchored to a virtual element instead of a trigger. */
 export function PopoverVirtualAnchorDemo() {
-  const [selectedRow, setSelectedRow] = useState<string | null>(null);
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
-  const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
+  const [selectedRow, setSelectedRow] = createSignal<string | null>(null);
+  const [anchorRect, setAnchorRect] = createSignal<DOMRect | null>(null);
+  const rowRefs = new Map<string, HTMLTableRowElement>();
 
   const rows = [
     { id: "1", name: "api-gateway", status: "Active" },
@@ -167,38 +212,41 @@ export function PopoverVirtualAnchorDemo() {
   ];
 
   const handleEdit = (id: string) => {
-    const row = rowRefs.current.get(id);
+    const row = rowRefs.get(id);
     if (row) {
       setAnchorRect(row.getBoundingClientRect());
       setSelectedRow(id);
     }
   };
+  const virtualAnchor = () => {
+    const rect = anchorRect();
+    return rect ? { getBoundingClientRect: () => rect } : undefined;
+  };
 
   return (
-    <div className="w-full">
-      <div className="overflow-hidden rounded-lg border border-kumo-hairline">
-        <table className="w-full text-sm">
-          <thead className="bg-kumo-elevated">
+    <div class="w-full">
+      <div class="overflow-hidden rounded-lg border border-kumo-hairline">
+        <table class="w-full text-sm">
+          <thead class="bg-kumo-elevated">
             <tr>
-              <th className="px-4 py-2 text-left font-medium">Name</th>
-              <th className="px-4 py-2 text-left font-medium">Status</th>
-              <th className="w-12 px-4 py-2"></th>
+              <th class="px-4 py-2 text-left font-medium">Name</th>
+              <th class="px-4 py-2 text-left font-medium">Status</th>
+              <th class="w-12 px-4 py-2"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-kumo-hairline">
+          <tbody class="divide-y divide-kumo-hairline">
             {rows.map((row) => (
               <tr
-                key={row.id}
                 ref={(el) => {
-                  if (el) rowRefs.current.set(row.id, el);
+                  if (el) rowRefs.set(row.id, el);
                 }}
-                className={
-                  selectedRow === row.id ? "bg-kumo-recessed" : "bg-kumo-base"
+                class={
+                  selectedRow() === row.id ? "bg-kumo-recessed" : "bg-kumo-base"
                 }
               >
-                <td className="px-4 py-2 font-mono">{row.name}</td>
-                <td className="px-4 py-2 text-kumo-subtle">{row.status}</td>
-                <td className="px-4 py-2">
+                <td class="px-4 py-2 font-mono">{row.name}</td>
+                <td class="px-4 py-2 text-kumo-subtle">{row.status}</td>
+                <td class="px-4 py-2">
                   <Button
                     size="xs"
                     variant="ghost"
@@ -214,23 +262,22 @@ export function PopoverVirtualAnchorDemo() {
         </table>
       </div>
       <Popover
-        open={!!selectedRow}
+        open={!!selectedRow()}
         onOpenChange={(open) => !open && setSelectedRow(null)}
       >
-        <Popover.Content
-          side="left"
-          anchor={
-            anchorRect ? { getBoundingClientRect: () => anchorRect } : undefined
-          }
-        >
+        <Popover.Content side="left" anchor={virtualAnchor()}>
           <Popover.Title>
-            Edit {rows.find((r) => r.id === selectedRow)?.name}
+            Edit {rows.find((r) => r.id === selectedRow())?.name}
           </Popover.Title>
           <Popover.Description>
             The popover anchors to the selected row, not the icon button.
           </Popover.Description>
-          <div className="mt-3">
-            <Popover.Close render={<Button size="sm" variant="secondary" />}>
+          <div class="mt-3">
+            <Popover.Close
+              render={(renderProps) => (
+                <Button {...renderProps} size="sm" variant="secondary" />
+              )}
+            >
               Close
             </Popover.Close>
           </div>

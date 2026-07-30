@@ -38,12 +38,12 @@ import {
 
 ### Barrel
 
-<CodeBlock code={`import { Dialog } from "@cloudflare/kumo";`} lang="tsx" />
+<CodeBlock code={`import { Dialog } from "@photon-ai/kumo-solid";`} lang="tsx" />
 
 ### Granular
 
   <CodeBlock
-    code={`import { Dialog } from "@cloudflare/kumo/components/dialog";`}
+    code={`import { Dialog } from "@photon-ai/kumo-solid/components/dialog";`}
     lang="tsx"
   />
 </ComponentSection>
@@ -55,7 +55,7 @@ import {
 ## Usage
 
 ```tsx
-import { Dialog, Button } from "@cloudflare/kumo";
+import { Dialog, Button } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -64,7 +64,7 @@ export default function Example() {
       <Dialog>
         <Dialog.Title>Dialog Title</Dialog.Title>
         <Dialog.Description>Dialog content goes here.</Dialog.Description>
-        <div className="flex justify-end gap-2 mt-4">
+        <div class="flex justify-end gap-2 mt-4">
           <Dialog.Close
             render={(p) => (
               <Button variant="secondary" {...p}>

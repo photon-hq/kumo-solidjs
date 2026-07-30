@@ -1,7 +1,14 @@
-import { type FC, useMemo, useSyncExternalStore } from "react";
+import {
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  type Component,
+} from "solid-js";
+
 import { kumoColors, type ColorToken } from "virtual:kumo-colors";
 import { kumoRegistryJson } from "virtual:kumo-registry";
-import { WarningIcon } from "@phosphor-icons/react";
+import { WarningIcon } from "~/components/icons";
 
 /**
  * Extract the actual color value from a CSS variable fallback.
@@ -44,27 +51,27 @@ function colorToHex(color: string): string | null {
 /**
  * Displays a color swatch with both the original value and converted hex.
  */
-const ColorSwatch: FC<{ label: string; value: string }> = ({
+const ColorSwatch: Component<{ label: string; value: string }> = ({
   label,
   value,
 }) => {
-  const hex = useMemo(() => colorToHex(value), [value]);
+  const hex = createMemo(() => colorToHex(value));
 
   return (
-    <div className="flex min-w-0 items-start gap-2">
+    <div class="flex min-w-0 items-start gap-2">
       <span
-        className="inline-flex h-8 w-8 shrink-0 rounded border border-kumo-fill"
+        class="inline-flex h-8 w-8 shrink-0 rounded border border-kumo-fill"
         style={{ background: value }}
       />
-      <div className="flex min-w-0 flex-col text-xs text-kumo-default">
-        <span className="text-[10px] tracking-wide uppercase opacity-70">
+      <div class="flex min-w-0 flex-col text-xs text-kumo-default">
+        <span class="text-[10px] tracking-wide uppercase opacity-70">
           {label}
         </span>
-        <span className="text-[10px] leading-tight break-normal opacity-60">
+        <span class="text-[10px] leading-tight break-normal opacity-60">
           {value}
-          {hex && (
-            <span className="ml-1 font-mono font-medium text-kumo-default">
-              {hex}
+          {hex() && (
+            <span class="ml-1 font-mono font-medium text-kumo-default">
+              {hex()}
             </span>
           )}
         </span>
@@ -94,8 +101,17 @@ function getTheme(): string {
   return document.body.getAttribute("data-theme") ?? "kumo";
 }
 
-function useCurrentTheme(): string {
-  return useSyncExternalStore(subscribeToTheme, getTheme, () => "kumo");
+function useCurrentTheme() {
+  const [theme, setTheme] = createSignal("kumo");
+
+  onMount(() => {
+    const update = () => setTheme(getTheme());
+    update();
+    const unsubscribe = subscribeToTheme(update);
+    onCleanup(unsubscribe);
+  });
+
+  return theme;
 }
 
 /**
@@ -230,24 +246,23 @@ function getColorsForTheme(theme: string): ColorsByCategory {
   };
 }
 
-const TokenGrid: FC<{ tokens: ColorToken[] }> = ({ tokens }) => (
-  <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-2">
+const TokenGrid: Component<{ tokens: ColorToken[] }> = ({ tokens }) => (
+  <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-2">
     {tokens.map((token: ColorToken) => (
       <div
-        key={token.name}
-        className={`flex min-w-0 items-center gap-3 rounded-md border bg-kumo-base px-3 py-2 text-xs ${
+        class={`flex min-w-0 items-center gap-3 rounded-md border bg-kumo-base px-3 py-2 text-xs ${
           token.tokenType === "global"
             ? "border border-kumo-info ring-1 ring-kumo-info/30"
             : "border-kumo-fill"
         }`}
       >
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-xs font-medium break-normal">
+        <div class="flex min-w-0 flex-1 flex-col gap-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="font-mono text-xs font-medium break-normal">
               {token.name}
             </span>
             {token.tokenType === "global" && (
-              <span className="rounded bg-kumo-info/20 px-1.5 py-0.5 text-[10px] font-medium text-kumo-link">
+              <span class="rounded bg-kumo-info/20 px-1.5 py-0.5 text-[10px] font-medium text-kumo-link">
                 global
               </span>
             )}
@@ -260,65 +275,72 @@ const TokenGrid: FC<{ tokens: ColorToken[] }> = ({ tokens }) => (
   </div>
 );
 
-export const TailwindColorTokens: FC = () => {
+export const TailwindColorTokens: Component = () => {
   const currentTheme = useCurrentTheme();
-  const { textColors, colors, componentGroups } =
-    getColorsForTheme(currentTheme);
-
-  const componentTokenCount = componentGroups.reduce(
-    (sum, g) => sum + g.tokens.length,
-    0,
+  const themeColors = createMemo(() => getColorsForTheme(currentTheme()));
+  const componentTokenCount = createMemo(() =>
+    themeColors().componentGroups.reduce(
+      (sum, group) => sum + group.tokens.length,
+      0,
+    ),
   );
-  const allTokens = [...textColors, ...colors];
+  const allTokenCount = createMemo(
+    () =>
+      themeColors().textColors.length +
+      themeColors().colors.length +
+      componentTokenCount(),
+  );
 
   // Count override tokens for display
-  const overrideCount =
-    currentTheme !== "kumo"
+  const overrideCount = createMemo(() =>
+    currentTheme() !== "kumo"
       ? kumoColors.filter(
-          (c) => c.tokenType === "override" && c.theme === currentTheme,
+          (color) =>
+            color.tokenType === "override" && color.theme === currentTheme(),
         ).length
-      : 0;
+      : 0,
+  );
 
   return (
-    <div className="flex flex-col gap-6 text-kumo-default">
-      <div className="flex flex-col gap-1">
-        <h2 className="m-0 text-2xl font-semibold">Colors</h2>
-        <div className="text-sm text-kumo-default">
-          Displaying {allTokens.length + componentTokenCount} tokens
-          {overrideCount > 0 && (
-            <span className="ml-1">
-              — {overrideCount} overridden by{" "}
-              <code className="rounded bg-kumo-brand p-1">{currentTheme}</code>
+    <div class="flex flex-col gap-6 text-kumo-default">
+      <div class="flex flex-col gap-1">
+        <h2 class="m-0 text-2xl font-semibold">Colors</h2>
+        <div class="text-sm text-kumo-default">
+          Displaying {allTokenCount()} tokens
+          {overrideCount() > 0 && (
+            <span class="ml-1">
+              — {overrideCount()} overridden by{" "}
+              <code class="rounded bg-kumo-brand p-1">{currentTheme()}</code>
             </span>
           )}
         </div>
       </div>
 
       {/* Text Colors Section */}
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold">
-          Text Colors ({textColors.length})
+      <section class="flex flex-col gap-3">
+        <h2 class="text-sm font-semibold">
+          Text Colors ({themeColors().textColors.length})
         </h2>
-        <TokenGrid tokens={textColors} />
+        <TokenGrid tokens={themeColors().textColors} />
       </section>
 
       {/* Surface, State, and Theme Colors Section */}
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold">
-          Surface, State & Theme Colors ({colors.length})
+      <section class="flex flex-col gap-3">
+        <h2 class="text-sm font-semibold">
+          Surface, State & Theme Colors ({themeColors().colors.length})
         </h2>
-        <TokenGrid tokens={colors} />
+        <TokenGrid tokens={themeColors().colors} />
       </section>
 
       {/* Component Colors Section */}
-      {componentGroups.length > 0 && (
-        <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-semibold">
-            Component Colors ({componentTokenCount})
+      {themeColors().componentGroups.length > 0 && (
+        <section class="flex flex-col gap-3">
+          <h2 class="text-sm font-semibold">
+            Component Colors ({componentTokenCount()})
           </h2>
-          {componentGroups.map((group) => (
-            <div key={group.component} className="flex flex-col gap-3">
-              <h3 className="!m-0 text-xs font-semibold text-kumo-subtle">
+          {themeColors().componentGroups.map((group) => (
+            <div class="flex flex-col gap-3">
+              <h3 class="!m-0 text-xs font-semibold text-kumo-subtle">
                 {group.displayName} ({group.tokens.length})
               </h3>
               <TokenGrid tokens={group.tokens} />
@@ -332,9 +354,9 @@ export const TailwindColorTokens: FC = () => {
 
 export function StatusBannerDemo() {
   return (
-    <div className="flex items-center gap-2 rounded-lg bg-kumo-danger-tint/70 p-4">
+    <div class="flex items-center gap-2 rounded-lg bg-kumo-danger-tint/70 p-4">
       <WarningIcon weight="fill" className="fill-kumo-danger" />
-      <span className="text-sm text-kumo-danger">Something went wrong.</span>
+      <span class="text-sm text-kumo-danger">Something went wrong.</span>
     </div>
   );
 }

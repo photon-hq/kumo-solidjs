@@ -3,16 +3,14 @@
  * Reads from the auto-generated component-registry.json in the kumo package.
  */
 
-// Import the registry JSON from the kumo package export
-import registry from "@cloudflare/kumo/ai/component-registry.json";
+import { kumoRegistryJson as registry } from "virtual:kumo-registry";
 
-// Import shared types from @cloudflare/kumo
 import type {
   ComponentRegistry,
   ComponentSchema,
   PropSchema,
   SubComponentSchema,
-} from "@cloudflare/kumo";
+} from "./registry-types";
 
 // Re-export types for convenience
 export type { PropSchema, SubComponentSchema as SubComponentData };

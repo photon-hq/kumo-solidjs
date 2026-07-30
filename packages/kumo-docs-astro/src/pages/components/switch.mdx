@@ -28,7 +28,7 @@ import {
 
 <ComponentSection>
   <ComponentExample demo="SwitchBasicDemo">
-    <SwitchBasicDemo client:visible />
+    <SwitchBasicDemo client:load />
   </ComponentExample>
 </ComponentSection>
 
@@ -41,13 +41,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Switch } from "@cloudflare/kumo";
+import { Switch } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Switch } from "@cloudflare/kumo/components/switch";
+import { Switch } from "@photon-ai/kumo-solid/components/switch";
 ```
 
 </ComponentSection>
@@ -59,15 +59,13 @@ import { Switch } from "@cloudflare/kumo/components/switch";
 ## Usage
 
 ```tsx
-import { Switch } from "@cloudflare/kumo";
-import { useState } from "react";
+import { Switch } from "@photon-ai/kumo-solid";
+import { createSignal } from "solid-js";
 
 export default function Example() {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = createSignal(false);
 
-  return (
-    <Switch checked={checked} onCheckedChange={(val) => setChecked(val)} />
-  );
+  return <Switch checked={checked()} onCheckedChange={setChecked} />;
 }
 ```
 
@@ -82,19 +80,19 @@ export default function Example() {
 ### Off State
 
 <ComponentExample demo="SwitchOffDemo">
-  <SwitchOffDemo client:visible />
+  <SwitchOffDemo client:load />
 </ComponentExample>
 
 ### On State
 
 <ComponentExample demo="SwitchOnDemo">
-  <SwitchOnDemo client:visible />
+  <SwitchOnDemo client:load />
 </ComponentExample>
 
 ### Disabled
 
 <ComponentExample demo="SwitchDisabledDemo">
-  <SwitchDisabledDemo client:visible />
+  <SwitchDisabledDemo client:load />
 </ComponentExample>
 
 ### Variants
@@ -104,7 +102,7 @@ export default function Example() {
   (monochrome). Both use a squircle shape.
 </p>
 <ComponentExample demo="SwitchVariantsDemo">
-  <SwitchVariantsDemo client:visible />
+  <SwitchVariantsDemo client:load />
 </ComponentExample>
 
 ### Neutral Variant
@@ -114,30 +112,30 @@ export default function Example() {
   subtle, less prominent toggles.
 </p>
 <ComponentExample demo="SwitchNeutralDemo">
-  <SwitchNeutralDemo client:visible />
+  <SwitchNeutralDemo client:load />
 </ComponentExample>
 
 ### Neutral States
 
 <ComponentExample demo="SwitchNeutralStatesDemo">
-  <SwitchNeutralStatesDemo client:visible />
+  <SwitchNeutralStatesDemo client:load />
 </ComponentExample>
 
 ### Sizes
 
 <p>Three sizes available: `sm`, `base` (default), and `lg`.</p>
 <ComponentExample demo="SwitchSizesDemo">
-  <SwitchSizesDemo client:visible />
+  <SwitchSizesDemo client:load />
 </ComponentExample>
 
 ### Custom ID
 
 <p>
   When a custom `id` is provided, clicking the label still toggles the switch.
-  The `id` is forwarded to Base UI so the label's `htmlFor` stays in sync.
+  The `id` keeps the visible label associated with the switch control.
 </p>
 <ComponentExample demo="SwitchCustomIdDemo">
-  <SwitchCustomIdDemo client:visible />
+  <SwitchCustomIdDemo client:load />
 </ComponentExample>
 
 ### Switch Group
@@ -147,19 +145,19 @@ export default function Example() {
   description, and error message for the group.
 </p>
 <ComponentExample demo="SwitchGroupDemo">
-  <SwitchGroupDemo client:visible />
+  <SwitchGroupDemo client:load />
 </ComponentExample>
 
 ### Visually Hidden Legend
 
 <p>
-  Use `Switch.Legend` with `className="sr-only"` to keep the legend accessible
+  Use `Switch.Legend` with `class="sr-only"` to keep the legend accessible
   to screen readers while hiding it visually. This is useful when the group is
   already labeled by a parent `Field` or heading, and showing the legend would
   create a redundant label.
 </p>
 <ComponentExample demo="SwitchLegendSrOnlyDemo">
-  <SwitchLegendSrOnlyDemo client:visible />
+  <SwitchLegendSrOnlyDemo client:load />
 </ComponentExample>
 
 ### Custom Legend Styling
@@ -170,7 +168,7 @@ export default function Example() {
   colors, or layout.
 </p>
 <ComponentExample demo="SwitchLegendCustomDemo">
-  <SwitchLegendCustomDemo client:visible />
+  <SwitchLegendCustomDemo client:load />
 </ComponentExample>
 
 </ComponentSection>
@@ -197,7 +195,7 @@ export default function Example() {
 
 <p>
   Composable legend sub-component for Switch.Group. Accepts `className` for full
-  styling control (e.g. `className="sr-only"` to visually hide). Use instead of
+  styling control (e.g. `class="sr-only"` to visually hide). Use instead of
   the `legend` string prop when you need custom legend styling.
 </p>
 <PropsTable component="Switch.Legend" />

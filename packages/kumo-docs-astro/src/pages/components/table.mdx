@@ -36,13 +36,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Table } from "@cloudflare/kumo";
+import { Table } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Table } from "@cloudflare/kumo/components/table";
+import { Table } from "@photon-ai/kumo-solid/components/table";
 ```
 
 </ComponentSection>
@@ -54,11 +54,11 @@ import { Table } from "@cloudflare/kumo/components/table";
 ## Usage
 
 ```tsx
-import { Table, LayerCard } from "@cloudflare/kumo";
+import { Table, LayerCard } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
-    <LayerCard className="p-0">
+    <LayerCard class="p-0">
       <Table>
         <Table.Header>
           <Table.Row>
@@ -241,16 +241,21 @@ export default function Example() {
 
 ```tsx
 import {
+  createSolidTable,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { Table } from "@cloudflare/kumo";
+} from "@tanstack/solid-table";
+import { Table } from "@photon-ai/kumo-solid";
+import { For } from "solid-js";
 
-function DataTable({ data, columns }) {
-  const table = useReactTable({
-    data,
-    columns,
+function DataTable(props) {
+  const table = createSolidTable({
+    get data() {
+      return props.data;
+    },
+    get columns() {
+      return props.columns;
+    },
     getCoreRowModel: getCoreRowModel(),
     columnResizeMode: "onChange",
   });
@@ -258,38 +263,46 @@ function DataTable({ data, columns }) {
   return (
     <Table layout="fixed">
       <colgroup>
-        {table.getAllColumns().map((column) => (
-          <col key={column.id} style={{ width: column.getSize() }} />
-        ))}
+        <For each={table.getAllColumns()}>
+          {(column) => <col style={{ width: `${column.getSize()}px` }} />}
+        </For>
       </colgroup>
       <Table.Header>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <Table.Row key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <Table.Head key={header.id}>
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext(),
+        <For each={table.getHeaderGroups()}>
+          {(headerGroup) => (
+            <Table.Row>
+              <For each={headerGroup.headers}>
+                {(header) => (
+                  <Table.Head>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                    <Table.ResizeHandle
+                      onMouseDown={header.getResizeHandler()}
+                      onTouchStart={header.getResizeHandler()}
+                    />
+                  </Table.Head>
                 )}
-                <Table.ResizeHandle
-                  onMouseDown={header.getResizeHandler()}
-                  onTouchStart={header.getResizeHandler()}
-                />
-              </Table.Head>
-            ))}
-          </Table.Row>
-        ))}
+              </For>
+            </Table.Row>
+          )}
+        </For>
       </Table.Header>
       <Table.Body>
-        {table.getRowModel().rows.map((row) => (
-          <Table.Row key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <Table.Cell key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </Table.Cell>
-            ))}
-          </Table.Row>
-        ))}
+        <For each={table.getRowModel().rows}>
+          {(row) => (
+            <Table.Row>
+              <For each={row.getVisibleCells()}>
+                {(cell) => (
+                  <Table.Cell>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Table.Cell>
+                )}
+              </For>
+            </Table.Row>
+          )}
+        </For>
       </Table.Body>
     </Table>
   );

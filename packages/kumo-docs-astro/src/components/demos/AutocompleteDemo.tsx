@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
-import { Autocomplete } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { Autocomplete } from "@photon-ai/kumo-solid";
 import { languages, type Language } from "./data/languages";
 
 const fruits = [
@@ -111,9 +112,7 @@ export function AutocompleteDemo() {
       <Autocomplete.Content>
         <Autocomplete.List>
           {(item: string) => (
-            <Autocomplete.Item key={item} value={item}>
-              {item}
-            </Autocomplete.Item>
+            <Autocomplete.Item value={item}>{item}</Autocomplete.Item>
           )}
         </Autocomplete.List>
       </Autocomplete.Content>
@@ -123,15 +122,13 @@ export function AutocompleteDemo() {
 
 /** Autocomplete with label, description, and Field wrapper. */
 export function AutocompleteWithFieldDemo() {
-  const { contains } = Autocomplete.useFilter();
+  const filterUtils = Autocomplete.useFilter();
 
-  const filter = useCallback(
-    (item: Language, query: string) => contains(item.label, query),
-    [contains],
-  );
+  const filter = (item: Language, query: string) =>
+    filterUtils.contains(item.label, query);
 
   return (
-    <div className="w-80">
+    <div class="w-80">
       <Autocomplete
         items={languages}
         label="Language"
@@ -142,7 +139,7 @@ export function AutocompleteWithFieldDemo() {
         <Autocomplete.Content>
           <Autocomplete.List>
             {(item: Language) => (
-              <Autocomplete.Item key={item.value} value={item}>
+              <Autocomplete.Item value={item}>
                 {item.emoji} {item.label}
               </Autocomplete.Item>
             )}
@@ -155,15 +152,13 @@ export function AutocompleteWithFieldDemo() {
 
 /** Autocomplete with error state via the Field wrapper. */
 export function AutocompleteErrorDemo() {
-  const { contains } = Autocomplete.useFilter();
+  const filterUtils = Autocomplete.useFilter();
 
-  const filter = useCallback(
-    (item: Country, query: string) => contains(item.label, query),
-    [contains],
-  );
+  const filter = (item: Country, query: string) =>
+    filterUtils.contains(item.label, query);
 
   return (
-    <div className="w-80">
+    <div class="w-80">
       <Autocomplete
         items={countries}
         label="Country"
@@ -174,9 +169,7 @@ export function AutocompleteErrorDemo() {
         <Autocomplete.Content>
           <Autocomplete.List>
             {(item: Country) => (
-              <Autocomplete.Item key={item.code} value={item}>
-                {item.label}
-              </Autocomplete.Item>
+              <Autocomplete.Item value={item}>{item.label}</Autocomplete.Item>
             )}
           </Autocomplete.List>
         </Autocomplete.Content>
@@ -193,11 +186,11 @@ export function AutocompleteGroupedDemo() {
       <Autocomplete.Content>
         <Autocomplete.List>
           {(group: ServerGroup) => (
-            <Autocomplete.Group key={group.value} items={group.items}>
+            <Autocomplete.Group items={group.items}>
               <Autocomplete.GroupLabel>{group.value}</Autocomplete.GroupLabel>
               <Autocomplete.Collection>
                 {(item: ServerLocation) => (
-                  <Autocomplete.Item key={item.value} value={item}>
+                  <Autocomplete.Item value={item}>
                     {item.label}
                   </Autocomplete.Item>
                 )}
@@ -213,15 +206,13 @@ export function AutocompleteGroupedDemo() {
 /** Demonstrates the four size variants: xs, sm, base, and lg. */
 export function AutocompleteSizesDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div class="flex flex-wrap items-center gap-4">
       <Autocomplete items={fruits.slice(0, 10)}>
         <Autocomplete.InputGroup size="xs" placeholder="xs" />
         <Autocomplete.Content>
           <Autocomplete.List>
             {(item: string) => (
-              <Autocomplete.Item key={item} value={item}>
-                {item}
-              </Autocomplete.Item>
+              <Autocomplete.Item value={item}>{item}</Autocomplete.Item>
             )}
           </Autocomplete.List>
         </Autocomplete.Content>
@@ -231,9 +222,7 @@ export function AutocompleteSizesDemo() {
         <Autocomplete.Content>
           <Autocomplete.List>
             {(item: string) => (
-              <Autocomplete.Item key={item} value={item}>
-                {item}
-              </Autocomplete.Item>
+              <Autocomplete.Item value={item}>{item}</Autocomplete.Item>
             )}
           </Autocomplete.List>
         </Autocomplete.Content>
@@ -243,9 +232,7 @@ export function AutocompleteSizesDemo() {
         <Autocomplete.Content>
           <Autocomplete.List>
             {(item: string) => (
-              <Autocomplete.Item key={item} value={item}>
-                {item}
-              </Autocomplete.Item>
+              <Autocomplete.Item value={item}>{item}</Autocomplete.Item>
             )}
           </Autocomplete.List>
         </Autocomplete.Content>
@@ -255,9 +242,7 @@ export function AutocompleteSizesDemo() {
         <Autocomplete.Content>
           <Autocomplete.List>
             {(item: string) => (
-              <Autocomplete.Item key={item} value={item}>
-                {item}
-              </Autocomplete.Item>
+              <Autocomplete.Item value={item}>{item}</Autocomplete.Item>
             )}
           </Autocomplete.List>
         </Autocomplete.Content>
@@ -268,29 +253,27 @@ export function AutocompleteSizesDemo() {
 
 /** Controlled autocomplete with value and onValueChange. */
 export function AutocompleteControlledDemo() {
-  const [value, setValue] = useState("");
+  const [value, setValue] = createSignal("");
 
   return (
-    <div className="flex w-80 flex-col gap-3">
+    <div class="flex w-80 flex-col gap-3">
       <Autocomplete
         items={fruits}
-        value={value}
+        value={value()}
         onValueChange={(v) => setValue(v)}
       >
         <Autocomplete.InputGroup placeholder="Type a fruit…" />
         <Autocomplete.Content>
           <Autocomplete.List>
             {(item: string) => (
-              <Autocomplete.Item key={item} value={item}>
-                {item}
-              </Autocomplete.Item>
+              <Autocomplete.Item value={item}>{item}</Autocomplete.Item>
             )}
           </Autocomplete.List>
         </Autocomplete.Content>
       </Autocomplete>
-      {value && (
-        <p className="text-sm text-kumo-subtle">
-          Value: <span className="font-medium text-kumo-default">{value}</span>
+      {value() && (
+        <p class="text-sm text-kumo-subtle">
+          Value: <span class="font-medium text-kumo-default">{value()}</span>
         </p>
       )}
     </div>

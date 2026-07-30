@@ -40,13 +40,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Pagination } from "@cloudflare/kumo";
+import { Pagination } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Pagination } from "@cloudflare/kumo/components/pagination";
+import { Pagination } from "@photon-ai/kumo-solid/components/pagination";
 ```
 
 </ComponentSection>
@@ -58,14 +58,14 @@ import { Pagination } from "@cloudflare/kumo/components/pagination";
 ## Usage
 
 ```tsx
-import { useState } from "react";
-import { Pagination } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+import { Pagination } from "@photon-ai/kumo-solid";
 
 export default function Example() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
 
   return (
-    <Pagination page={page} setPage={setPage} perPage={10} totalCount={100} />
+    <Pagination page={page()} setPage={setPage} perPage={10} totalCount={100} />
   );
 }
 ```

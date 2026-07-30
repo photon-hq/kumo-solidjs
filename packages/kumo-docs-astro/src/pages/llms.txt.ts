@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import componentRegistry from "@cloudflare/kumo/ai/component-registry.json";
+import { kumoRegistryJson as componentRegistry } from "virtual:kumo-registry";
 
 export const prerender = true;
 
@@ -221,7 +221,7 @@ const charts = pageDocs(
 
 const blocks = registryDocs(
   blockDocPages,
-  Object.values(componentRegistry.blocks),
+  Object.values(componentRegistry.blocks ?? {}),
   "blocks",
 );
 
@@ -239,7 +239,7 @@ function formatSection(title: string, links: LlmLink[]) {
 const content = [
   "# Kumo",
   "",
-  "> Cloudflare's React component library for building product interfaces.",
+  "> A SolidJS port of Cloudflare's Kumo component library for building product interfaces.",
   "",
   "This file is a curated index for LLMs. It links to markdown versions of Kumo docs pages instead of embedding the full documentation inline.",
   "",

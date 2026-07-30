@@ -1,12 +1,11 @@
-import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
-import { useState } from "react";
-import type { ReactNode } from "react";
+import { createMemo, createSignal, type JSX } from "solid-js";
+import { ShikiProvider, CodeHighlighted } from "@photon-ai/kumo-solid/code";
 
 /**
  * Wrapper component that provides Shiki context for all demos.
  * This loads Shiki once and shares it across all CodeHighlighted instances.
  */
-function DemoProvider({ children }: { children: ReactNode }) {
+function DemoProvider(props: { children: JSX.Element }) {
   return (
     <ShikiProvider
       engine="javascript"
@@ -20,7 +19,7 @@ function DemoProvider({ children }: { children: ReactNode }) {
         "html",
       ]}
     >
-      {children}
+      {props.children}
     </ShikiProvider>
   );
 }
@@ -59,19 +58,19 @@ async function fetchUser(id: string): Promise<User> {
   );
 }
 
-/** React/TSX code example */
-export function CodeHighlightedReactDemo() {
+/** SolidJS/TSX code example */
+export function CodeHighlightedSolidDemo() {
   return (
     <DemoProvider>
       <CodeHighlighted
-        code={`import { useState } from "react";
+        code={`import { createSignal } from "solid-js";
 
 export function Counter() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = createSignal(0);
   
   return (
     <button onClick={() => setCount(c => c + 1)}>
-      Count: {count}
+      Count: {count()}
     </button>
   );
 }`}
@@ -86,11 +85,11 @@ export function CodeHighlightedBashDemo() {
   return (
     <DemoProvider>
       <CodeHighlighted
-        code={`# Install Kumo
-npm install @cloudflare/kumo
+        code={`# Install Kumo for SolidJS
+npm install @photon-ai/kumo-solid solid-js
 
 # Or with pnpm
-pnpm add @cloudflare/kumo
+pnpm add @photon-ai/kumo-solid solid-js
 
 # Start development server
 pnpm dev`}
@@ -106,10 +105,11 @@ export function CodeHighlightedJsonDemo() {
     <DemoProvider>
       <CodeHighlighted
         code={`{
-  "name": "@cloudflare/kumo",
-  "version": "1.9.0",
+  "name": "kumo-solid-app",
+  "private": true,
   "dependencies": {
-    "react": "^19.0.0",
+    "@photon-ai/kumo-solid": "^0.1.0",
+    "solid-js": "^1.9.0",
     "shiki": "^4.0.0"
   }
 }`}
@@ -146,12 +146,12 @@ export function CodeHighlightedLineNumbersDemo() {
   return (
     <DemoProvider>
       <CodeHighlighted
-        code={`import { useState, useEffect } from "react";
+        code={`import { createSignal, onCleanup, onMount } from "solid-js";
 
 export function useWindowSize() {
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [size, setSize] = createSignal({ width: 0, height: 0 });
   
-  useEffect(() => {
+  onMount(() => {
     function handleResize() {
       setSize({
         width: window.innerWidth,
@@ -161,8 +161,8 @@ export function useWindowSize() {
     
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    onCleanup(() => window.removeEventListener("resize", handleResize));
+  });
   
   return size;
 }`}
@@ -178,7 +178,7 @@ export function CodeHighlightedCopyButtonDemo() {
   return (
     <DemoProvider>
       <CodeHighlighted
-        code={`npm install @cloudflare/kumo`}
+        code={`npm install @photon-ai/kumo-solid solid-js`}
         lang="bash"
         showCopyButton
       />
@@ -191,7 +191,7 @@ export function CodeHighlightedFullFeaturedDemo() {
   return (
     <DemoProvider>
       <CodeHighlighted
-        code={`import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
+        code={`import { ShikiProvider, CodeHighlighted } from "@photon-ai/kumo-solid/code";
 
 export function CodeExample({ code, language }: Props) {
   return (
@@ -219,7 +219,7 @@ export function CodeExample({ code, language }: Props) {
 export function CodeHighlightedSharedProviderDemo() {
   return (
     <DemoProvider>
-      <div className="space-y-4">
+      <div class="space-y-4">
         <CodeHighlighted
           code={`const config = { theme: "dark" };`}
           lang="typescript"
@@ -253,24 +253,28 @@ export function CodeHighlightedCssDemo() {
 
 /** Interactive highlight color customization demo */
 export function CodeHighlightedCustomHighlightDemo() {
-  const [hue, setHue] = useState(220);
-  const [opacity, setOpacity] = useState(10);
+  const [hue, setHue] = createSignal(220);
+  const [opacity, setOpacity] = createSignal(10);
 
-  const lightBg = `hsla(${hue}, 80%, 50%, ${opacity / 100})`;
-  const darkBg = `hsla(${hue}, 60%, 70%, ${(opacity + 5) / 100})`;
+  const lightBg = createMemo(
+    () => `hsla(${hue()}, 80%, 50%, ${opacity() / 100})`,
+  );
+  const darkBg = createMemo(
+    () => `hsla(${hue()}, 60%, 70%, ${(opacity() + 5) / 100})`,
+  );
 
   // Generate a unique ID to scope the styles
   const styleId = "custom-highlight-demo";
 
   return (
     <DemoProvider>
-      <div className="space-y-4">
+      <div class="space-y-4">
         <style>{`
           #${styleId} .kumo-shiki {
-            --kumo-code-highlight-bg: ${lightBg};
+            --kumo-code-highlight-bg: ${lightBg()};
           }
           [data-mode="dark"] #${styleId} .kumo-shiki {
-            --kumo-code-highlight-bg: ${darkBg};
+            --kumo-code-highlight-bg: ${darkBg()};
           }
         `}</style>
         <div id={styleId}>
@@ -286,35 +290,33 @@ export function CodeHighlightedCustomHighlightDemo() {
           />
         </div>
 
-        <div className="flex flex-wrap gap-6 rounded-md border border-kumo-hairline bg-kumo-elevated p-4">
-          <label className="flex flex-col gap-2">
-            <span className="text-sm text-kumo-subtle">Hue: {hue}°</span>
+        <div class="flex flex-wrap gap-6 rounded-md border border-kumo-hairline bg-kumo-elevated p-4">
+          <label class="flex flex-col gap-2">
+            <span class="text-sm text-kumo-subtle">Hue: {hue()}°</span>
             <input
               type="range"
               min="0"
               max="360"
-              value={hue}
-              onChange={(e) => setHue(Number(e.target.value))}
-              className="w-32"
+              value={hue()}
+              onInput={(e) => setHue(Number(e.target.value))}
+              class="w-32"
             />
           </label>
-          <label className="flex flex-col gap-2">
-            <span className="text-sm text-kumo-subtle">
-              Opacity: {opacity}%
-            </span>
+          <label class="flex flex-col gap-2">
+            <span class="text-sm text-kumo-subtle">Opacity: {opacity()}%</span>
             <input
               type="range"
               min="2"
               max="30"
-              value={opacity}
-              onChange={(e) => setOpacity(Number(e.target.value))}
-              className="w-32"
+              value={opacity()}
+              onInput={(e) => setOpacity(Number(e.target.value))}
+              class="w-32"
             />
           </label>
-          <div className="flex flex-col gap-2">
-            <span className="text-sm text-kumo-subtle">CSS Variable</span>
-            <code className="rounded bg-kumo-control px-2 py-1 font-mono text-xs">
-              --kumo-code-highlight-bg: {lightBg}
+          <div class="flex flex-col gap-2">
+            <span class="text-sm text-kumo-subtle">CSS Variable</span>
+            <code class="rounded bg-kumo-control px-2 py-1 font-mono text-xs">
+              --kumo-code-highlight-bg: {lightBg()}
             </code>
           </div>
         </div>

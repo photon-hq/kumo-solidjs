@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { createMemo, createSignal } from "solid-js";
+
 import {
   Badge,
   Button,
@@ -10,7 +11,7 @@ import {
   Select,
   Table,
   Tooltip,
-} from "@cloudflare/kumo";
+} from "@photon-ai/kumo-solid";
 import {
   Article,
   ChatCircle,
@@ -31,7 +32,7 @@ import {
   User,
   Users,
   Wrench,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 // ---------------------------------------------------------------------------
 // WordPress theme token overrides
@@ -141,7 +142,7 @@ const samplePosts: Post[] = [
     title: "Building Blocks with Kumo Components",
     author: "contributor",
     categories: ["Development", "Tutorials"],
-    tags: ["components", "react", "blocks"],
+    tags: ["components", "solidjs", "blocks"],
     comments: 8,
     date: "2026-03-06",
     status: "published",
@@ -239,33 +240,32 @@ function statusLabel(status: Post["status"]) {
 // ---------------------------------------------------------------------------
 // WP Admin Sidebar Component
 // ---------------------------------------------------------------------------
-function WPSidebar({ collapsed }: { collapsed: boolean }) {
+function WPSidebar(props: { collapsed: boolean }) {
   return (
     <div
-      className={cn(
+      class={cn(
         "flex h-full flex-col bg-[#1d2327] text-white transition-all duration-300",
-        collapsed ? "w-[48px]" : "w-[200px]",
+        props.collapsed ? "w-[48px]" : "w-[200px]",
       )}
     >
       {/* WP Logo area */}
-      <div className="flex h-[48px] items-center gap-2 border-b border-white/10 px-3">
-        {!collapsed && (
-          <span className="text-sm font-semibold tracking-wide text-white/90">
+      <div class="flex h-[48px] items-center gap-2 border-b border-white/10 px-3">
+        {!props.collapsed && (
+          <span class="text-sm font-semibold tracking-wide text-white/90">
             KumoPress
           </span>
         )}
-        {collapsed && (
-          <span className="mx-auto text-sm font-bold text-white/90">K</span>
+        {props.collapsed && (
+          <span class="mx-auto text-sm font-bold text-white/90">K</span>
         )}
       </div>
 
       {/* Nav items */}
-      <nav className="flex flex-1 flex-col gap-px py-2">
+      <nav class="flex flex-1 flex-col gap-px py-2">
         {sidebarNav.map((item) => (
           <button
-            key={item.label}
             type="button"
-            className={cn(
+            class={cn(
               "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
               "hover:bg-white/10",
               item.active
@@ -274,15 +274,15 @@ function WPSidebar({ collapsed }: { collapsed: boolean }) {
             )}
           >
             <item.icon size={18} weight={item.active ? "fill" : "regular"} />
-            {!collapsed && <span>{item.label}</span>}
+            {!props.collapsed && <span>{item.label}</span>}
           </button>
         ))}
       </nav>
 
       {/* Collapse toggle */}
-      <div className="border-t border-white/10 p-2">
-        <div className="flex items-center justify-center text-xs text-white/40">
-          {!collapsed && "Collapse menu"}
+      <div class="border-t border-white/10 p-2">
+        <div class="flex items-center justify-center text-xs text-white/40">
+          {!props.collapsed && "Collapse menu"}
         </div>
       </div>
     </div>
@@ -292,38 +292,32 @@ function WPSidebar({ collapsed }: { collapsed: boolean }) {
 // ---------------------------------------------------------------------------
 // WP Admin Top Bar
 // ---------------------------------------------------------------------------
-function WPTopBar({
-  darkMode,
-  onToggleDarkMode,
-}: {
-  darkMode: boolean;
-  onToggleDarkMode: () => void;
-}) {
+function WPTopBar(props: { darkMode: boolean; onToggleDarkMode: () => void }) {
   return (
-    <div className="flex h-[48px] items-center justify-between border-b border-kumo-hairline bg-kumo-elevated px-4">
-      <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold text-kumo-default">Posts</h1>
+    <div class="flex h-[48px] items-center justify-between border-b border-kumo-hairline bg-kumo-elevated px-4">
+      <div class="flex items-center gap-4">
+        <h1 class="text-lg font-semibold text-kumo-default">Posts</h1>
         <Button variant="primary" size="sm">
           <Plus size={14} weight="bold" />
           Add New Post
         </Button>
       </div>
-      <div className="flex items-center gap-2">
+      <div class="flex items-center gap-2">
         <Input
           aria-label="Search posts"
           placeholder="Search posts..."
           size="sm"
           className="w-[200px]"
         />
-        <Tooltip content={darkMode ? "Light mode" : "Dark mode"}>
+        <Tooltip content={props.darkMode ? "Light mode" : "Dark mode"}>
           <Button
             variant="ghost"
             size="sm"
             shape="square"
-            aria-label={darkMode ? "Light mode" : "Dark mode"}
-            onClick={onToggleDarkMode}
+            aria-label={props.darkMode ? "Light mode" : "Dark mode"}
+            onClick={props.onToggleDarkMode}
           >
-            {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+            {props.darkMode ? <Sun size={16} /> : <Moon size={16} />}
           </Button>
         </Tooltip>
         <Tooltip content="View site">
@@ -353,36 +347,40 @@ function WPTopBar({
 // Main Posts Dashboard Demo
 // ---------------------------------------------------------------------------
 export function KumoPressDemo() {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [bulkAction, setBulkAction] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(20);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [selectedIds, setSelectedIds] = createSignal<Set<string>>(new Set());
+  const [statusFilter, setStatusFilter] = createSignal<string>("all");
+  const [categoryFilter, setCategoryFilter] = createSignal<string>("all");
+  const [bulkAction, setBulkAction] = createSignal<string | null>(null);
+  const [page, setPage] = createSignal(1);
+  const [perPage, setPerPage] = createSignal(20);
+  const [sidebarCollapsed, setSidebarCollapsed] = createSignal(false);
+  const [darkMode, setDarkMode] = createSignal(false);
 
   // Derive status counts
-  const statusCounts = useMemo(() => {
+  const statusCounts = createMemo(() => {
     const counts: Record<string, number> = { all: samplePosts.length };
     for (const post of samplePosts) {
       counts[post.status] = (counts[post.status] || 0) + 1;
     }
     return counts;
-  }, []);
+  });
 
   // Filter posts
-  const filteredPosts = useMemo(() => {
+  const filteredPosts = createMemo(() => {
     return samplePosts.filter((post) => {
-      if (statusFilter !== "all" && post.status !== statusFilter) return false;
-      if (categoryFilter !== "all" && !post.categories.includes(categoryFilter))
+      if (statusFilter() !== "all" && post.status !== statusFilter())
+        return false;
+      if (
+        categoryFilter() !== "all" &&
+        !post.categories.includes(categoryFilter())
+      )
         return false;
       return true;
     });
-  }, [statusFilter, categoryFilter]);
+  });
 
   // Derive unique categories
-  const allCategories = useMemo(() => {
+  const allCategories = createMemo(() => {
     const cats = new Set<string>();
     for (const post of samplePosts) {
       for (const cat of post.categories) {
@@ -390,7 +388,7 @@ export function KumoPressDemo() {
       }
     }
     return Array.from(cats).sort();
-  }, []);
+  });
 
   // Selection helpers
   const toggleRow = (id: string) => {
@@ -403,41 +401,41 @@ export function KumoPressDemo() {
   };
 
   const toggleAll = () => {
-    if (selectedIds.size === filteredPosts.length) {
-      setSelectedIds(new Set());
+    if (selectedIds().size === filteredPosts().length) {
+      setSelectedIds(new Set<string>());
     } else {
-      setSelectedIds(new Set(filteredPosts.map((p) => p.id)));
+      setSelectedIds(new Set(filteredPosts().map((p) => p.id)));
     }
   };
 
   return (
     <>
       {/* Inject WP theme tokens */}
-      <style dangerouslySetInnerHTML={{ __html: wpThemeStyles }} />
+      <style innerHTML={wpThemeStyles} />
 
       <div
         data-theme="wordpress"
-        data-mode={darkMode ? "dark" : undefined}
-        className="flex h-[720px] overflow-hidden rounded-xl border border-kumo-hairline bg-kumo-elevated font-sans shadow-lg"
+        data-mode={darkMode() ? "dark" : undefined}
+        class="flex h-[720px] overflow-hidden rounded-xl border border-kumo-hairline bg-kumo-elevated font-sans shadow-lg"
       >
         {/* Sidebar */}
         <div
-          className="flex-none cursor-pointer"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          class="flex-none cursor-pointer"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed())}
         >
-          <WPSidebar collapsed={sidebarCollapsed} />
+          <WPSidebar collapsed={sidebarCollapsed()} />
         </div>
 
         {/* Main content */}
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div class="flex flex-1 flex-col overflow-hidden">
           <WPTopBar
-            darkMode={darkMode}
-            onToggleDarkMode={() => setDarkMode(!darkMode)}
+            darkMode={darkMode()}
+            onToggleDarkMode={() => setDarkMode(!darkMode())}
           />
 
-          <div className="flex-1 overflow-y-auto bg-kumo-elevated p-6">
+          <div class="flex-1 overflow-y-auto bg-kumo-elevated p-6">
             {/* Status tabs — the WordPress filter bar */}
-            <div className="mb-4 flex items-center gap-1 text-sm">
+            <div class="mb-4 flex items-center gap-1 text-sm">
               {[
                 { key: "all", label: "All" },
                 { key: "published", label: "Published" },
@@ -445,62 +443,62 @@ export function KumoPressDemo() {
                 { key: "pending", label: "Pending" },
                 { key: "trash", label: "Trash" },
               ].map((tab, idx, arr) => (
-                <span key={tab.key} className="flex items-center">
+                <span class="flex items-center">
                   <button
                     type="button"
                     onClick={() => {
                       setStatusFilter(tab.key);
                       setPage(1);
                     }}
-                    className={cn(
+                    class={cn(
                       "transition-colors hover:text-kumo-default",
-                      statusFilter === tab.key
+                      statusFilter() === tab.key
                         ? "font-semibold text-kumo-default"
                         : "text-kumo-link",
                     )}
                   >
                     {tab.label}
-                    <span className="ml-1 text-kumo-subtle">
-                      ({statusCounts[tab.key] || 0})
+                    <span class="ml-1 text-kumo-subtle">
+                      ({statusCounts()[tab.key] || 0})
                     </span>
                   </button>
                   {idx < arr.length - 1 && (
-                    <span className="mx-2 text-kumo-subtle">|</span>
+                    <span class="mx-2 text-kumo-subtle">|</span>
                   )}
                 </span>
               ))}
             </div>
 
             {/* Bulk actions bar */}
-            <div className="mb-4 flex items-center gap-3">
+            <div class="mb-4 flex items-center gap-3">
               <Select
                 aria-label="Bulk actions"
                 placeholder="Bulk actions"
                 className="w-[160px]"
-                value={bulkAction}
+                value={bulkAction()}
                 onValueChange={(v) => setBulkAction(v as string | null)}
                 items={{ edit: "Edit", trash: "Move to Trash" }}
               />
               <Button
                 variant="secondary"
                 size="sm"
-                disabled={!bulkAction || selectedIds.size === 0}
+                disabled={!bulkAction() || selectedIds().size === 0}
               >
                 Apply
               </Button>
 
-              <div className="flex-1" />
+              <div class="flex-1" />
 
               <Select
                 aria-label="Filter by category"
                 placeholder="All categories"
                 className="w-[180px]"
-                value={categoryFilter === "all" ? null : categoryFilter}
+                value={categoryFilter() === "all" ? null : categoryFilter()}
                 onValueChange={(v) => {
                   setCategoryFilter((v as string) || "all");
                   setPage(1);
                 }}
-                items={allCategories.reduce(
+                items={allCategories().reduce(
                   (acc, cat) => {
                     acc[cat] = cat;
                     return acc;
@@ -538,14 +536,14 @@ export function KumoPressDemo() {
                     <Table.Row>
                       <Table.CheckHead
                         checked={
-                          filteredPosts.length > 0 &&
-                          selectedIds.size === filteredPosts.length
+                          filteredPosts().length > 0 &&
+                          selectedIds().size === filteredPosts().length
                         }
                         indeterminate={
-                          selectedIds.size > 0 &&
-                          selectedIds.size < filteredPosts.length
+                          selectedIds().size > 0 &&
+                          selectedIds().size < filteredPosts().length
                         }
-                        onValueChange={toggleAll}
+                        onCheckedChange={toggleAll}
                         aria-label="Select all posts"
                       />
                       <Table.Head>Title</Table.Head>
@@ -553,7 +551,7 @@ export function KumoPressDemo() {
                       <Table.Head>Categories</Table.Head>
                       <Table.Head>Tags</Table.Head>
                       <Table.Head>
-                        <span className="flex items-center gap-1">
+                        <span class="flex items-center gap-1">
                           <ChatCircle size={14} />
                         </span>
                       </Table.Head>
@@ -562,7 +560,7 @@ export function KumoPressDemo() {
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
-                    {filteredPosts.length === 0 ? (
+                    {filteredPosts().length === 0 ? (
                       <Table.Row>
                         <Table.Cell
                           colSpan={8}
@@ -572,21 +570,20 @@ export function KumoPressDemo() {
                         </Table.Cell>
                       </Table.Row>
                     ) : (
-                      filteredPosts.map((post) => (
+                      filteredPosts().map((post) => (
                         <Table.Row
-                          key={post.id}
                           variant={
-                            selectedIds.has(post.id) ? "selected" : "default"
+                            selectedIds().has(post.id) ? "selected" : "default"
                           }
                         >
                           <Table.CheckCell
-                            checked={selectedIds.has(post.id)}
-                            onValueChange={() => toggleRow(post.id)}
+                            checked={selectedIds().has(post.id)}
+                            onCheckedChange={() => toggleRow(post.id)}
                             aria-label={`Select "${post.title}"`}
                           />
                           <Table.Cell>
-                            <div className="flex flex-col gap-0.5">
-                              <span className="cursor-pointer font-medium text-kumo-link hover:underline">
+                            <div class="flex flex-col gap-0.5">
+                              <span class="cursor-pointer font-medium text-kumo-link hover:underline">
                                 {post.title}
                               </span>
                               {post.status !== "published" && (
@@ -599,30 +596,24 @@ export function KumoPressDemo() {
                             </div>
                           </Table.Cell>
                           <Table.Cell>
-                            <span className="cursor-pointer text-kumo-link hover:underline">
+                            <span class="cursor-pointer text-kumo-link hover:underline">
                               {post.author}
                             </span>
                           </Table.Cell>
                           <Table.Cell>
-                            <div className="flex flex-wrap gap-1">
+                            <div class="flex flex-wrap gap-1">
                               {post.categories.map((cat) => (
-                                <span
-                                  key={cat}
-                                  className="cursor-pointer text-xs text-kumo-link hover:underline"
-                                >
+                                <span class="cursor-pointer text-xs text-kumo-link hover:underline">
                                   {cat}
                                 </span>
                               ))}
                             </div>
                           </Table.Cell>
                           <Table.Cell>
-                            <div className="flex flex-wrap gap-1">
+                            <div class="flex flex-wrap gap-1">
                               {post.tags.length > 0 ? (
                                 post.tags.map((tag) => (
-                                  <span
-                                    key={tag}
-                                    className="cursor-pointer text-xs text-kumo-link hover:underline"
-                                  >
+                                  <span class="cursor-pointer text-xs text-kumo-link hover:underline">
                                     {tag}
                                   </span>
                                 ))
@@ -636,7 +627,7 @@ export function KumoPressDemo() {
                           </Table.Cell>
                           <Table.Cell>
                             <span
-                              className={cn(
+                              class={cn(
                                 "tabular-nums",
                                 post.comments > 0
                                   ? "text-kumo-link"
@@ -647,22 +638,21 @@ export function KumoPressDemo() {
                             </span>
                           </Table.Cell>
                           <Table.Cell>
-                            <div className="flex flex-col text-xs">
-                              <span className="text-kumo-default">
+                            <div class="flex flex-col text-xs">
+                              <span class="text-kumo-default">
                                 {post.status === "published"
                                   ? "Published"
                                   : "Last Modified"}
                               </span>
-                              <span className="text-kumo-subtle">
-                                {post.date}
-                              </span>
+                              <span class="text-kumo-subtle">{post.date}</span>
                             </div>
                           </Table.Cell>
                           <Table.Cell>
                             <DropdownMenu>
                               <DropdownMenu.Trigger
-                                render={
+                                render={(renderProps) => (
                                   <Button
+                                    {...renderProps}
                                     variant="ghost"
                                     size="sm"
                                     shape="square"
@@ -670,7 +660,7 @@ export function KumoPressDemo() {
                                   >
                                     <DotsThree weight="bold" size={16} />
                                   </Button>
-                                }
+                                )}
                               />
                               <DropdownMenu.Content>
                                 <DropdownMenu.Item icon={PencilSimple}>
@@ -698,17 +688,17 @@ export function KumoPressDemo() {
             </LayerCard>
 
             {/* Pagination */}
-            <div className="mt-4">
+            <div class="mt-4">
               <Pagination
-                page={page}
+                page={page()}
                 setPage={setPage}
-                perPage={perPage}
-                totalCount={filteredPosts.length}
+                perPage={perPage()}
+                totalCount={filteredPosts().length}
               >
                 <Pagination.Info />
                 <Pagination.Separator />
                 <Pagination.PageSize
-                  value={perPage}
+                  value={perPage()}
                   onChange={(size) => {
                     setPerPage(size);
                     setPage(1);
@@ -720,44 +710,44 @@ export function KumoPressDemo() {
             </div>
 
             {/* Quick Stats row — inspired by WP dashboard widgets */}
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <LayerCard>
                 <LayerCard.Primary className="p-4">
-                  <div className="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
+                  <div class="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
                     Published
                   </div>
-                  <div className="mt-1 text-2xl font-bold text-kumo-default">
-                    {statusCounts.published || 0}
+                  <div class="mt-1 text-2xl font-bold text-kumo-default">
+                    {statusCounts().published || 0}
                   </div>
                 </LayerCard.Primary>
               </LayerCard>
               <LayerCard>
                 <LayerCard.Primary className="p-4">
-                  <div className="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
+                  <div class="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
                     Drafts
                   </div>
-                  <div className="mt-1 text-2xl font-bold text-kumo-default">
-                    {statusCounts.draft || 0}
+                  <div class="mt-1 text-2xl font-bold text-kumo-default">
+                    {statusCounts().draft || 0}
                   </div>
                 </LayerCard.Primary>
               </LayerCard>
               <LayerCard>
                 <LayerCard.Primary className="p-4">
-                  <div className="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
+                  <div class="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
                     Total Comments
                   </div>
-                  <div className="mt-1 text-2xl font-bold text-kumo-default">
+                  <div class="mt-1 text-2xl font-bold text-kumo-default">
                     {samplePosts.reduce((sum, p) => sum + p.comments, 0)}
                   </div>
                 </LayerCard.Primary>
               </LayerCard>
               <LayerCard>
                 <LayerCard.Primary className="p-4">
-                  <div className="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
+                  <div class="text-xs font-medium tracking-wide text-kumo-subtle uppercase">
                     Categories
                   </div>
-                  <div className="mt-1 text-2xl font-bold text-kumo-default">
-                    {allCategories.length}
+                  <div class="mt-1 text-2xl font-bold text-kumo-default">
+                    {allCategories().length}
                   </div>
                 </LayerCard.Primary>
               </LayerCard>

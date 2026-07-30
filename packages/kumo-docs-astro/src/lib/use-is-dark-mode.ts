@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { createEffect, createSignal, onCleanup } from "solid-js";
 
 export function getIsDark() {
   if (typeof document === "undefined") return false;
@@ -16,9 +16,9 @@ export function getIsDark() {
 }
 
 export function useIsDarkMode() {
-  const [isDark, setIsDark] = useState(getIsDark);
+  const [isDark, setIsDark] = createSignal(getIsDark());
 
-  useEffect(() => {
+  createEffect(() => {
     const root = document.documentElement;
 
     const update = () => setIsDark(getIsDark());
@@ -35,13 +35,13 @@ export function useIsDarkMode() {
       mql.addEventListener("change", update);
     }
 
-    return () => {
+    onCleanup(() => {
       if (mql) {
         mql.removeEventListener("change", update);
       }
       mo.disconnect();
-    };
-  }, []);
+    });
+  });
 
   return isDark;
 }

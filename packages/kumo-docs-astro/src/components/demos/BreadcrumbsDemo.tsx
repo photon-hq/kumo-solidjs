@@ -1,5 +1,5 @@
-import { Breadcrumbs } from "@cloudflare/kumo";
-import { House } from "@phosphor-icons/react";
+import { Breadcrumbs } from "@photon-ai/kumo-solid";
+import { House } from "~/components/icons";
 
 export function BreadcrumbsDemo() {
   return (

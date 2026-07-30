@@ -1,8 +1,8 @@
-import { ChartPalette, Chart, LayerCard, Table } from "@cloudflare/kumo";
+import { createEffect, createMemo, createSignal, onCleanup } from "solid-js";
+import { ChartPalette, Chart, LayerCard, Table } from "@photon-ai/kumo-solid";
 import * as echarts from "echarts/core";
 import type { EChartsOption } from "echarts";
 import { BarChart, HeatmapChart, LineChart, PieChart } from "echarts/charts";
-import { useEffect, useMemo, useState } from "react";
 import {
   AriaComponent,
   AxisPointerComponent,
@@ -65,9 +65,9 @@ function useIsDarkMode() {
     );
   };
 
-  const [isDark, setIsDark] = useState(getIsDarkMode);
+  const [isDark, setIsDark] = createSignal(getIsDarkMode());
 
-  useEffect(() => {
+  createEffect(() => {
     const update = () => setIsDark(getIsDarkMode());
     const observer = new MutationObserver(update);
 
@@ -84,13 +84,13 @@ function useIsDarkMode() {
       mql.addEventListener("change", update);
     }
 
-    return () => {
+    onCleanup(() => {
       observer.disconnect();
       if (mql) {
         mql.removeEventListener("change", update);
       }
-    };
-  }, []);
+    });
+  });
 
   return isDark;
 }
@@ -270,7 +270,7 @@ export function SemanticColorsDemo() {
           <Table.Body>
             <Table.Row>
               {semanticColorNames.map((name) => (
-                <Table.Cell key={name} className="whitespace-nowrap w-1/6">
+                <Table.Cell  className="whitespace-nowrap w-1/6">
                   {name}
                 </Table.Cell>
               ))}
@@ -283,15 +283,15 @@ export function SemanticColorsDemo() {
           <Table.Body>
             <Table.Row>
               {semanticColorNames.map((name) => {
-                const color = semantic(name, isDarkMode);
+                const color = semantic(name, isDarkMode());
                 return (
-                  <Table.Cell key={name} className="w-1/6">
-                    <div className="flex items-center gap-2">
+                  <Table.Cell  className="w-1/6">
+                    <div class="flex items-center gap-2">
                       <div
-                        style={{ backgroundColor: color }}
-                        className="size-5 rounded"
+                        style={{ "background-color": color }}
+                        class="size-5 rounded"
                       />
-                      <span className="font-mono text-xs">{color}</span>
+                      <span class="font-mono text-xs">{color}</span>
                     </div>
                   </Table.Cell>
                 );
@@ -318,7 +318,7 @@ export function CategoricalColorsDemo() {
           <Table.Body>
             <Table.Row>
               {categoricalColorIndices.map((colorIdx) => (
-                <Table.Cell key={colorIdx} className="whitespace-nowrap w-1/6">
+                <Table.Cell  className="whitespace-nowrap w-1/6">
                   {colorIdx}
                 </Table.Cell>
               ))}
@@ -332,16 +332,16 @@ export function CategoricalColorsDemo() {
             <Table.Row>
               {categoricalColorIndices.map((colorIdx) => {
                 const color = String(
-                  ChartPalette.categorical(colorIdx, isDarkMode),
+                  ChartPalette.categorical(colorIdx, isDarkMode()),
                 );
                 return (
-                  <Table.Cell key={colorIdx} className="w-1/6">
-                    <div className="flex items-center gap-2">
+                  <Table.Cell  className="w-1/6">
+                    <div class="flex items-center gap-2">
                       <div
-                        style={{ backgroundColor: color }}
-                        className="size-5 rounded"
+                        style={{ "background-color": color }}
+                        class="size-5 rounded"
                       />
-                      <span className="font-mono text-xs">{color}</span>
+                      <span class="font-mono text-xs">{color}</span>
                     </div>
                   </Table.Cell>
                 );
@@ -360,18 +360,14 @@ export function CategoricalColorsDemo() {
 export function CategoricalCvdDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const baseColors = useMemo(
+  const baseColors = createMemo(
     () =>
       categoricalColorIndices.map((index) =>
-        String(ChartPalette.categorical(index, isDarkMode)),
-      ),
-    [isDarkMode],
-  );
+        String(ChartPalette.categorical(index, isDarkMode())),
+      ));
 
-  const simulatedColors = useMemo(
-    () => baseColors.map((hex) => simulateCvdHex(hex)),
-    [baseColors],
-  );
+  const simulatedColors = createMemo(
+    () => baseColors().map((hex) => simulateCvdHex(hex)));
 
   return (
     <LayerCard>
@@ -380,7 +376,7 @@ export function CategoricalCvdDemo() {
           <Table.Body>
             <Table.Row>
               {categoricalColorIndices.map((colorIdx) => (
-                <Table.Cell key={colorIdx} className="whitespace-nowrap w-1/6">
+                <Table.Cell  className="whitespace-nowrap w-1/6">
                   {colorIdx}
                 </Table.Cell>
               ))}
@@ -392,17 +388,14 @@ export function CategoricalCvdDemo() {
         <Table layout="fixed" className="!p-0 !m-0">
           <Table.Body>
             <Table.Row>
-              {simulatedColors.map((color, index) => (
-                <Table.Cell
-                  key={`deuteranopia-${index}`}
-                  className="text-center w-1/6"
-                >
-                  <div className="flex items-center gap-2">
+              {simulatedColors().map((color) => (
+                <Table.Cell className="text-center w-1/6">
+                  <div class="flex items-center gap-2">
                     <div
-                      style={{ backgroundColor: color }}
-                      className="size-5 rounded"
+                      style={{ "background-color": color }}
+                      class="size-5 rounded"
                     />
-                    <span className="font-mono text-xs">{color}</span>
+                    <span class="font-mono text-xs">{color}</span>
                   </div>
                 </Table.Cell>
               ))}
@@ -421,7 +414,9 @@ export function CategoricalCvdDemo() {
  */
 export function SequentialColorsDemo() {
   const isDarkMode = useIsDarkMode();
-  const scale = ChartPalette.sequential("blues", isDarkMode);
+  const scale = createMemo(() =>
+    ChartPalette.sequential("blues", isDarkMode()),
+  );
 
   return (
     <LayerCard>
@@ -429,8 +424,8 @@ export function SequentialColorsDemo() {
         <Table layout="fixed" className="!p-0 !m-0">
           <Table.Body>
             <Table.Row>
-              {scale.map((_, i) => (
-                <Table.Cell key={i} className="whitespace-nowrap w-1/5">
+              {scale().map((_, i) => (
+                <Table.Cell  className="whitespace-nowrap w-1/5">
                   {`Step ${i + 1}`}
                 </Table.Cell>
               ))}
@@ -442,14 +437,14 @@ export function SequentialColorsDemo() {
         <Table layout="fixed" className="!p-0 !m-0">
           <Table.Body>
             <Table.Row>
-              {scale.map((hex, i) => (
-                <Table.Cell key={i} className="w-1/5">
-                  <div className="flex items-center gap-2">
+              {scale().map((hex) => (
+                <Table.Cell  className="w-1/5">
+                  <div class="flex items-center gap-2">
                     <div
-                      style={{ backgroundColor: hex }}
-                      className="size-5 rounded"
+                      style={{ "background-color": hex }}
+                      class="size-5 rounded"
                     />
-                    <span className="font-mono text-xs">{hex}</span>
+                    <span class="font-mono text-xs">{hex}</span>
                   </div>
                 </Table.Cell>
               ))}
@@ -466,33 +461,33 @@ export function SequentialColorsDemo() {
  */
 export function SequentialHeatmapDemo() {
   const isDarkMode = useIsDarkMode();
-  const scale = ChartPalette.sequential("blues", isDarkMode);
-
-  const maxValue = useMemo(
-    () => Math.max(...HEATMAP_VALUES.flatMap((row) => row)),
-    [],
+  const scale = createMemo(() =>
+    ChartPalette.sequential("blues", isDarkMode()),
   );
 
-  const data = useMemo(
+  const maxValue = createMemo(
+    () => Math.max(...HEATMAP_VALUES.flatMap((row) => row)));
+
+  const data = createMemo(
     () =>
-      HEATMAP_DAYS.flatMap((day, dayIndex) =>
+      HEATMAP_DAYS.flatMap((_day, dayIndex) =>
         HEATMAP_HOURS.map(
-          (hour, hourIndex) =>
+          (_hour, hourIndex) =>
             [hourIndex, dayIndex, HEATMAP_VALUES[dayIndex][hourIndex]] as [
               number,
               number,
               number,
             ],
         ),
-      ),
-    [],
-  );
+      ));
 
-  const visualPieces = useMemo(() => {
-    const stepSize = Math.max(1, Math.ceil((maxValue + 1) / scale.length));
-    return scale.map((color, i) => {
+  const visualPieces = createMemo(() => {
+    const colors = scale();
+    const stepSize = Math.max(1, Math.ceil((maxValue() + 1) / colors.length));
+    return colors.map((color, i) => {
       const min = i * stepSize;
-      const max = i === scale.length - 1 ? maxValue : (i + 1) * stepSize - 1;
+      const max =
+        i === colors.length - 1 ? maxValue() : (i + 1) * stepSize - 1;
       return {
         min,
         max,
@@ -500,11 +495,11 @@ export function SequentialHeatmapDemo() {
         label: `${min}–${max}`,
       };
     });
-  }, [maxValue, scale]);
+  });
 
-  const options = useMemo(
+  const options = createMemo(
     (): EChartsOption => ({
-      backgroundColor: "transparent",
+      "background-color": "transparent",
       grid: { left: 72, right: 24, top: 20, bottom: 70 },
       tooltip: {
         appendToBody: true,
@@ -544,22 +539,20 @@ export function SequentialHeatmapDemo() {
         itemWidth: 16,
         itemHeight: 10,
         textStyle: { fontSize: 11 },
-        pieces: visualPieces,
+        pieces: visualPieces(),
       },
       series: [
         {
           type: "heatmap",
-          data,
+          data: data(),
           label: { show: false },
           itemStyle: {
-            borderColor: isDarkMode ? "#1F2937" : "#bcd8fa",
+            borderColor: isDarkMode() ? "#1F2937" : "#bcd8fa",
             borderWidth: 0.5,
           },
         },
       ],
-    }),
-    [data, isDarkMode, visualPieces],
-  );
+    }));
 
   return (
     <LayerCard>
@@ -569,9 +562,9 @@ export function SequentialHeatmapDemo() {
       <LayerCard.Primary className="!overflow-visible">
         <Chart
           echarts={echarts}
-          options={options}
+          options={options()}
           height={300}
-          isDarkMode={isDarkMode}
+          isDarkMode={isDarkMode()}
         />
       </LayerCard.Primary>
     </LayerCard>
@@ -584,7 +577,7 @@ export function SequentialHeatmapDemo() {
 export function CategoricalLineChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const seriesData = useMemo(
+  const seriesData = createMemo(
     () =>
       SIX_SERIES.map((name, i) => ({
         name,
@@ -601,14 +594,12 @@ export function CategoricalLineChartDemo() {
               ),
             ] as [number, number],
         ),
-        color: String(ChartPalette.categorical(i, isDarkMode)),
-      })),
-    [isDarkMode],
-  );
+        color: String(ChartPalette.categorical(i, isDarkMode())),
+      })));
 
-  const options = useMemo(
+  const options = createMemo(
     (): EChartsOption => ({
-      backgroundColor: "transparent",
+      "background-color": "transparent",
       legend: {
         top: 4,
         left: 0,
@@ -636,7 +627,7 @@ export function CategoricalLineChartDemo() {
         axisTick: { show: false },
         splitLine: { lineStyle: { type: "dashed", opacity: 0.5 } },
       },
-      series: seriesData.map((s) => ({
+      series: seriesData().map((s) => ({
         name: s.name,
         type: "line",
         data: s.data,
@@ -647,9 +638,7 @@ export function CategoricalLineChartDemo() {
           type: LINE_STYLE_BY_SERIES[s.name] ?? "solid",
         },
       })),
-    }),
-    [seriesData],
-  );
+    }));
 
   return (
     <LayerCard>
@@ -657,9 +646,9 @@ export function CategoricalLineChartDemo() {
       <LayerCard.Primary className="!overflow-visible">
         <Chart
           echarts={echarts}
-          options={options}
+          options={options()}
           height={260}
-          isDarkMode={isDarkMode}
+          isDarkMode={isDarkMode()}
         />
       </LayerCard.Primary>
     </LayerCard>
@@ -672,12 +661,12 @@ export function CategoricalLineChartDemo() {
  */
 export function CategoricalBarChartDemo() {
   const isDarkMode = useIsDarkMode();
-  const seriesData = useMemo(
+  const seriesData = createMemo(
     () => [
       {
         name: "Hit",
         data: buildSeriesData("Hit"),
-        color: String(ChartPalette.semantic("Success", isDarkMode)),
+        color: String(ChartPalette.semantic("Success", isDarkMode())),
         type: "bar" as const,
         stack: "total" as const,
         barWidth: 28,
@@ -685,7 +674,7 @@ export function CategoricalBarChartDemo() {
       {
         name: "Miss",
         data: buildSeriesData("Miss"),
-        color: String(ChartPalette.semantic("Attention", isDarkMode)),
+        color: String(ChartPalette.semantic("Attention", isDarkMode())),
         type: "bar" as const,
         stack: "total" as const,
         barWidth: 28,
@@ -693,7 +682,7 @@ export function CategoricalBarChartDemo() {
       {
         name: "Revalidated",
         data: buildSeriesData("Revalidated"),
-        color: String(ChartPalette.semantic("Neutral", isDarkMode)),
+        color: String(ChartPalette.semantic("Neutral", isDarkMode())),
         type: "bar" as const,
         stack: "total" as const,
         barWidth: 28,
@@ -701,7 +690,7 @@ export function CategoricalBarChartDemo() {
       {
         name: "Expired",
         data: buildSeriesData("Expired"),
-        color: String(ChartPalette.semantic("Warning", isDarkMode)),
+        color: String(ChartPalette.semantic("Warning", isDarkMode())),
         type: "bar" as const,
         stack: "total" as const,
         barWidth: 28,
@@ -709,19 +698,17 @@ export function CategoricalBarChartDemo() {
       {
         name: "Unknown",
         data: buildSeriesData("Unknown"),
-        color: String(ChartPalette.semantic("Disabled", isDarkMode)),
+        color: String(ChartPalette.semantic("Disabled", isDarkMode())),
         type: "bar" as const,
         stack: "total" as const,
         barWidth: 28,
       },
-    ],
-    [isDarkMode],
-  );
+    ]);
 
-  const options = useMemo(
+  const options = createMemo(
     (): EChartsOption => ({
       // Cache status has inherent polarity — semantic tokens, not categorical palette
-      backgroundColor: "transparent",
+      "background-color": "transparent",
       grid: { left: 56, right: 16, top: 40, bottom: 40 },
       legend: {
         top: 4,
@@ -748,10 +735,8 @@ export function CategoricalBarChartDemo() {
         axisTick: { show: false },
         splitLine: { lineStyle: { type: "dashed", opacity: 0.5 } },
       },
-      series: seriesData,
-    }),
-    [seriesData],
-  );
+      series: seriesData(),
+    }));
 
   return (
     <LayerCard>
@@ -761,9 +746,9 @@ export function CategoricalBarChartDemo() {
       <LayerCard.Primary className="!overflow-visible">
         <Chart
           echarts={echarts}
-          options={options}
+          options={options()}
           height={260}
-          isDarkMode={isDarkMode}
+          isDarkMode={isDarkMode()}
         />
       </LayerCard.Primary>
     </LayerCard>
@@ -776,12 +761,12 @@ export function CategoricalBarChartDemo() {
 export function CategoricalDonutChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const options = useMemo(
+  const options = createMemo(
     (): EChartsOption => ({
       color: COUNTRY_SLICES.map((_, i) =>
-        String(ChartPalette.categorical(i, isDarkMode)),
+        String(ChartPalette.categorical(i, isDarkMode())),
       ),
-      backgroundColor: "transparent",
+      "background-color": "transparent",
       tooltip: {
         trigger: "item",
         formatter: "{b}: {c} req ({d}%)",
@@ -796,9 +781,7 @@ export function CategoricalDonutChartDemo() {
           label: { show: true, formatter: "{b}" },
         },
       ],
-    }),
-    [isDarkMode],
-  );
+    }));
 
   return (
     <LayerCard>
@@ -808,9 +791,9 @@ export function CategoricalDonutChartDemo() {
       <LayerCard.Primary className="!overflow-visible">
         <Chart
           echarts={echarts}
-          options={options}
+          options={options()}
           height={300}
-          isDarkMode={isDarkMode}
+          isDarkMode={isDarkMode()}
         />
       </LayerCard.Primary>
     </LayerCard>
@@ -826,10 +809,10 @@ export function ChartColorSystemsDemo() {
       <LayerCard.Secondary className="!m-0 !p-0" />
       <Table className="!m-0 !p-0 [&_tbody]:text-sm [&_tbody]:font-medium [&_tbody]:text-kumo-default">
         <colgroup>
-          <col className="w-[14%]" />
-          <col className="w-[38%]" />
-          <col className="w-[16%]" />
-          <col className="w-[32%]" />
+          <col class="w-[14%]" />
+          <col class="w-[38%]" />
+          <col class="w-[16%]" />
+          <col class="w-[32%]" />
         </colgroup>
         <Table.Body>
           <Table.Row>
@@ -846,14 +829,14 @@ export function ChartColorSystemsDemo() {
           className="!p-0 !m-0 w-full [&_td]:align-top [&_td]:text-kumo-default"
         >
           <colgroup>
-            <col className="w-[14%]" />
-            <col className="w-[38%]" />
-            <col className="w-[16%]" />
-            <col className="w-[32%]" />
+            <col class="w-[14%]" />
+            <col class="w-[38%]" />
+            <col class="w-[16%]" />
+            <col class="w-[32%]" />
           </colgroup>
           <Table.Body>
             {COLOR_SYSTEM_ROWS.map(({ system, when, task, examples }) => (
-              <Table.Row key={system}>
+              <Table.Row >
                 <Table.Cell>{system}</Table.Cell>
                 <Table.Cell>{when}</Table.Cell>
                 <Table.Cell>{task}</Table.Cell>

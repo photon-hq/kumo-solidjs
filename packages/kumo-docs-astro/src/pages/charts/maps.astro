@@ -10,7 +10,7 @@ import {
   BubbleMapCloudflareLocationsDemo,
 } from "~/components/demos/Chart/BubbleMapDemo";
 import { ChoroplethMapBasicDemo } from "~/components/demos/Chart/ChoroplethMapDemo";
-import type { MapGeoJson } from "@cloudflare/kumo";
+import type { MapGeoJson } from "@photon-ai/kumo-solid";
 
 const WORLD_GEO_JSON_URL =
   "https://cdn.jsdelivr.net/gh/johan/world.geo.json@master/countries.geo.json";
@@ -72,10 +72,10 @@ try {
     <CodeBlock code={`npm install echarts`} lang="bash" />
 
     <Heading level={3} class="mb-2 mt-6 text-lg">Barrel</Heading>
-    <CodeBlock code={`import { BubbleMap, ChoroplethMap } from "@cloudflare/kumo";`} lang="tsx" />
+    <CodeBlock code={`import { BubbleMap, ChoroplethMap } from "@photon-ai/kumo-solid";`} lang="tsx" />
     <Heading level={3} class="mb-2 mt-4 text-lg">Granular</Heading>
     <CodeBlock
-      code={`import { BubbleMap, ChoroplethMap } from "@cloudflare/kumo/components/chart";`}
+      code={`import { BubbleMap, ChoroplethMap } from "@photon-ai/kumo-solid/components/chart";`}
       lang="tsx"
     />
   </ComponentSection>
@@ -83,7 +83,7 @@ try {
   <ComponentSection>
     <Heading level={2}>Usage</Heading>
     <CodeBlock
-      code={`import { BubbleMap, ChoroplethMap, type MapGeoJson } from "@cloudflare/kumo";
+      code={`import { BubbleMap, ChoroplethMap, type MapGeoJson } from "@photon-ai/kumo-solid";
 import * as echarts from "echarts/core";
 import { MapChart, ScatterChart } from "echarts/charts";
 import { TooltipComponent, VisualMapComponent } from "echarts/components";

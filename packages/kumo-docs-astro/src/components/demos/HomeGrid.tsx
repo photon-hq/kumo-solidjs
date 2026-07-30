@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { createSignal, type JSX } from "solid-js";
+
 import {
   Autocomplete,
   Badge,
@@ -38,8 +39,8 @@ import {
   Tooltip,
   TooltipProvider,
   useKumoToastManager,
-} from "@cloudflare/kumo";
-import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
+} from "@photon-ai/kumo-solid";
+import { ShikiProvider, CodeHighlighted } from "@photon-ai/kumo-solid/code";
 import { InputGroupDemo } from "~/components/demos/InputGroupDemo";
 import {
   MagnifyingGlassIcon,
@@ -49,7 +50,7 @@ import {
   TranslateIcon,
   WarningIcon,
   WarningOctagonIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 const componentRoutes: Record<string, string> = {
   badge: "/components/badge",
@@ -112,25 +113,25 @@ function ToastTriggerButton() {
 }
 
 export function HomeGrid() {
-  const [switchToggled, setSwitchToggled] = useState(true);
-  const [checked, setChecked] = useState(true);
-  const [collapsibleOpen, setCollapsibleOpen] = useState(false);
-  const [menuBarActive, setMenuBarActive] = useState<number | undefined>(0);
-  const [paginationPage, setPaginationPage] = useState(1);
-  const [value, setValue] = useState<{ id: string; value: string } | null>(
+  const [switchToggled, setSwitchToggled] = createSignal(true);
+  const [checked, setChecked] = createSignal(true);
+  const [collapsibleOpen, setCollapsibleOpen] = createSignal(false);
+  const [menuBarActive, setMenuBarActive] = createSignal<number | undefined>(0);
+  const [paginationPage, setPaginationPage] = createSignal(1);
+  const [value, setValue] = createSignal<{ id: string; value: string } | null>(
     null,
   );
 
   const components: Array<{
     name: string;
     id: string;
-    Component: React.ReactNode;
+    Component: JSX.Element;
   }> = [
     {
       name: "Button",
       id: "button",
       Component: (
-        <div className="grid gap-3">
+        <div class="grid gap-3">
           <Button icon={PlusIcon}>Create Worker</Button>
           <Button variant="primary" icon={PlusIcon}>
             Create Worker
@@ -143,9 +144,14 @@ export function HomeGrid() {
       name: "Input",
       id: "input",
       Component: (
-        <div className="grid gap-3">
-          <Input placeholder="Type something..." />
-          <Input variant="error" value="Invalid!" />
+        <div class="grid gap-3">
+          <Input aria-label="Example input" placeholder="Type something..." />
+          <Input
+            aria-label="Invalid example input"
+            value="Invalid!"
+            aria-invalid="true"
+            className="!ring-kumo-danger focus:ring-[1.5px] focus:ring-kumo-danger/50"
+          />
         </div>
       ),
     },
@@ -198,9 +204,7 @@ export function HomeGrid() {
           <Autocomplete.Content>
             <Autocomplete.List>
               {(item: string) => (
-                <Autocomplete.Item key={item} value={item}>
-                  {item}
-                </Autocomplete.Item>
+                <Autocomplete.Item value={item}>{item}</Autocomplete.Item>
               )}
             </Autocomplete.List>
           </Autocomplete.Content>
@@ -220,15 +224,13 @@ export function HomeGrid() {
             { id: "good-first-issue", value: "good first issue" },
           ]}
           onValueChange={setValue}
-          value={value}
+          value={value()}
         >
           <Combobox.TriggerInput placeholder="Select an issue..." />
           <Combobox.Content>
             <Combobox.List>
               {(item: { id: string; value: string }) => (
-                <Combobox.Item key={item.id} value={item.value}>
-                  {item.value}
-                </Combobox.Item>
+                <Combobox.Item value={item.value}>{item.value}</Combobox.Item>
               )}
             </Combobox.List>
           </Combobox.Content>
@@ -240,9 +242,9 @@ export function HomeGrid() {
       id: "switch",
       Component: (
         <Switch
-          checked={switchToggled}
+          checked={switchToggled()}
           onClick={() => {
-            setSwitchToggled(!switchToggled);
+            setSwitchToggled(!switchToggled());
           }}
         />
       ),
@@ -255,7 +257,6 @@ export function HomeGrid() {
           label="Email"
           placeholder="name@example.com"
           type="email"
-          variant="error"
           error={{
             message: "Please enter a valid email.",
             match: "typeMismatch",
@@ -282,23 +283,29 @@ export function HomeGrid() {
       id: "tooltip",
       Component: (
         <TooltipProvider>
-          <div className="flex gap-2">
+          <div class="flex gap-2">
             <Tooltip
               content="Add"
               open
-              render={
-                <Button shape="square" icon={PlusIcon} aria-label="Add" />
-              }
+              render={(renderProps) => (
+                <Button
+                  {...renderProps}
+                  shape="square"
+                  icon={PlusIcon}
+                  aria-label="Add"
+                />
+              )}
             />
             <Tooltip
               content="Change language"
-              render={
+              render={(renderProps) => (
                 <Button
+                  {...renderProps}
                   shape="square"
                   icon={TranslateIcon}
                   aria-label="Change language"
                 />
-              }
+              )}
             />
           </div>
         </TooltipProvider>
@@ -309,7 +316,13 @@ export function HomeGrid() {
       id: "dropdown",
       Component: (
         <DropdownMenu>
-          <DropdownMenu.Trigger render={<Button icon={PlusIcon}>Add</Button>} />
+          <DropdownMenu.Trigger
+            render={(renderProps) => (
+              <Button {...renderProps} icon={PlusIcon}>
+                Add
+              </Button>
+            )}
+          />
           <DropdownMenu.Content>
             <DropdownMenu.Item>Worker</DropdownMenu.Item>
             <DropdownMenu.Item>Pages</DropdownMenu.Item>
@@ -322,7 +335,7 @@ export function HomeGrid() {
       id: "collapsible",
       Component: (
         <Collapsible.Root
-          open={collapsibleOpen}
+          open={collapsibleOpen()}
           onOpenChange={setCollapsibleOpen}
         >
           <Collapsible.DefaultTrigger>What is Kumo?</Collapsible.DefaultTrigger>
@@ -338,7 +351,7 @@ export function HomeGrid() {
       Component: (
         <Checkbox
           label="Max bandwidth"
-          checked={checked}
+          checked={checked()}
           onCheckedChange={(checked) => {
             setChecked(checked);
           }}
@@ -364,7 +377,7 @@ export function HomeGrid() {
       name: "SkeletonLine",
       id: "skeleton-line",
       Component: (
-        <div className="flex w-[200px] flex-col gap-2">
+        <div class="flex w-[200px] flex-col gap-2">
           <SkeletonLine minWidth={50} maxWidth={100} />
           <SkeletonLine minWidth={100} />
           <SkeletonLine minWidth={50} maxWidth={150} />
@@ -389,7 +402,7 @@ export function HomeGrid() {
       name: "Banner",
       id: "banner",
       Component: (
-        <div className="flex flex-col gap-2">
+        <div class="flex flex-col gap-2">
           <Banner description="This is a default banner." />
           <Banner
             icon={<WarningIcon weight="fill" />}
@@ -421,7 +434,7 @@ export function HomeGrid() {
       name: "Badge",
       id: "badge",
       Component: (
-        <div className="flex flex-col gap-2">
+        <div class="flex flex-col gap-2">
           <Badge variant="blue">Blue</Badge>
           <Badge variant="green">Green</Badge>
           <Badge variant="orange">Orange</Badge>
@@ -444,7 +457,7 @@ export function HomeGrid() {
       id: "pagination",
       Component: (
         <Pagination
-          page={paginationPage}
+          page={paginationPage()}
           perPage={10}
           totalCount={100}
           setPage={setPaginationPage}
@@ -476,18 +489,18 @@ export function HomeGrid() {
       id: "menu-bar",
       Component: (
         <MenuBar
-          isActive={menuBarActive}
+          isActive={menuBarActive()}
           options={[
             {
               icon: <TextBolderIcon />,
               onClick: () =>
-                setMenuBarActive(menuBarActive === 0 ? undefined : 0),
+                setMenuBarActive(menuBarActive() === 0 ? undefined : 0),
               tooltip: "Bold",
             },
             {
               icon: <TextItalicIcon />,
               onClick: () =>
-                setMenuBarActive(menuBarActive === 1 ? undefined : 1),
+                setMenuBarActive(menuBarActive() === 1 ? undefined : 1),
               tooltip: "Italic",
             },
           ]}
@@ -498,7 +511,7 @@ export function HomeGrid() {
       name: "DatePicker",
       id: "date-picker",
       Component: (
-        <div className="scale-85 bg-kumo-base p-4">
+        <div class="scale-85 bg-kumo-base p-4">
           <DatePicker mode="single" />
         </div>
       ),
@@ -507,12 +520,12 @@ export function HomeGrid() {
       name: "Breadcrumbs",
       id: "breadcrumbs",
       Component: (
-        <div className="flex items-center gap-1 text-sm">
-          <span className="text-kumo-subtle">Home</span>
-          <span className="text-kumo-inactive">/</span>
-          <span className="text-kumo-subtle">Docs</span>
-          <span className="text-kumo-inactive">/</span>
-          <span className="font-medium">Page</span>
+        <div class="flex items-center gap-1 text-sm">
+          <span class="text-kumo-subtle">Home</span>
+          <span class="text-kumo-inactive">/</span>
+          <span class="text-kumo-subtle">Docs</span>
+          <span class="text-kumo-inactive">/</span>
+          <span class="font-medium">Page</span>
         </div>
       ),
     },
@@ -542,7 +555,7 @@ export function HomeGrid() {
       name: "Link",
       id: "link",
       Component: (
-        <div className="flex flex-col gap-2 text-sm">
+        <div class="flex flex-col gap-2 text-sm">
           <Link href="#">Default link</Link>
           <Link href="#" variant="current">
             Current color link
@@ -557,11 +570,9 @@ export function HomeGrid() {
       name: "Empty",
       id: "empty",
       Component: (
-        <div className="flex flex-col items-center gap-1 text-center">
-          <span className="text-sm font-medium">No results</span>
-          <span className="text-xs text-kumo-subtle">
-            Try a different search
-          </span>
+        <div class="flex flex-col items-center gap-1 text-center">
+          <span class="text-sm font-medium">No results</span>
+          <span class="text-xs text-kumo-subtle">Try a different search</span>
         </div>
       ),
     },
@@ -589,7 +600,7 @@ export function HomeGrid() {
       name: "Label",
       id: "label",
       Component: (
-        <div className="flex flex-col gap-2">
+        <div class="flex flex-col gap-2">
           <Label>Default Label</Label>
           <Label showOptional>Optional Field</Label>
           <Label tooltip="More info">With Tooltip</Label>
@@ -601,7 +612,11 @@ export function HomeGrid() {
       id: "popover",
       Component: (
         <Popover>
-          <Popover.Trigger render={<Button />}>Open Popover</Popover.Trigger>
+          <Popover.Trigger
+            render={(renderProps) => <Button {...renderProps} />}
+          >
+            Open Popover
+          </Popover.Trigger>
           <Popover.Content>
             <Popover.Title>Popover Title</Popover.Title>
             <Popover.Description>This is a popover.</Popover.Description>
@@ -670,12 +685,12 @@ export function HomeGrid() {
       name: "Text",
       id: "text",
       Component: (
-        <div className="flex flex-col gap-1">
+        <div class="flex flex-col gap-1">
           <Text size="lg" bold>
             Large Bold Text
           </Text>
           <Text size="base">Regular text content</Text>
-          <Text size="sm" color="subtle">
+          <Text size="sm" variant="secondary">
             Small subtle text
           </Text>
         </div>
@@ -684,29 +699,26 @@ export function HomeGrid() {
   ];
 
   return (
-    <ul className="grid auto-rows-min grid-cols-1 gap-px bg-kumo-hairline md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <ul class="grid auto-rows-min grid-cols-1 gap-px bg-kumo-hairline md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {components.map((c) => {
         const route = componentRoutes[c.id] || null;
         return (
-          <li
-            className="relative flex aspect-square items-center justify-center bg-kumo-canvas"
-            key={c.name}
-          >
+          <li class="relative flex aspect-square items-center justify-center bg-kumo-canvas">
             {route ? (
               <a
                 href={route}
-                className="absolute top-4 left-4 text-base font-medium text-kumo-subtle hover:text-kumo-default"
+                class="absolute top-4 left-4 text-base font-medium text-kumo-subtle hover:text-kumo-default"
               >
                 {c.name}
               </a>
             ) : (
-              <span className="absolute top-4 left-4 text-base font-medium text-kumo-subtle italic">
+              <span class="absolute top-4 left-4 text-base font-medium text-kumo-subtle italic">
                 {c.name}
               </span>
             )}
-            <div className="flex w-full items-center justify-center p-8 leading-normal tracking-normal">
+            <div class="flex w-full items-center justify-center p-8 leading-normal tracking-normal">
               {c.Component ?? (
-                <p className="text-base font-medium text-kumo-subtle">TBD</p>
+                <p class="text-base font-medium text-kumo-subtle">TBD</p>
               )}
             </div>
           </li>

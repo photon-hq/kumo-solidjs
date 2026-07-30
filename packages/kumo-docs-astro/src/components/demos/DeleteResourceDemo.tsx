@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { DeleteResource, Button } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { Button } from "@photon-ai/kumo-solid";
+import { DeleteResource } from "~/components/kumo/delete-resource";
 
 export function DeleteResourceBasicDemo() {
-  const [open, setOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [open, setOpen] = createSignal(false);
+  const [isDeleting, setIsDeleting] = createSignal(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -18,20 +20,20 @@ export function DeleteResourceBasicDemo() {
         Delete Zone
       </Button>
       <DeleteResource
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
         resourceType="Zone"
         resourceName="example.com"
         onDelete={handleDelete}
-        isDeleting={isDeleting}
+        isDeleting={isDeleting()}
       />
     </>
   );
 }
 
 export function DeleteResourceWorkerDemo() {
-  const [open, setOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [open, setOpen] = createSignal(false);
+  const [isDeleting, setIsDeleting] = createSignal(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -46,21 +48,21 @@ export function DeleteResourceWorkerDemo() {
         Delete Worker
       </Button>
       <DeleteResource
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
         resourceType="Worker"
         resourceName="api-gateway-worker"
         onDelete={handleDelete}
-        isDeleting={isDeleting}
+        isDeleting={isDeleting()}
       />
     </>
   );
 }
 
 export function DeleteResourceErrorDemo() {
-  const [open, setOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [open, setOpen] = createSignal(false);
+  const [isDeleting, setIsDeleting] = createSignal(false);
+  const [errorMsg, setErrorMsg] = createSignal<string>("");
 
   const handleDelete = async () => {
     setErrorMsg("");
@@ -76,13 +78,13 @@ export function DeleteResourceErrorDemo() {
         Delete Zone
       </Button>
       <DeleteResource
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
         resourceType="Zone"
         resourceName="example.com"
         onDelete={handleDelete}
-        isDeleting={isDeleting}
-        errorMessage={errorMsg}
+        isDeleting={isDeleting()}
+        errorMessage={errorMsg()}
       />
     </>
   );

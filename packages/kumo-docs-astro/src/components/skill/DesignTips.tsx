@@ -1,7 +1,6 @@
-import { ShikiProvider } from "@cloudflare/kumo/code";
-import { Text } from "@cloudflare/kumo";
-import { isValidElement } from "react";
-import { CodeExample, designTips } from "./design-tips";
+import { ShikiProvider } from "@photon-ai/kumo-solid/code";
+import { Text } from "@photon-ai/kumo-solid";
+import { designTips } from "./design-tips";
 import { DesignTip } from "./DesignTip";
 
 export interface RenderedDesignTip {
@@ -18,7 +17,7 @@ interface MarkdownProps {
 }
 
 function Markdown({ html }: MarkdownProps) {
-  return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  return <span innerHTML={html} />;
 }
 
 export function DesignTips({ renderedTips }: DesignTipsProps) {
@@ -26,17 +25,12 @@ export function DesignTips({ renderedTips }: DesignTipsProps) {
     <ShikiProvider engine="javascript" languages={["tsx"]}>
       {designTips.map((tip, tipIndex) => {
         const renderedTip = renderedTips[tipIndex];
-        const orientation = tip.examples.some(
-          (example) =>
-            isValidElement(example.jsx) && example.jsx.type === CodeExample,
-        )
-          ? "vertical"
-          : "horizontal";
+        const orientation = tip.orientation ?? "horizontal";
 
         return (
-          <DesignTip id={tip.id} key={tip.id}>
+          <DesignTip id={tip.id}>
             <DesignTip.Title>
-              <span className="flex items-baseline gap-1.5">
+              <span class="flex items-baseline gap-1.5">
                 <Text
                   variant="secondary"
                   DANGEROUS_className="text-xl font-semibold hidden md:block"
@@ -53,12 +47,9 @@ export function DesignTips({ renderedTips }: DesignTipsProps) {
               </DesignTip.Description>
             ) : null}
             <DesignTip.Examples orientation={orientation}>
-              {tip.examples.map((example, exampleIndex) => (
-                <DesignTip.Example
-                  key={`${example.variant}-${exampleIndex}`}
-                  variant={example.variant}
-                >
-                  {example.jsx}
+              {tip.examples.map((example) => (
+                <DesignTip.Example variant={example.variant}>
+                  {example.jsx()}
                 </DesignTip.Example>
               ))}
             </DesignTip.Examples>

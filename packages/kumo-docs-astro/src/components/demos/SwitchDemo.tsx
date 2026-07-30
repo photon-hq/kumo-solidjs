@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Switch } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { Switch } from "@photon-ai/kumo-solid";
 
 export function SwitchBasicDemo() {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = createSignal(false);
   return (
-    <Switch label="Switch" checked={checked} onCheckedChange={setChecked} />
+    <Switch label="Switch" checked={checked()} onCheckedChange={setChecked} />
   );
 }
 
@@ -22,12 +23,12 @@ export function SwitchDisabledDemo() {
 
 /** Neutral variant - monochrome switch for subtle, less prominent toggles */
 export function SwitchNeutralDemo() {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = createSignal(false);
   return (
     <Switch
       label="Neutral switch"
       variant="neutral"
-      checked={checked}
+      checked={checked()}
       onCheckedChange={setChecked}
     />
   );
@@ -36,7 +37,7 @@ export function SwitchNeutralDemo() {
 /** Neutral variant in different states */
 export function SwitchNeutralStatesDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <Switch
         label="Neutral off"
         variant="neutral"
@@ -62,7 +63,7 @@ export function SwitchNeutralStatesDemo() {
 /** All variants comparison — 2×2 grid showing off/on for default and neutral */
 export function SwitchVariantsDemo() {
   return (
-    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+    <div class="grid grid-cols-2 gap-x-8 gap-y-4">
       <Switch label="Default off" checked={false} onCheckedChange={() => {}} />
       <Switch label="Default on" checked={true} onCheckedChange={() => {}} />
       <Switch
@@ -83,12 +84,12 @@ export function SwitchVariantsDemo() {
 
 /** Switch with a custom id prop — clicking the label should still toggle the switch. */
 export function SwitchCustomIdDemo() {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = createSignal(false);
   return (
     <Switch
       id="my-custom-switch"
       label="Custom ID"
-      checked={checked}
+      checked={checked()}
       onCheckedChange={setChecked}
     />
   );
@@ -134,7 +135,7 @@ export function SwitchLegendCustomDemo() {
 /** All sizes comparison */
 export function SwitchSizesDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <Switch
         label="Small"
         size="sm"

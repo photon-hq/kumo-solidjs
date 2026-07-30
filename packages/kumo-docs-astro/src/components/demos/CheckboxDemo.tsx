@@ -1,53 +1,58 @@
-import { useState } from "react";
-import { Checkbox } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { Checkbox } from "@photon-ai/kumo-solid";
 
 export function CheckboxBasicDemo() {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = createSignal(false);
   return (
     <Checkbox
       label="Accept terms and conditions"
-      checked={checked}
+      checked={checked()}
       onCheckedChange={setChecked}
     />
   );
 }
 
 export function CheckboxDefaultDemo() {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = createSignal(false);
   return (
     <Checkbox
       label="Enable notifications"
-      checked={checked}
+      checked={checked()}
       onCheckedChange={setChecked}
     />
   );
 }
 
 export function CheckboxCheckedDemo() {
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = createSignal(true);
   return (
-    <Checkbox label="I agree" checked={checked} onCheckedChange={setChecked} />
+    <Checkbox
+      label="I agree"
+      checked={checked()}
+      onCheckedChange={setChecked}
+    />
   );
 }
 
 export function CheckboxIndeterminateDemo() {
-  const [indeterminate, setIndeterminate] = useState(true);
+  const [indeterminate, setIndeterminate] = createSignal(true);
   return (
     <Checkbox
       label="Select all"
-      indeterminate={indeterminate}
+      indeterminate={indeterminate()}
       onCheckedChange={setIndeterminate}
     />
   );
 }
 
 export function CheckboxLabelFirstDemo() {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = createSignal(false);
   return (
     <Checkbox
       label="Remember me"
       controlFirst={false}
-      checked={checked}
+      checked={checked()}
       onCheckedChange={setChecked}
     />
   );
@@ -62,13 +67,13 @@ export function CheckboxErrorDemo() {
 }
 
 export function CheckboxGroupDemo() {
-  const [preferences, setPreferences] = useState<string[]>(["email"]);
+  const [preferences, setPreferences] = createSignal<string[]>(["email"]);
 
   return (
     <Checkbox.Group
       legend="Email preferences"
       description="Choose how you'd like to receive updates"
-      value={preferences}
+      value={preferences()}
       onValueChange={setPreferences}
     >
       <Checkbox.Item value="email" label="Email notifications" />
@@ -80,9 +85,9 @@ export function CheckboxGroupDemo() {
 
 /** Shows Checkbox.Legend with sr-only to visually hide the legend while keeping it accessible, useful when a parent Field already provides a visible label */
 export function CheckboxLegendSrOnlyDemo() {
-  const [preferences, setPreferences] = useState<string[]>(["email"]);
+  const [preferences, setPreferences] = createSignal<string[]>(["email"]);
   return (
-    <Checkbox.Group value={preferences} onValueChange={setPreferences}>
+    <Checkbox.Group value={preferences()} onValueChange={setPreferences}>
       <Checkbox.Legend className="sr-only">
         Notification preferences
       </Checkbox.Legend>
@@ -95,9 +100,9 @@ export function CheckboxLegendSrOnlyDemo() {
 
 /** Shows Checkbox.Legend with custom styling for full control over legend presentation */
 export function CheckboxLegendCustomDemo() {
-  const [preferences, setPreferences] = useState<string[]>(["email"]);
+  const [preferences, setPreferences] = createSignal<string[]>(["email"]);
   return (
-    <Checkbox.Group value={preferences} onValueChange={setPreferences}>
+    <Checkbox.Group value={preferences()} onValueChange={setPreferences}>
       <Checkbox.Legend className="text-sm font-normal text-kumo-subtle">
         Notification preferences
       </Checkbox.Legend>

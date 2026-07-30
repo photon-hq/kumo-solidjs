@@ -1,6 +1,5 @@
-import { Button, cn, LayerCard, Text } from "@cloudflare/kumo";
-import { motion } from "motion/react";
-import { useState } from "react";
+import { createSignal } from "solid-js";
+import { Button, cn, LayerCard, Text } from "@photon-ai/kumo-solid";
 
 interface CollapseSizeExampleProps {
   preserveContentSize?: boolean;
@@ -9,22 +8,25 @@ interface CollapseSizeExampleProps {
 export function CollapseSizeExample({
   preserveContentSize = false,
 }: CollapseSizeExampleProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = createSignal(true);
 
   return (
-    <div className={cn("grid w-full gap-4")}>
+    <div class={cn("grid w-full gap-4")}>
       <Button
-        aria-expanded={open}
+        aria-expanded={open()}
         onClick={() => setOpen((current) => !current)}
         variant="secondary"
       >
-        {open ? "Close" : "Open"}
+        {open() ? "Close" : "Open"}
       </Button>
-      <motion.div
-        animate={{ width: open ? 256 : 0 }}
-        className={cn("overflow-hidden rounded-lg ring ring-kumo-line")}
-        initial={false}
-        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      <div
+        class={cn("overflow-hidden rounded-lg ring ring-kumo-line")}
+        style={{
+          width: open() ? "16rem" : "0rem",
+          "transition-duration": "500ms",
+          "transition-property": "width",
+          "transition-timing-function": "cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
       >
         <LayerCard
           className={cn(
@@ -39,7 +41,7 @@ export function CollapseSizeExample({
             Measure traffic without changing your code.
           </Text>
         </LayerCard>
-      </motion.div>
+      </div>
     </div>
   );
 }

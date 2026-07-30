@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import react from "@astrojs/react";
+import solid from "@astrojs/solid-js";
 import mdx from "@astrojs/mdx";
 import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
@@ -19,9 +19,9 @@ import sitemap from "@astrojs/sitemap";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 function getBuildInfo() {
-  // Read version from the main kumo package
+  // Read version from the SolidJS Kumo package used by this site.
   const kumoPkg = JSON.parse(
-    readFileSync(resolve(__dirname, "../kumo/package.json"), "utf-8"),
+    readFileSync(resolve(__dirname, "../kumo-solid/package.json"), "utf-8"),
   );
 
   // Read version from the docs-astro package
@@ -68,14 +68,15 @@ const buildInfo = getBuildInfo();
 // Detect dev mode: `astro dev` sets this in process.argv
 const isDev = process.argv.includes("dev");
 
-// Path to kumo source (used for dev mode CSS aliases)
-const kumoSrc = resolve(__dirname, "../kumo/src");
+// Component source lives in kumo-solid. Styles continue to come from the
+// canonical Kumo token source so the migrated docs render pixel-for-pixel.
+const kumoStylesSrc = resolve(__dirname, "../kumo/src/styles");
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     mdx(),
-    react(),
+    solid(),
     sitemap(),
     markdownPages({ passthroughPaths: ["/skill.md"] }),
   ],
@@ -99,11 +100,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [
-      // In dev mode, resolve @cloudflare/kumo imports to raw source files
+      // In dev mode, resolve @photon-ai/kumo-solid imports to raw source files
       // for instant HMR. In production builds, the normal package.json
       // exports (dist/) are used — preserving the real consumer experience.
       // IMPORTANT: Must come BEFORE tailwindcss() so CSS @import statements
-      // like `@import "@cloudflare/kumo/styles"` are aliased to source files
+      // like `@import "@photon-ai/kumo-solid/styles"` are aliased to source
       // before Tailwind processes them.
       ...(isDev ? [kumoHmrPlugin()] : []),
       tailwindcss(),
@@ -112,20 +113,20 @@ export default defineConfig({
     ],
 
     // In dev mode, add resolve.alias for CSS @import statements that may bypass
-    // Vite plugins. This ensures `@import "@cloudflare/kumo/styles"` resolves
+    // Vite plugins. This ensures `@import "@photon-ai/kumo-solid/styles"` resolves
     // to source files without requiring a build step.
     resolve: isDev
       ? {
           alias: {
-            "@cloudflare/kumo/styles/tailwind": resolve(
-              kumoSrc,
-              "styles/kumo.css",
+            "@photon-ai/kumo-solid/styles/tailwind": resolve(
+              kumoStylesSrc,
+              "kumo.css",
             ),
-            "@cloudflare/kumo/styles/standalone": resolve(
-              kumoSrc,
-              "styles/kumo-standalone.css",
+            "@photon-ai/kumo-solid/styles/standalone": resolve(
+              kumoStylesSrc,
+              "kumo-standalone.css",
             ),
-            "@cloudflare/kumo/styles": resolve(kumoSrc, "styles/kumo.css"),
+            "@photon-ai/kumo-solid/styles": resolve(kumoStylesSrc, "kumo.css"),
           },
         }
       : undefined,

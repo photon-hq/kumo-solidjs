@@ -1,4 +1,4 @@
-import { ChoroplethMap, type MapGeoJson } from "@cloudflare/kumo";
+import { ChoroplethMap, type MapGeoJson } from "@photon-ai/kumo-solid";
 import * as echarts from "echarts/core";
 import { MapChart } from "echarts/charts";
 import { VisualMapComponent, TooltipComponent } from "echarts/components";
@@ -58,7 +58,7 @@ export function ChoroplethMapBasicDemo({ geoJson }: ChoroplethMapDemoProps) {
       name="country"
       value="requests"
       valueFormat={fmt}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }

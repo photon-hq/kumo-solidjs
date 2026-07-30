@@ -29,33 +29,26 @@ import {
 ## Installation
 
   <p>
-    ResourceListPage is a <strong>block</strong> - a CLI-installed component
-    that you own and can customize. Unlike regular components, blocks are copied
-    into your project so you have full control over the code.
+    ResourceListPage is a <strong>block</strong>: a source-distributed Solid
+    component that you own and customize.
   </p>
+  <Callout type="warning">
+    The published Kumo CLI currently emits React source. Until a Solid-aware
+    installer is available, copy this block from the repository.
+  </Callout>
   <div class="space-y-4">
     <div>
-      <p>**1. Initialize Kumo config (first time only)**</p>
+      <p>**1. Copy the Solid block directory**</p>
 
-```bash
-npx @cloudflare/kumo init
+```text
+packages/kumo-docs-astro/src/components/kumo/resource-list/
 ```
 
 </div>
 <div>
-<p>**2. Install the block**</p>
-
-```bash
-npx @cloudflare/kumo add ResourceListPage
-```
-
-</div>
-<div>
-<p>**3. Import from your local path**</p>
+<p>**2. Import from your local path**</p>
 
 ```tsx
-// The path depends on your kumo.json blocksDir setting
-// Default: src/components/kumo/
 import { ResourceListPage } from "./components/kumo/resource-list/resource-list";
 ```
 
@@ -77,17 +70,17 @@ import { ResourceListPage } from "./components/kumo/resource-list/resource-list"
 
 ```tsx
 import { ResourceListPage } from "./components/kumo/resource-list/resource-list";
-import { Surface } from "@cloudflare/kumo";
-import { DatabaseIcon } from "@phosphor-icons/react";
+import { Surface } from "@photon-ai/kumo-solid";
+import { DatabaseIcon } from "~/components/icons";
 
 export default function DatabasesPage() {
   return (
     <ResourceListPage
       title="Databases"
       description="Manage your database instances and configurations"
-      icon={<DatabaseIcon size={32} className="text-kumo-strong" />}
+      icon={<DatabaseIcon size={32} class="text-kumo-strong" />}
     >
-      <Surface className="p-6">{/* Your resource list content */}</Surface>
+      <Surface class="p-6">{/* Your resource list content */}</Surface>
     </ResourceListPage>
   );
 }
@@ -144,26 +137,26 @@ export default function DatabasesPage() {
         </tr>
         <tr class="border-b border-kumo-hairline">
           <td class="px-4 py-3 font-mono text-xs">icon</td>
-          <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+          <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
           <td class="px-4 py-3">Icon displayed next to the title</td>
         </tr>
         <tr class="border-b border-kumo-hairline">
           <td class="px-4 py-3 font-mono text-xs">usage</td>
-          <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+          <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
           <td class="px-4 py-3">
             Sidebar content for usage examples or quick start guides
           </td>
         </tr>
         <tr class="border-b border-kumo-hairline">
           <td class="px-4 py-3 font-mono text-xs">additionalContent</td>
-          <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+          <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
           <td class="px-4 py-3">
             Additional sidebar content (e.g., resources, links)
           </td>
         </tr>
         <tr class="border-b border-kumo-hairline">
           <td class="px-4 py-3 font-mono text-xs">children</td>
-          <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+          <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
           <td class="px-4 py-3">Main content area for the resource list</td>
         </tr>
         <tr class="border-b border-kumo-hairline">

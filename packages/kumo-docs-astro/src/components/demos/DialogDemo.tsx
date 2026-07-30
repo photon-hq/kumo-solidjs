@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { createSignal } from "solid-js";
+
 import {
   Dialog,
   Button,
   Select,
   Combobox,
   DropdownMenu,
-} from "@cloudflare/kumo";
-import type { DialogProps } from "@cloudflare/kumo";
-import { Warning, X } from "@phosphor-icons/react";
+} from "@photon-ai/kumo-solid";
+import type { DialogProps } from "@photon-ai/kumo-solid";
+import { Warning, X } from "~/components/icons";
 
 export function DialogBasicDemo() {
   return (
     <Dialog.Root>
       <Dialog.Trigger render={(p) => <Button {...p}>Click me</Button>} />
       <Dialog className="p-8">
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div class="mb-4 flex items-start justify-between gap-4">
           <Dialog.Title className="text-2xl font-semibold">
             Modal Title
           </Dialog.Title>
@@ -45,7 +46,7 @@ export function DialogWithActionsDemo() {
     <Dialog.Root>
       <Dialog.Trigger render={(p) => <Button {...p}>Delete</Button>} />
       <Dialog className="p-8">
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div class="mb-4 flex items-start justify-between gap-4">
           <Dialog.Title className="text-2xl font-semibold">
             Modal Title
           </Dialog.Title>
@@ -66,7 +67,7 @@ export function DialogWithActionsDemo() {
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </Dialog.Description>
-        <div className="mt-8 flex justify-end gap-2">
+        <div class="mt-8 flex justify-end gap-2">
           <Dialog.Close
             render={(props) => (
               <Button variant="secondary" {...props}>
@@ -98,7 +99,7 @@ export function DialogMaxWidthDemo() {
         render={(p) => <Button {...p}>Open capped dialog</Button>}
       />
       <Dialog className="max-w-lg p-8">
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div class="mb-4 flex items-start justify-between gap-4">
           <Dialog.Title className="text-2xl font-semibold">
             Max width override
           </Dialog.Title>
@@ -116,10 +117,10 @@ export function DialogMaxWidthDemo() {
           />
         </div>
         <Dialog.Description className="text-kumo-subtle">
-          This dialog uses <code>className="max-w-lg"</code> and should stay
-          capped around 512px on desktop.
+          This dialog uses <code>class="max-w-lg"</code> and should stay capped
+          around 512px on desktop.
         </Dialog.Description>
-        <div className="mt-4 truncate rounded-md border border-kumo-line bg-kumo-recessed p-3 font-mono text-sm">
+        <div class="mt-4 truncate rounded-md border border-kumo-line bg-kumo-recessed p-3 font-mono text-sm">
           abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
         </div>
       </Dialog>
@@ -138,8 +139,8 @@ export function DialogConfirmationDemo() {
         )}
       />
       <Dialog className="p-8">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-kumo-danger/20">
+        <div class="mb-4 flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-kumo-danger/20">
             <Warning size={20} className="text-kumo-danger" />
           </div>
           <Dialog.Title className="text-xl font-semibold">
@@ -150,7 +151,7 @@ export function DialogConfirmationDemo() {
           This action cannot be undone. This will permanently delete the project
           and all associated data.
         </Dialog.Description>
-        <div className="mt-8 flex justify-end gap-2">
+        <div class="mt-8 flex justify-end gap-2">
           <Dialog.Close
             render={(props) => (
               <Button variant="secondary" {...props}>
@@ -186,8 +187,8 @@ export function DialogAlertDemo() {
         )}
       />
       <Dialog className="p-8">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-kumo-danger/20">
+        <div class="mb-4 flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-kumo-danger/20">
             <Warning size={20} className="text-kumo-danger" weight="fill" />
           </div>
           <Dialog.Title className="text-xl font-semibold">
@@ -198,7 +199,7 @@ export function DialogAlertDemo() {
           This action cannot be undone. All your data will be permanently
           removed from our servers. Are you sure you want to proceed?
         </Dialog.Description>
-        <div className="mt-8 flex justify-end gap-2">
+        <div class="mt-8 flex justify-end gap-2">
           <Dialog.Close
             render={(props) => (
               <Button variant="secondary" {...props}>
@@ -231,7 +232,7 @@ export function DialogWithSelectDemo() {
     <Dialog.Root>
       <Dialog.Trigger render={(p) => <Button {...p}>Open Form</Button>} />
       <Dialog className="p-8">
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div class="mb-4 flex items-start justify-between gap-4">
           <Dialog.Title className="text-2xl font-semibold">
             Create Resource
           </Dialog.Title>
@@ -257,12 +258,10 @@ export function DialogWithSelectDemo() {
           renderValue={(v) => regions.find((r) => r.value === v)?.label}
         >
           {regions.map((region) => (
-            <Select.Option key={region.value} value={region.value}>
-              {region.label}
-            </Select.Option>
+            <Select.Option value={region.value}>{region.label}</Select.Option>
           ))}
         </Select>
-        <div className="mt-8 flex justify-end gap-2">
+        <div class="mt-8 flex justify-end gap-2">
           <Dialog.Close
             render={(props) => (
               <Button variant="secondary" {...props}>
@@ -278,15 +277,16 @@ export function DialogWithSelectDemo() {
 }
 
 export function DialogWithComboboxDemo() {
-  const [value, setValue] = useState<{ value: string; label: string } | null>(
-    null,
-  );
+  const [value, setValue] = createSignal<{
+    value: string;
+    label: string;
+  } | null>(null);
 
   return (
     <Dialog.Root>
       <Dialog.Trigger render={(p) => <Button {...p}>Open Form</Button>} />
       <Dialog className="p-8">
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div class="mb-4 flex items-start justify-between gap-4">
           <Dialog.Title className="text-2xl font-semibold">
             Create Resource
           </Dialog.Title>
@@ -306,7 +306,7 @@ export function DialogWithComboboxDemo() {
         <Dialog.Description className="mb-4 text-kumo-subtle">
           Search and select a region for your new resource.
         </Dialog.Description>
-        <Combobox value={value} onValueChange={setValue} items={regions}>
+        <Combobox value={value()} onValueChange={setValue} items={regions}>
           <Combobox.TriggerInput
             className="w-full"
             placeholder="Search regions..."
@@ -315,14 +315,12 @@ export function DialogWithComboboxDemo() {
             <Combobox.Empty>No regions found</Combobox.Empty>
             <Combobox.List>
               {(item: { value: string; label: string }) => (
-                <Combobox.Item key={item.value} value={item}>
-                  {item.label}
-                </Combobox.Item>
+                <Combobox.Item value={item}>{item.label}</Combobox.Item>
               )}
             </Combobox.List>
           </Combobox.Content>
         </Combobox>
-        <div className="mt-8 flex justify-end gap-2">
+        <div class="mt-8 flex justify-end gap-2">
           <Dialog.Close
             render={(props) => (
               <Button variant="secondary" {...props}>
@@ -342,7 +340,7 @@ export function DialogWithDropdownDemo() {
     <Dialog.Root>
       <Dialog.Trigger render={(p) => <Button {...p}>Open Form</Button>} />
       <Dialog className="p-8">
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div class="mb-4 flex items-start justify-between gap-4">
           <Dialog.Title className="text-2xl font-semibold">
             Resource Actions
           </Dialog.Title>
@@ -363,7 +361,9 @@ export function DialogWithDropdownDemo() {
           Choose an action for the selected resource.
         </Dialog.Description>
         <DropdownMenu>
-          <DropdownMenu.Trigger render={<Button>Actions</Button>} />
+          <DropdownMenu.Trigger
+            render={(renderProps) => <Button {...renderProps}>Actions</Button>}
+          />
           <DropdownMenu.Content>
             <DropdownMenu.Item>Edit</DropdownMenu.Item>
             <DropdownMenu.Item>Duplicate</DropdownMenu.Item>
@@ -371,7 +371,7 @@ export function DialogWithDropdownDemo() {
             <DropdownMenu.Item variant="danger">Delete</DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu>
-        <div className="mt-8 flex justify-end">
+        <div class="mt-8 flex justify-end">
           <Dialog.Close
             render={(props) => (
               <Button variant="secondary" {...props}>
@@ -403,9 +403,9 @@ export function DialogSizesDemo() {
   ];
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2">
       {sizes.map(({ size, label, width }) => (
-        <Dialog.Root key={size}>
+        <Dialog.Root>
           <Dialog.Trigger
             render={(p) => (
               <Button variant="secondary" {...p}>
@@ -414,7 +414,7 @@ export function DialogSizesDemo() {
             )}
           />
           <Dialog size={size} className="p-8">
-            <div className="mb-4 flex items-start justify-between gap-4">
+            <div class="mb-4 flex items-start justify-between gap-4">
               <Dialog.Title className="text-2xl font-semibold">
                 {label} Dialog
               </Dialog.Title>
@@ -435,39 +435,39 @@ export function DialogSizesDemo() {
               This <code>size="{size}"</code> dialog should stay at {width} wide
               regardless of the content below.
             </Dialog.Description>
-            <div className="mt-4 overflow-auto rounded-md border border-kumo-line">
-              <table className="w-max text-sm">
-                <thead className="bg-kumo-elevated text-left">
+            <div class="mt-4 overflow-auto rounded-md border border-kumo-line">
+              <table class="w-max text-sm">
+                <thead class="bg-kumo-elevated text-left">
                   <tr>
-                    <th className="px-3 py-2">Resource</th>
-                    <th className="px-3 py-2">Region</th>
-                    <th className="px-3 py-2">Status</th>
-                    <th className="px-3 py-2">Latency</th>
-                    <th className="px-3 py-2">Requests</th>
-                    <th className="px-3 py-2">Last Deployed</th>
+                    <th class="px-3 py-2">Resource</th>
+                    <th class="px-3 py-2">Region</th>
+                    <th class="px-3 py-2">Status</th>
+                    <th class="px-3 py-2">Latency</th>
+                    <th class="px-3 py-2">Requests</th>
+                    <th class="px-3 py-2">Last Deployed</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-kumo-hairline">
+                <tbody class="divide-y divide-kumo-hairline">
                   <tr>
-                    <td className="px-3 py-2">api-gateway-prod</td>
-                    <td className="px-3 py-2">us-east-1</td>
-                    <td className="px-3 py-2 text-kumo-success">Healthy</td>
-                    <td className="px-3 py-2">12ms</td>
-                    <td className="px-3 py-2">1,234,567</td>
-                    <td className="px-3 py-2">2026-06-23</td>
+                    <td class="px-3 py-2">api-gateway-prod</td>
+                    <td class="px-3 py-2">us-east-1</td>
+                    <td class="px-3 py-2 text-kumo-success">Healthy</td>
+                    <td class="px-3 py-2">12ms</td>
+                    <td class="px-3 py-2">1,234,567</td>
+                    <td class="px-3 py-2">2026-06-23</td>
                   </tr>
                   <tr>
-                    <td className="px-3 py-2">worker-analytics</td>
-                    <td className="px-3 py-2">eu-west-1</td>
-                    <td className="px-3 py-2 text-kumo-warning">Degraded</td>
-                    <td className="px-3 py-2">89ms</td>
-                    <td className="px-3 py-2">456,789</td>
-                    <td className="px-3 py-2">2026-06-22</td>
+                    <td class="px-3 py-2">worker-analytics</td>
+                    <td class="px-3 py-2">eu-west-1</td>
+                    <td class="px-3 py-2 text-kumo-warning">Degraded</td>
+                    <td class="px-3 py-2">89ms</td>
+                    <td class="px-3 py-2">456,789</td>
+                    <td class="px-3 py-2">2026-06-22</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div className="mt-6 flex justify-end gap-2">
+            <div class="mt-6 flex justify-end gap-2">
               <Dialog.Close
                 render={(props) => (
                   <Button variant="secondary" {...props}>

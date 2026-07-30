@@ -1,8 +1,9 @@
-import { Link } from "@cloudflare/kumo";
+import type { JSX } from "solid-js";
+import { Link } from "@photon-ai/kumo-solid";
 
 export function LinkBasicDemo() {
   return (
-    <div className="grid gap-x-6 gap-y-4 text-base md:grid-cols-3">
+    <div class="grid gap-x-6 gap-y-4 text-base md:grid-cols-3">
       <Link href="#">Default inline link</Link>
       <Link href="#" variant="current">
         Current color link
@@ -16,7 +17,7 @@ export function LinkBasicDemo() {
 
 export function LinkInParagraphDemo() {
   return (
-    <p className="mx-auto max-w-md text-base leading-relaxed text-kumo-default">
+    <p class="mx-auto max-w-md text-base leading-relaxed text-kumo-default">
       This is a paragraph with an <Link href="#">inline link</Link> that flows
       naturally with the surrounding text. Links maintain proper underline
       offset for readability.
@@ -39,7 +40,7 @@ export function LinkExternalDemo() {
 
 export function LinkCurrentVariantDemo() {
   return (
-    <p className="text-base text-kumo-danger">
+    <p class="text-base text-kumo-danger">
       This error message contains a{" "}
       <Link href="#" variant="current">
         link
@@ -49,11 +50,11 @@ export function LinkCurrentVariantDemo() {
   );
 }
 
-// Helper component simulating a framework link (e.g., React Router's Link)
+// Helper component simulating a framework link (for example, Solid Router's A)
 const CustomRouterLink = ({
   children,
   ...props
-}: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+}: JSX.AnchorHTMLAttributes<HTMLAnchorElement>) => (
   <a data-custom-router-link {...props}>
     {children}
   </a>
@@ -61,18 +62,24 @@ const CustomRouterLink = ({
 
 export function LinkRenderDemo() {
   return (
-    <div className="flex flex-col gap-x-6 gap-y-4 text-base md:flex-row">
-      <Link render={<CustomRouterLink href="/dashboard" />} variant="inline">
+    <div class="flex flex-col gap-x-6 gap-y-4 text-base md:flex-row">
+      <Link
+        render={(renderProps) => (
+          <CustomRouterLink {...renderProps} href="/dashboard" />
+        )}
+        variant="inline"
+      >
         Dashboard (via render)
       </Link>
       <Link
-        render={
+        render={(renderProps) => (
           <CustomRouterLink
+            {...renderProps}
             href="https://developers.cloudflare.com"
             target="_blank"
             rel="noopener noreferrer"
           />
-        }
+        )}
         variant="inline"
       >
         Cloudflare Docs <Link.ExternalIcon />

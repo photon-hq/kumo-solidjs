@@ -15,22 +15,17 @@ The component registry is a machine-readable JSON file that describes all Kumo c
 
 ## Accessing the Registry
 
-### Via CLI
-
-```bash
-# List all components
-npx @cloudflare/kumo ls
-
-# Get docs for a specific component
-npx @cloudflare/kumo doc Button
-```
-
 ### Via HTTP API
 
 ```bash
 # JSON endpoint
 curl https://kumo-ui.com/api/component-registry
 ```
+
+### Via the Local Explorer
+
+The [CLI page](/cli) includes a browser-based registry explorer. A published
+Solid CLI is not available yet.
 
 ### Via jq (Local)
 

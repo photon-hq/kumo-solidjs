@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { Pagination } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { Pagination } from "@photon-ai/kumo-solid";
 
 export function PaginationBasicDemo() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
 
   return (
-    <Pagination page={page} setPage={setPage} perPage={10} totalCount={100} />
+    <Pagination page={page()} setPage={setPage} perPage={10} totalCount={100} />
   );
 }
 
 export function PaginationSimpleDemo() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
 
   return (
     <Pagination
-      page={page}
+      page={page()}
       setPage={setPage}
       perPage={10}
       totalCount={100}
@@ -24,11 +25,11 @@ export function PaginationSimpleDemo() {
 }
 
 export function PaginationFullDemo() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
 
   return (
     <Pagination
-      page={page}
+      page={page()}
       setPage={setPage}
       perPage={10}
       totalCount={100}
@@ -38,29 +39,34 @@ export function PaginationFullDemo() {
 }
 
 export function PaginationMidPageDemo() {
-  const [page, setPage] = useState(5);
+  const [page, setPage] = createSignal(5);
 
   return (
-    <Pagination page={page} setPage={setPage} perPage={10} totalCount={100} />
+    <Pagination page={page()} setPage={setPage} perPage={10} totalCount={100} />
   );
 }
 
 export function PaginationLargeDatasetDemo() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
 
   return (
-    <Pagination page={page} setPage={setPage} perPage={25} totalCount={1250} />
+    <Pagination
+      page={page()}
+      setPage={setPage}
+      perPage={25}
+      totalCount={1250}
+    />
   );
 }
 
 export function PaginationCustomTextDemo() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
   return (
     <Pagination
       text={({ perPage }: { perPage?: number }) =>
-        `Page ${page} - showing ${perPage} per page`
+        `Page ${page()} - showing ${perPage} per page`
       }
-      page={page}
+      page={page()}
       setPage={setPage}
       perPage={25}
       totalCount={100}
@@ -70,20 +76,20 @@ export function PaginationCustomTextDemo() {
 
 /** Pagination with a page size selector using compound components. */
 export function PaginationPageSizeSelectorDemo() {
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(25);
+  const [page, setPage] = createSignal(1);
+  const [perPage, setPerPage] = createSignal(25);
 
   return (
     <Pagination
-      page={page}
+      page={page()}
       setPage={setPage}
-      perPage={perPage}
+      perPage={perPage()}
       totalCount={500}
     >
       <Pagination.Info />
       <Pagination.Separator />
       <Pagination.PageSize
-        value={perPage}
+        value={perPage()}
         onChange={(size) => {
           setPerPage(size);
           setPage(1);
@@ -96,20 +102,20 @@ export function PaginationPageSizeSelectorDemo() {
 
 /** Pagination with custom page size options using compound components. */
 export function PaginationCustomPageSizeOptionsDemo() {
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [page, setPage] = createSignal(1);
+  const [perPage, setPerPage] = createSignal(10);
 
   return (
     <Pagination
-      page={page}
+      page={page()}
       setPage={setPage}
-      perPage={perPage}
+      perPage={perPage()}
       totalCount={200}
     >
       <Pagination.Info />
       <Pagination.Separator />
       <Pagination.PageSize
-        value={perPage}
+        value={perPage()}
         onChange={(size) => {
           setPerPage(size);
           setPage(1);
@@ -123,10 +129,10 @@ export function PaginationCustomPageSizeOptionsDemo() {
 
 /** Pagination with custom info text using compound components. */
 export function PaginationCompoundCustomInfoDemo() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
 
   return (
-    <Pagination page={page} setPage={setPage} perPage={25} totalCount={100}>
+    <Pagination page={page()} setPage={setPage} perPage={25} totalCount={100}>
       <Pagination.Info>
         {({ page, totalCount }) =>
           `Page ${page} of ${Math.ceil((totalCount ?? 1) / 25)}`
@@ -139,20 +145,20 @@ export function PaginationCompoundCustomInfoDemo() {
 
 /** Pagination with a dropdown page selector instead of a text input. */
 export function PaginationDropdownSelectorDemo() {
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(25);
+  const [page, setPage] = createSignal(1);
+  const [perPage, setPerPage] = createSignal(25);
 
   return (
     <Pagination
-      page={page}
+      page={page()}
       setPage={setPage}
-      perPage={perPage}
+      perPage={perPage()}
       totalCount={500}
     >
       <Pagination.Info />
       <Pagination.Separator />
       <Pagination.PageSize
-        value={perPage}
+        value={perPage()}
         onChange={(size) => {
           setPerPage(size);
           setPage(1);
@@ -165,22 +171,22 @@ export function PaginationDropdownSelectorDemo() {
 
 /** Pagination with page size selector on the right side. */
 export function PaginationPageSizeRightDemo() {
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(25);
+  const [page, setPage] = createSignal(1);
+  const [perPage, setPerPage] = createSignal(25);
 
   return (
     <Pagination
-      page={page}
+      page={page()}
       setPage={setPage}
-      perPage={perPage}
+      perPage={perPage()}
       totalCount={500}
     >
       <Pagination.Info />
-      <div className="flex items-center gap-2">
+      <div class="flex items-center gap-2">
         <Pagination.Controls />
         <Pagination.Separator />
         <Pagination.PageSize
-          value={perPage}
+          value={perPage()}
           onChange={(size) => {
             setPerPage(size);
             setPage(1);
@@ -193,11 +199,11 @@ export function PaginationPageSizeRightDemo() {
 
 /** Pagination with French labels for internationalization. */
 export function PaginationI18nDemo() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = createSignal(1);
 
   return (
     <Pagination
-      page={page}
+      page={page()}
       setPage={setPage}
       perPage={10}
       totalCount={100}
@@ -213,9 +219,8 @@ export function PaginationI18nDemo() {
       <Pagination.Info>
         {({ pageShowingRange, totalCount }) => (
           <>
-            Affichage de{" "}
-            <span className="tabular-nums">{pageShowingRange}</span> sur{" "}
-            <span className="tabular-nums">{totalCount}</span>
+            Affichage de <span class="tabular-nums">{pageShowingRange}</span>{" "}
+            sur <span class="tabular-nums">{totalCount}</span>
           </>
         )}
       </Pagination.Info>

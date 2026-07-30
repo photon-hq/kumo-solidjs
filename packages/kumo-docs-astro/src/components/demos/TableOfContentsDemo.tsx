@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { TableOfContents, useTableOfContentsActiveId } from "@cloudflare/kumo";
+import { createSignal, type JSX } from "solid-js";
+
+import {
+  TableOfContents,
+  useTableOfContentsActiveId,
+} from "@photon-ai/kumo-solid";
 
 const headings = [
   { text: "Introduction" },
@@ -9,8 +13,8 @@ const headings = [
   { text: "Examples" },
 ];
 
-function DemoWrapper({ children }: { children: React.ReactNode }) {
-  return <div className="min-w-48">{children}</div>;
+function DemoWrapper({ children }: { children: JSX.Element }) {
+  return <div class="min-w-48">{children}</div>;
 }
 
 export function TableOfContentsBasicDemo() {
@@ -21,7 +25,6 @@ export function TableOfContentsBasicDemo() {
         <TableOfContents.List>
           {headings.map((heading) => (
             <TableOfContents.Item
-              key={heading.text}
               active={heading.text === "Usage"}
               className="cursor-pointer"
             >
@@ -35,7 +38,7 @@ export function TableOfContentsBasicDemo() {
 }
 
 export function TableOfContentsInteractiveDemo() {
-  const [active, setActive] = useState("Introduction");
+  const [active, setActive] = createSignal("Introduction");
 
   return (
     <DemoWrapper>
@@ -44,8 +47,7 @@ export function TableOfContentsInteractiveDemo() {
         <TableOfContents.List>
           {headings.map((heading) => (
             <TableOfContents.Item
-              key={heading.text}
-              active={heading.text === active}
+              active={heading.text === active()}
               onClick={() => setActive(heading.text)}
               className="cursor-pointer"
             >
@@ -65,7 +67,7 @@ export function TableOfContentsNoActiveDemo() {
         <TableOfContents.Title>On this page</TableOfContents.Title>
         <TableOfContents.List>
           {headings.map((heading) => (
-            <TableOfContents.Item key={heading.text} className="cursor-pointer">
+            <TableOfContents.Item className="cursor-pointer">
               {heading.text}
             </TableOfContents.Item>
           ))}
@@ -122,7 +124,6 @@ export function TableOfContentsWithoutTitleDemo() {
         <TableOfContents.List>
           {headings.slice(0, 3).map((heading) => (
             <TableOfContents.Item
-              key={heading.text}
               active={heading.text === "Introduction"}
               className="cursor-pointer"
             >
@@ -148,7 +149,7 @@ const scrollspySections = [
  * item follows; click an item to jump.
  */
 export function TableOfContentsScrollspyDemo() {
-  const [root, setRoot] = useState<HTMLDivElement | null>(null);
+  const [root, setRoot] = createSignal<HTMLDivElement | null>(null);
 
   const { activeId, selectSection } = useTableOfContentsActiveId({
     ids: scrollspySections.map((s) => s.id),
@@ -157,19 +158,20 @@ export function TableOfContentsScrollspyDemo() {
   });
 
   return (
-    <div className="flex w-full max-w-xl gap-6">
-      <div className="min-w-40">
+    <div class="flex w-full max-w-xl gap-6">
+      <div class="min-w-40">
         <TableOfContents>
           <TableOfContents.Title>On this page</TableOfContents.Title>
           <TableOfContents.List>
             {scrollspySections.map((section) => (
               <TableOfContents.Item
-                key={section.id}
-                render={<button type="button" />}
-                active={activeId === section.id}
+                render={(renderProps) => (
+                  <button {...renderProps} type="button" />
+                )}
+                active={activeId() === section.id}
                 onClick={() => {
                   selectSection(section.id);
-                  root
+                  root()
                     ?.querySelector(`#${section.id}`)
                     ?.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
@@ -182,17 +184,14 @@ export function TableOfContentsScrollspyDemo() {
       </div>
       <div
         ref={setRoot}
-        className="h-64 flex-1 overflow-y-auto rounded-lg border border-kumo-hairline p-4"
+        class="h-64 flex-1 overflow-y-auto rounded-lg border border-kumo-hairline p-4"
       >
         {scrollspySections.map((section) => (
-          <section key={section.id}>
-            <h4
-              id={section.id}
-              className="mb-2 scroll-mt-2 text-sm font-semibold"
-            >
+          <section>
+            <h4 id={section.id} class="mb-2 scroll-mt-2 text-sm font-semibold">
               {section.title}
             </h4>
-            <p className="mb-6 text-sm text-kumo-subtle">
+            <p class="mb-6 text-sm text-kumo-subtle">
               {Array.from(
                 { length: 6 },
                 () =>
@@ -201,7 +200,7 @@ export function TableOfContentsScrollspyDemo() {
             </p>
           </section>
         ))}
-        <div className="h-40" />
+        <div class="h-40" />
       </div>
     </div>
   );
@@ -209,17 +208,18 @@ export function TableOfContentsScrollspyDemo() {
 
 /** Demonstrates using the `render` prop with a custom link component. */
 export function TableOfContentsRenderPropDemo() {
-  const [clicked, setClicked] = useState<string | null>(null);
+  const [clicked, setClicked] = createSignal<string | null>(null);
 
   return (
     <DemoWrapper>
-      <div className="space-y-3">
+      <div class="space-y-3">
         <TableOfContents>
           <TableOfContents.List>
             {["Introduction", "Installation", "Usage"].map((text) => (
               <TableOfContents.Item
-                key={text}
-                render={<button type="button" />}
+                render={(renderProps) => (
+                  <button {...renderProps} type="button" />
+                )}
                 onClick={() => setClicked(text)}
                 active={text === "Introduction"}
               >
@@ -228,8 +228,8 @@ export function TableOfContentsRenderPropDemo() {
             ))}
           </TableOfContents.List>
         </TableOfContents>
-        {clicked && (
-          <p className="text-xs text-kumo-subtle">Clicked: {clicked}</p>
+        {clicked() && (
+          <p class="text-xs text-kumo-subtle">Clicked: {clicked()}</p>
         )}
       </div>
     </DemoWrapper>

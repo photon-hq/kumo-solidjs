@@ -1,26 +1,28 @@
-import { useState } from "react";
-import { MenuBar } from "@cloudflare/kumo";
-import { TextBolderIcon, TextItalicIcon } from "@phosphor-icons/react";
+import { createSignal } from "solid-js";
+
+import { MenuBar } from "@photon-ai/kumo-solid";
+import { TextBolderIcon, TextItalicIcon } from "~/components/icons";
 
 export function MenuBarBasicDemo() {
-  const [active, setActive] = useState<string | undefined>("bold");
+  const [active, setActive] = createSignal<string | undefined>("bold");
 
   return (
     <MenuBar
-      isActive={active}
+      isActive={active()}
       optionIds
       options={[
         {
           icon: <TextBolderIcon />,
           id: "bold",
           tooltip: "Bold",
-          onClick: () => setActive(active === "bold" ? undefined : "bold"),
+          onClick: () => setActive(active() === "bold" ? undefined : "bold"),
         },
         {
           icon: <TextItalicIcon />,
           id: "italic",
           tooltip: "Italic",
-          onClick: () => setActive(active === "italic" ? undefined : "italic"),
+          onClick: () =>
+            setActive(active() === "italic" ? undefined : "italic"),
         },
       ]}
     />
@@ -28,24 +30,25 @@ export function MenuBarBasicDemo() {
 }
 
 export function MenuBarTextFormattingDemo() {
-  const [active, setActive] = useState<string | undefined>("bold");
+  const [active, setActive] = createSignal<string | undefined>("bold");
 
   return (
     <MenuBar
-      isActive={active}
+      isActive={active()}
       optionIds
       options={[
         {
           icon: <TextBolderIcon />,
           id: "bold",
           tooltip: "Bold",
-          onClick: () => setActive(active === "bold" ? undefined : "bold"),
+          onClick: () => setActive(active() === "bold" ? undefined : "bold"),
         },
         {
           icon: <TextItalicIcon />,
           id: "italic",
           tooltip: "Italic",
-          onClick: () => setActive(active === "italic" ? undefined : "italic"),
+          onClick: () =>
+            setActive(active() === "italic" ? undefined : "italic"),
         },
       ]}
     />
@@ -53,24 +56,25 @@ export function MenuBarTextFormattingDemo() {
 }
 
 export function MenuBarNoActiveDemo() {
-  const [active, setActive] = useState<string | undefined>(undefined);
+  const [active, setActive] = createSignal<string | undefined>(undefined);
 
   return (
     <MenuBar
-      isActive={active}
+      isActive={active()}
       optionIds
       options={[
         {
           icon: <TextBolderIcon />,
           id: "bold",
           tooltip: "Bold",
-          onClick: () => setActive(active === "bold" ? undefined : "bold"),
+          onClick: () => setActive(active() === "bold" ? undefined : "bold"),
         },
         {
           icon: <TextItalicIcon />,
           id: "italic",
           tooltip: "Italic",
-          onClick: () => setActive(active === "italic" ? undefined : "italic"),
+          onClick: () =>
+            setActive(active() === "italic" ? undefined : "italic"),
         },
       ]}
     />

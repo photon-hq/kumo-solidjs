@@ -29,10 +29,10 @@ Components are the atomic, reusable UI elements that form the foundation of your
 Import directly from the package:
 
 ```tsx
-import { Button, Input, Dialog, Badge } from "@cloudflare/kumo";
+import { Button, Input, Dialog, Badge } from "@photon-ai/kumo-solid";
 
 // Or use granular imports for better tree-shaking
-import { Button } from "@cloudflare/kumo/components/button";
+import { Button } from "@photon-ai/kumo-solid/components/button";
 ```
 
 When Kumo ships a new version, you get bug fixes and improvements automatically. Your code doesn't change — just bump the version.
@@ -51,24 +51,14 @@ Blocks are compositions of components that solve common patterns, but aren't agn
 
 ### How to Use
 
-Install via CLI, then import from your project:
+Copy a Solid block from `packages/kumo-docs-astro/src/components/kumo/` into
+your project, then import it from its local path:
 
-```bash
-
-# Initialize config (first time only)
-
-npx @cloudflare/kumo init
-
-# List available blocks
-
-npx @cloudflare/kumo blocks
-
-# Install a block to your project
-
-npx @cloudflare/kumo add PageHeader
-```
-
-After installation, import from your local path:
+<Callout type="warning">
+  A Solid-aware block installer has not been published. The original
+  `@cloudflare/kumo` CLI emits React source and is not compatible with a Solid
+  application.
+</Callout>
 
 ```tsx
 // Path depends on your kumo.json blocksDir setting
@@ -86,16 +76,16 @@ Consider a `ProductCard`. It's a specific arrangement of components for a specif
 // This is a "block" or "recipe" - a specific composition
 // of design system components for a particular pattern
 
-<Surface className="rounded-lg p-4">
-  <img src={imgSrc} alt={imgAlt} className="rounded-md" />
-  <div className="mt-3">
+<Surface class="rounded-lg p-4">
+  <img src={imgSrc} alt={imgAlt} class="rounded-md" />
+  <div class="mt-3">
     <Text size="lg" weight="semibold">
       {title}
     </Text>
-    <Text className="text-kumo-subtle">{description}</Text>
+    <Text class="text-kumo-subtle">{description}</Text>
     <StarRating rating={rating} />
   </div>
-  <div className="mt-4">
+  <div class="mt-4">
     <Button variant="primary">Add to cart</Button>
   </div>
 </Surface>
@@ -142,7 +132,7 @@ This is why blocks exist as a middle ground. They're patterns worth sharing, but
 
 |                   | Components                   | Blocks                       |
 | ----------------- | ---------------------------- | ---------------------------- |
-| **Delivery**      | NPM package import           | CLI copy to your project     |
+| **Delivery**      | Package import               | Source copy to your project  |
 | **Ownership**     | Kumo maintains               | You own & customize          |
 | **Updates**       | Automatic via version bump   | Manual (re-install or merge) |
 | **Customization** | Props & className only       | Full source code access      |
@@ -151,5 +141,5 @@ This is why blocks exist as a middle ground. They're patterns worth sharing, but
 ## Related
 
 - [Installation](/installation) — Get started with Kumo
-- [CLI](/cli) — Install blocks and access documentation
+- [CLI](/cli) — Solid CLI status and registry explorer
 - [Contributing](/contributing) — Add new components and blocks

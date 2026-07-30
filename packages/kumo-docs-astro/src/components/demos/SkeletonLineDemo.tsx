@@ -1,9 +1,9 @@
-import { SkeletonLine } from "@cloudflare/kumo";
-import type { ReactNode } from "react";
+import { type JSX } from "solid-js";
+import { SkeletonLine } from "@photon-ai/kumo-solid";
 
 export function SkeletonLineDemo() {
   return (
-    <div className="flex w-64 flex-col gap-3">
+    <div class="flex w-64 flex-col gap-3">
       <SkeletonLine />
       <SkeletonLine />
       <SkeletonLine />
@@ -13,7 +13,7 @@ export function SkeletonLineDemo() {
 
 export function SkeletonLineWidthDemo() {
   return (
-    <div className="flex w-64 flex-col gap-3">
+    <div class="flex w-64 flex-col gap-3">
       <SkeletonLine minWidth={80} maxWidth={100} />
       <SkeletonLine minWidth={60} maxWidth={80} />
       <SkeletonLine minWidth={40} maxWidth={60} />
@@ -23,7 +23,7 @@ export function SkeletonLineWidthDemo() {
 
 export function SkeletonLineHeightDemo() {
   return (
-    <div className="flex w-64 flex-col gap-3">
+    <div class="flex w-64 flex-col gap-3">
       <SkeletonLine className="h-2" />
       <SkeletonLine className="h-4" />
       <SkeletonLine className="h-6" />
@@ -37,11 +37,11 @@ function DemoWrapper({
   children,
 }: {
   label: string;
-  children: ReactNode;
+  children: JSX.Element;
 }) {
   return (
-    <div className="relative">
-      <div className="absolute top-0 right-full bottom-0 mr-2 flex items-center border-r-2 border-kumo-fill pr-2 text-sm">
+    <div class="relative">
+      <div class="absolute top-0 right-full bottom-0 mr-2 flex items-center border-r-2 border-kumo-fill pr-2 text-sm">
         {label}
       </div>
       {children}
@@ -51,7 +51,7 @@ function DemoWrapper({
 
 export function SkeletonLineBlockHeightDemo() {
   return (
-    <div className="flex w-64 flex-col gap-1">
+    <div class="flex w-64 flex-col gap-1">
       <DemoWrapper label="32px">
         <SkeletonLine blockHeight={32} />
       </DemoWrapper>
@@ -67,11 +67,11 @@ export function SkeletonLineBlockHeightDemo() {
 
 export function SkeletonLineCardDemo() {
   return (
-    <div className="w-64 rounded-lg p-4 ring ring-kumo-hairline">
-      <div className="mb-4 h-4">
+    <div class="w-64 rounded-lg p-4 ring ring-kumo-hairline">
+      <div class="mb-4 h-4">
         <SkeletonLine minWidth={40} maxWidth={60} />
       </div>
-      <div className="flex flex-col gap-2">
+      <div class="flex flex-col gap-2">
         <SkeletonLine />
         <SkeletonLine />
         <SkeletonLine minWidth={50} maxWidth={70} />

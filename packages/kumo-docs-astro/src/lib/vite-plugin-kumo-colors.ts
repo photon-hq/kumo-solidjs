@@ -1,17 +1,28 @@
+import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  THEME_CONFIG as STATIC_THEME_CONFIG,
-  AVAILABLE_THEMES as STATIC_AVAILABLE_THEMES,
-} from "@cloudflare/kumo/scripts/theme-generator/config";
-import type { TokenDefinition } from "@cloudflare/kumo/scripts/theme-generator/types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const requireFromPlugin = createRequire(import.meta.url);
 
 const VIRTUAL_MODULE_ID = "virtual:kumo-colors";
 const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
 
 type TokenType = "semantic" | "global" | "override";
+
+type TokenDefinition = {
+  theme: Record<string, { light: string; dark: string } | undefined>;
+};
+
+type ThemeConfig = {
+  text: Record<string, TokenDefinition>;
+  color: Record<string, TokenDefinition>;
+};
+
+type ThemeConfigModule = {
+  THEME_CONFIG: ThemeConfig;
+  AVAILABLE_THEMES: readonly string[];
+};
 
 type ColorToken = {
   name: string;
@@ -32,8 +43,8 @@ const configFile = resolve(
  * Derives token data directly from config.ts (single source of truth).
  */
 function getColorsFromConfig(
-  THEME_CONFIG: typeof STATIC_THEME_CONFIG,
-  AVAILABLE_THEMES: typeof STATIC_AVAILABLE_THEMES,
+  THEME_CONFIG: ThemeConfig,
+  AVAILABLE_THEMES: readonly string[],
 ): ColorToken[] {
   const colors: ColorToken[] = [];
 
@@ -133,8 +144,8 @@ export function kumoColorsPlugin() {
 
     async load(id: string) {
       if (id === RESOLVED_VIRTUAL_MODULE_ID) {
-        let THEME_CONFIG: typeof STATIC_THEME_CONFIG;
-        let AVAILABLE_THEMES: typeof STATIC_AVAILABLE_THEMES;
+        let THEME_CONFIG: ThemeConfig;
+        let AVAILABLE_THEMES: readonly string[];
 
         if (isDevMode && server) {
           // Dev mode: load source .ts directly via Vite's module runner.
@@ -143,10 +154,10 @@ export function kumoColorsPlugin() {
           THEME_CONFIG = mod.THEME_CONFIG;
           AVAILABLE_THEMES = mod.AVAILABLE_THEMES;
         } else {
-          // Production build: use the statically imported config from dist/.
-          // This is resolved at module load time and always available.
-          THEME_CONFIG = STATIC_THEME_CONFIG;
-          AVAILABLE_THEMES = STATIC_AVAILABLE_THEMES;
+          // Node 24 can load the TypeScript config directly during the build.
+          const mod = requireFromPlugin(configFile) as ThemeConfigModule;
+          THEME_CONFIG = mod.THEME_CONFIG;
+          AVAILABLE_THEMES = mod.AVAILABLE_THEMES;
         }
 
         const colors = getColorsFromConfig(THEME_CONFIG, AVAILABLE_THEMES);

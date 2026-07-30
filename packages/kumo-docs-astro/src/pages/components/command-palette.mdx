@@ -34,13 +34,13 @@ import {
 ### Barrel
 
 ```tsx
-import { CommandPalette } from "@cloudflare/kumo";
+import { CommandPalette } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { CommandPalette } from "@cloudflare/kumo/components/command-palette";
+import { CommandPalette } from "@photon-ai/kumo-solid/components/command-palette";
 ```
 
 </ComponentSection>
@@ -58,8 +58,8 @@ import { CommandPalette } from "@cloudflare/kumo/components/command-palette";
   </p>
 
 ```tsx
-import { useState } from "react";
-import { CommandPalette } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+import { CommandPalette } from "@photon-ai/kumo-solid";
 
 interface Item {
   id: string;
@@ -72,27 +72,26 @@ const items: Item[] = [
 ];
 
 export default function Example() {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [open, setOpen] = createSignal(false);
+  const [search, setSearch] = createSignal("");
 
   return (
     <>
       <button onClick={() => setOpen(true)}>Open</button>
       <CommandPalette.Root
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
         items={items}
-        value={search}
+        value={search()}
         onValueChange={setSearch}
         itemToStringValue={(item) => item.title}
-        getSelectableItems={(items) => items}
+        getSelectableItems={(items) => [...items]}
       >
         <CommandPalette.Input placeholder="Search..." />
         <CommandPalette.List>
           <CommandPalette.Results>
             {(item) => (
               <CommandPalette.Item
-                key={item.id}
                 value={item}
                 onClick={() => setOpen(false)}
               >
@@ -263,10 +262,10 @@ interface CommandPaletteRootProps<TGroup, TItem> {
   // Dialog state
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onBackdropClick?: (e: React.MouseEvent) => void;
+  onBackdropClick?: (e: MouseEvent) => void;
 
   // Autocomplete
-  items: TGroup[];
+  items: readonly TGroup[];
   value?: string;
   onValueChange?: (value: string) => void;
   itemToStringValue?: (item: TGroup) => string;
@@ -275,9 +274,9 @@ interface CommandPaletteRootProps<TGroup, TItem> {
 
   // Selection
   onSelect?: (item: TItem, options: { newTab: boolean }) => void;
-  getSelectableItems?: (items: TGroup[]) => TItem[];
+  getSelectableItems?: (items: readonly TGroup[]) => TItem[];
 
-  children: React.ReactNode;
+  children: JSX.Element;
 }
 ```
 
@@ -291,8 +290,8 @@ interface CommandPaletteResultItemProps<T> {
   titleHighlights?: [number, number][];
   breadcrumbHighlights?: [number, number][][];
   description?: string;
-  icon?: React.ReactNode;
-  onClick: (e: React.MouseEvent) => void;
+  icon?: JSX.Element;
+  onClick: (e: MouseEvent) => void;
   showArrow?: boolean; // default: true
   external?: boolean; // shows external link icon
   nonInteractive?: boolean;

@@ -7,6 +7,55 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const VIRTUAL_MODULE_ID = "virtual:kumo-registry";
 const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
 
+function solidifyRegistryString(value: string): string {
+  return value
+    .replace(
+      /https:\/\/base-ui\.com\/react\/components\/([a-z-]+)/g,
+      "https://github.com/msviderok/base-ui-solid/tree/master/packages/solid/src/$1",
+    )
+    .replace(/@cloudflare\/kumo(?!-solid)/g, "@photon-ai/kumo-solid")
+    .replace(/@base-ui\/react/g, "@msviderok/base-ui-solid")
+    .replace(
+      /@phosphor-icons\/react/g,
+      "a Solid-compatible Phosphor icon package",
+    )
+    .replace(/React\.ReactNode|ReactNode/g, "JSX.Element")
+    .replace(/React\.ReactElement|ReactElement/g, "JSX.Element")
+    .replace(/React\.ComponentType/g, "Component")
+    .replace(/React\.ElementType/g, "ValidComponent")
+    .replace(
+      /React\.HTMLAttributeAnchorTarget/g,
+      "JSX.HTMLAttributeAnchorTarget",
+    )
+    .replace(
+      /React\.HTMLInputAutoCompleteAttribute/g,
+      "JSX.HTMLInputAutoCompleteAttribute",
+    )
+    .replace(/React\.MouseEvent/g, "MouseEvent")
+    .replace(/\bReact nodes?\b/gi, "JSX content")
+    .replace(/\bReact component\b/g, "Solid component")
+    .replace(/\bReact tree\b/g, "Solid owner tree")
+    .replace(
+      /Next\.js `<Link>`, React Router `<NavLink>`/g,
+      "Solid Router `<A>`",
+    )
+    .replace(/className=/g, "class=");
+}
+
+function solidifyRegistryValue(value: unknown): unknown {
+  if (typeof value === "string") return solidifyRegistryString(value);
+  if (Array.isArray(value)) return value.map(solidifyRegistryValue);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [
+        key,
+        solidifyRegistryValue(entry),
+      ]),
+    );
+  }
+  return value;
+}
+
 /**
  * Vite plugin that provides component registry data as a virtual module.
  * Loads the markdown file at dev time, no build step required.
@@ -36,10 +85,12 @@ export function kumoRegistryPlugin() {
           readFile(registryFiles.markdown, "utf8"),
           readFile(registryFiles.json, "utf8"),
         ]);
+        const solidRegistry = solidifyRegistryValue(JSON.parse(json));
+        const solidMarkdown = solidifyRegistryString(markdown);
 
         return `
-export const kumoRegistryMarkdown = ${JSON.stringify(markdown)};
-export const kumoRegistryJson = ${json};
+export const kumoRegistryMarkdown = ${JSON.stringify(solidMarkdown)};
+export const kumoRegistryJson = ${JSON.stringify(solidRegistry)};
 `;
       }
     },

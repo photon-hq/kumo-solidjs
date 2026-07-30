@@ -1,14 +1,14 @@
-import { Button, Collapsible, Input, Text } from "@cloudflare/kumo";
-import { useState } from "react";
+import { createSignal } from "solid-js";
+import { Button, Collapsible, Input, Text } from "@photon-ai/kumo-solid";
 
 /**
  * Hero demo using DefaultTrigger and DefaultPanel for classic Kumo styling.
  */
 export function CollapsibleHeroDemo() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = createSignal(true);
   return (
-    <div className="w-full">
-      <Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>
+    <div class="w-full">
+      <Collapsible.Root open={isOpen()} onOpenChange={setIsOpen}>
         <Collapsible.DefaultTrigger>What is Kumo?</Collapsible.DefaultTrigger>
         <Collapsible.DefaultPanel>
           <Text>Kumo is Cloudflare's new design system.</Text>
@@ -22,10 +22,10 @@ export function CollapsibleHeroDemo() {
  * Basic usage with default styling components.
  */
 export function CollapsibleBasicDemo() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = createSignal(false);
   return (
-    <div className="w-full">
-      <Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>
+    <div class="w-full">
+      <Collapsible.Root open={isOpen()} onOpenChange={setIsOpen}>
         <Collapsible.DefaultTrigger>What is Kumo?</Collapsible.DefaultTrigger>
         <Collapsible.DefaultPanel>
           <Text>Kumo is Cloudflare's new design system.</Text>
@@ -39,19 +39,19 @@ export function CollapsibleBasicDemo() {
  * Multiple independent collapsibles.
  */
 export function CollapsibleMultipleDemo() {
-  const [open1, setOpen1] = useState(false);
-  const [open2, setOpen2] = useState(false);
-  const [open3, setOpen3] = useState(false);
+  const [open1, setOpen1] = createSignal(false);
+  const [open2, setOpen2] = createSignal(false);
+  const [open3, setOpen3] = createSignal(false);
 
   return (
-    <div className="w-full space-y-2">
-      <Collapsible.Root open={open1} onOpenChange={setOpen1}>
+    <div class="w-full space-y-2">
+      <Collapsible.Root open={open1()} onOpenChange={setOpen1}>
         <Collapsible.DefaultTrigger>What is Kumo?</Collapsible.DefaultTrigger>
         <Collapsible.DefaultPanel>
           <Text>Kumo is Cloudflare's new design system.</Text>
         </Collapsible.DefaultPanel>
       </Collapsible.Root>
-      <Collapsible.Root open={open2} onOpenChange={setOpen2}>
+      <Collapsible.Root open={open2()} onOpenChange={setOpen2}>
         <Collapsible.DefaultTrigger>
           How do I use it?
         </Collapsible.DefaultTrigger>
@@ -59,7 +59,7 @@ export function CollapsibleMultipleDemo() {
           <Text>Install the components and import them into your project.</Text>
         </Collapsible.DefaultPanel>
       </Collapsible.Root>
-      <Collapsible.Root open={open3} onOpenChange={setOpen3}>
+      <Collapsible.Root open={open3()} onOpenChange={setOpen3}>
         <Collapsible.DefaultTrigger>
           Is it open source?
         </Collapsible.DefaultTrigger>
@@ -75,12 +75,16 @@ export function CollapsibleMultipleDemo() {
  * Custom trigger using the render prop for full control.
  */
 export function CollapsibleCustomTriggerDemo() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = createSignal(false);
   return (
-    <div className="w-full">
-      <Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>
-        <Collapsible.Trigger render={<Button variant="secondary" size="sm" />}>
-          {isOpen ? "Hide details" : "Show details"}
+    <div class="w-full">
+      <Collapsible.Root open={isOpen()} onOpenChange={setIsOpen}>
+        <Collapsible.Trigger
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" size="sm" />
+          )}
+        >
+          {isOpen() ? "Hide details" : "Show details"}
         </Collapsible.Trigger>
         <Collapsible.Panel className="mt-3 rounded-lg bg-kumo-tint p-4">
           <Text>
@@ -97,10 +101,10 @@ export function CollapsibleCustomTriggerDemo() {
  * Keep the panel mounted in the DOM when closed to preserve internal state like form inputs.
  */
 export function CollapsibleKeepMountedDemo() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = createSignal(true);
   return (
-    <div className="w-full space-y-4">
-      <Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>
+    <div class="w-full space-y-4">
+      <Collapsible.Root open={isOpen()} onOpenChange={setIsOpen}>
         <Collapsible.DefaultTrigger>Edit details</Collapsible.DefaultTrigger>
         <Collapsible.DefaultPanel keepMounted>
           <Text>
@@ -118,7 +122,7 @@ export function CollapsibleKeepMountedDemo() {
  * Accordion pattern where only one item can be open at a time.
  */
 export function CollapsibleAccordionDemo() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(0);
+  const [activeIndex, setActiveIndex] = createSignal<number | null>(0);
 
   const items = [
     {
@@ -129,7 +133,7 @@ export function CollapsibleAccordionDemo() {
     {
       title: "How do I install it?",
       content:
-        "Run `npm install @cloudflare/kumo` and import the components you need.",
+        "Run `npm install @photon-ai/kumo-solid solid-js` and import the components you need.",
     },
     {
       title: "Is it accessible?",
@@ -139,11 +143,10 @@ export function CollapsibleAccordionDemo() {
   ];
 
   return (
-    <div className="w-full space-y-2">
+    <div class="w-full space-y-2">
       {items.map((item, i) => (
         <Collapsible.Root
-          key={i}
-          open={activeIndex === i}
+          open={activeIndex() === i}
           onOpenChange={(open) => setActiveIndex(open ? i : null)}
         >
           <Collapsible.DefaultTrigger>{item.title}</Collapsible.DefaultTrigger>

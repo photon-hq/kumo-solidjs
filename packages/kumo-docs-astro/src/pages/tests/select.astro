@@ -41,17 +41,17 @@ const codeBlockClass = "mt-3 p-3 rounded-lg bg-kumo-recessed text-xs font-mono o
       <div class="p-4 rounded-lg border border-kumo-hairline bg-kumo-base">
         <SelectStrictNullChecksDemo client:visible />
       </div>
-      <pre class={codeBlockClass}>{`const [selected, setSelected] = useState<User | null>(null);
+      <pre class={codeBlockClass}>{`const [selected, setSelected] = createSignal<User | null>(null);
 
 <Select<User>
   label="Select User"
   placeholder="Choose a user..."
-  value={selected}
+  value={selected()}
   onValueChange={(value) => setSelected(value)}  // value: User | null
   renderValue={(user) => <span>{user.name}</span>}
 >
   {users.map((user) => (
-    <Select.Option key={user.id} value={user}>
+    <Select.Option value={user}>
       {user.name}
     </Select.Option>
   ))}
@@ -80,7 +80,7 @@ const codeBlockClass = "mt-3 p-3 rounded-lg bg-kumo-recessed text-xs font-mono o
   )}
 >
   {countries.map((c) => (
-    <Select.Option key={c.code} value={c}>
+    <Select.Option value={c}>
       {c.flag} {c.name}
     </Select.Option>
   ))}
@@ -111,11 +111,11 @@ const codeBlockClass = "mt-3 p-3 rounded-lg bg-kumo-recessed text-xs font-mono o
   value={priority}
   onValueChange={setPriority}
   items={priorities.map((p) => ({
-    label: <span className={p.color}>[{p.level}] {p.name}</span>,
+    label: <span class={p.color}>[{p.level}] {p.name}</span>,
     value: p,
   }))}
   renderValue={(p) => (
-    <span className={p.color}>[{p.level}] {p.name}</span>
+    <span class={p.color}>[{p.level}] {p.name}</span>
   )}
 />`}</pre>
     </section>
@@ -158,20 +158,20 @@ const codeBlockClass = "mt-3 p-3 rounded-lg bg-kumo-recessed text-xs font-mono o
       <div class="p-4 rounded-lg border border-kumo-hairline bg-kumo-base">
         <SelectMultipleDemo client:visible />
       </div>
-      <pre class={codeBlockClass}>{`const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+      <pre class={codeBlockClass}>{`const [selectedUsers, setSelectedUsers] = createSignal<User[]>([]);
 
 <Select<User, true>                    // Note: second generic is true
   label="Select Users"
   placeholder="Choose users..."
   multiple                             // Enable multi-select
-  value={selectedUsers}                // T[] not T
+  value={selectedUsers()}              // T[] not T
   onValueChange={setSelectedUsers}     // (users: User[]) => void
   renderValue={(users) => (            // users is User[]
     <span>{users.map((u) => u.name).join(", ")}</span>
   )}
 >
   {users.map((user) => (
-    <Select.Option key={user.id} value={user}>
+    <Select.Option value={user}>
       {user.name}
     </Select.Option>
   ))}
@@ -190,9 +190,9 @@ const codeBlockClass = "mt-3 p-3 rounded-lg bg-kumo-recessed text-xs font-mono o
         <SelectControlledVsUncontrolledDemo client:visible />
       </div>
       <pre class={codeBlockClass}>{`// Controlled: you manage the state
-const [value, setValue] = useState<string | null>(null);
+const [value, setValue] = createSignal<string | null>(null);
 <Select
-  value={value}
+  value={value()}
   onValueChange={setValue}
   items={{ apple: "Apple", banana: "Banana" }}
 />
@@ -282,12 +282,12 @@ const [value, setValue] = useState<string | null>(null);
       <div class="p-4 rounded-lg border border-kumo-hairline bg-kumo-base">
         <SelectLoadingStateDemo client:visible />
       </div>
-      <pre class={codeBlockClass}>{`const [loading, setLoading] = useState(true);
+      <pre class={codeBlockClass}>{`const [loading, setLoading] = createSignal(true);
 
 <Select
   label="Data Loading"
   placeholder="Select when loaded..."
-  loading={loading}  // Shows SkeletonLine, disables trigger
+  loading={loading()}  // Shows SkeletonLine, disables trigger
   items={{ ... }}
 />`}</pre>
     </section>
@@ -330,17 +330,17 @@ const [value, setValue] = useState<string | null>(null);
         <SelectInferenceDemo client:visible />
       </div>
       <pre class={codeBlockClass}>{`// No explicit <T> - inferred from items/value
-const [value, setValue] = useState<string | null>(null);
+const [value, setValue] = createSignal<string | null>(null);
 
 <Select
-  value={value}
+  value={value()}
   onValueChange={(v) => setValue(v)}  // v inferred as string | null
   items={{ foo: "Foo", bar: "Bar" }}
 />
 
 // With explicit generic for complex types
 <Select<User>
-  value={user}
+  value={user()}
   onValueChange={setUser}
   renderValue={(u) => u.name}  // u is User, not unknown
 >

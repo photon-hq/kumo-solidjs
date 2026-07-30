@@ -40,7 +40,7 @@ import {
   CloudflareLogo,
   PoweredByCloudflare,
   generateCloudflareLogoSvg,
-} from "@cloudflare/kumo";
+} from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
@@ -50,7 +50,7 @@ import {
   CloudflareLogo,
   PoweredByCloudflare,
   generateCloudflareLogoSvg,
-} from "@cloudflare/kumo/components/cloudflare-logo";
+} from "@photon-ai/kumo-solid/components/cloudflare-logo";
 ```
 
 </ComponentSection>
@@ -62,10 +62,10 @@ import {
 ## Usage
 
 ```tsx
-import { CloudflareLogo } from "@cloudflare/kumo";
+import { CloudflareLogo } from "@photon-ai/kumo-solid";
 
 export default function Example() {
-  return <CloudflareLogo className="w-36" />;
+  return <CloudflareLogo class="w-36" />;
 }
 ```
 
@@ -157,11 +157,12 @@ export default function Example() {
 ## SVG Generation
 
   <p>
-    Use <code>generateCloudflareLogoSvg()</code> to get copy-paste ready SVG markup for non-React contexts.
+    Use <code>generateCloudflareLogoSvg()</code> to get copy-paste-ready SVG
+    markup for static HTML, email templates, and other non-component contexts.
   </p>
 
 ```tsx
-import { generateCloudflareLogoSvg } from "@cloudflare/kumo";
+import { generateCloudflareLogoSvg } from "@photon-ai/kumo-solid";
 
 // Generate glyph SVG (cloud only)
 const glyphSvg = generateCloudflareLogoSvg({ variant: "glyph" });

@@ -1,28 +1,31 @@
-"use client";
-
-import { useState } from "react";
-import { DatePicker, Popover, Button, type DateRange } from "@cloudflare/kumo";
-import { CalendarDotsIcon } from "@phosphor-icons/react";
+import { createSignal } from "solid-js";
+import {
+  DatePicker,
+  Popover,
+  Button,
+  type DateRange,
+} from "@photon-ai/kumo-solid";
+import { CalendarDotsIcon } from "~/components/icons";
 
 /**
  * Single date selection.
  */
 export function DatePickerSingleDemo() {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = createSignal<Date | undefined>();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <DatePicker
         mode="single"
-        selected={date}
+        selected={date()}
         onChange={(d) => {
           if (d) {
             setDate(d);
           }
         }}
       />
-      <p className="text-sm text-kumo-subtle">
-        Selected: {date ? date.toLocaleDateString() : "None"}
+      <p class="text-sm text-kumo-subtle">
+        Selected: {date()?.toLocaleDateString() ?? "None"}
       </p>
     </div>
   );
@@ -32,18 +35,18 @@ export function DatePickerSingleDemo() {
  * Multiple date selection with a maximum of 5 dates.
  */
 export function DatePickerMultipleDemo() {
-  const [dates, setDates] = useState<Date[] | undefined>();
+  const [dates, setDates] = createSignal<Date[] | undefined>();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <DatePicker
         mode="multiple"
-        selected={dates}
+        selected={dates()}
         onChange={setDates}
         max={5}
       />
-      <p className="text-sm text-kumo-subtle">
-        Selected: {dates?.length ?? 0} date(s)
+      <p class="text-sm text-kumo-subtle">
+        Selected: {dates()?.length ?? 0} date(s)
       </p>
     </div>
   );
@@ -53,22 +56,22 @@ export function DatePickerMultipleDemo() {
  * Date range selection with two months displayed.
  */
 export function DatePickerRangeDemo() {
-  const [range, setRange] = useState<DateRange | undefined>();
+  const [range, setRange] = createSignal<DateRange | undefined>();
+  const formattedRange = () => {
+    const current = range();
+    if (!current?.from) return "None";
+    return `${current.from.toLocaleDateString()} - ${current.to?.toLocaleDateString() ?? "..."}`;
+  };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <DatePicker
         mode="range"
-        selected={range}
+        selected={range()}
         onChange={setRange}
         numberOfMonths={2}
       />
-      <p className="text-sm text-kumo-subtle">
-        Range:{" "}
-        {range?.from
-          ? `${range.from.toLocaleDateString()} - ${range.to?.toLocaleDateString() ?? "..."}`
-          : "None"}
-      </p>
+      <p class="text-sm text-kumo-subtle">Range: {formattedRange()}</p>
     </div>
   );
 }
@@ -77,19 +80,17 @@ export function DatePickerRangeDemo() {
  * Date range with minimum 3 nights and maximum 7 nights.
  */
 export function DatePickerRangeMinMaxDemo() {
-  const [range, setRange] = useState<DateRange | undefined>();
+  const [range, setRange] = createSignal<DateRange | undefined>();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <DatePicker
         mode="range"
-        selected={range}
+        selected={range()}
         onChange={setRange}
         min={3}
         max={7}
-        footer={
-          <span className="text-xs text-kumo-subtle">Select 3-7 nights</span>
-        }
+        footer={<span class="text-xs text-kumo-subtle">Select 3-7 nights</span>}
       />
     </div>
   );
@@ -99,17 +100,19 @@ export function DatePickerRangeMinMaxDemo() {
  * Date picker composed with a Popover for dropdown behavior.
  */
 export function DatePickerPopoverDemo() {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = createSignal<Date | undefined>();
 
   return (
     <Popover>
       <Popover.Trigger
-        render={<Button variant="outline" icon={CalendarDotsIcon} />}
+        render={(renderProps) => (
+          <Button {...renderProps} variant="outline" icon={CalendarDotsIcon} />
+        )}
       >
-        {date ? date.toLocaleDateString() : "Pick a date"}
+        {date()?.toLocaleDateString() ?? "Pick a date"}
       </Popover.Trigger>
       <Popover.Content className="p-3">
-        <DatePicker mode="single" selected={date} onChange={setDate} />
+        <DatePicker mode="single" selected={date()} onChange={setDate} />
       </Popover.Content>
     </Popover>
   );
@@ -119,25 +122,28 @@ export function DatePickerPopoverDemo() {
  * Date range picker composed with a Popover for dropdown behavior.
  */
 export function DatePickerRangePopoverDemo() {
-  const [range, setRange] = useState<DateRange | undefined>();
+  const [range, setRange] = createSignal<DateRange | undefined>();
 
   const formatRange = () => {
-    if (!range?.from) return "Select dates";
-    if (!range.to) return range.from.toLocaleDateString();
-    return `${range.from.toLocaleDateString()} – ${range.to.toLocaleDateString()}`;
+    const current = range();
+    if (!current?.from) return "Select dates";
+    if (!current.to) return current.from.toLocaleDateString();
+    return `${current.from.toLocaleDateString()} – ${current.to.toLocaleDateString()}`;
   };
 
   return (
     <Popover>
       <Popover.Trigger
-        render={<Button variant="outline" icon={CalendarDotsIcon} />}
+        render={(renderProps) => (
+          <Button {...renderProps} variant="outline" icon={CalendarDotsIcon} />
+        )}
       >
         {formatRange()}
       </Popover.Trigger>
       <Popover.Content className="p-3">
         <DatePicker
           mode="range"
-          selected={range}
+          selected={range()}
           onChange={setRange}
           numberOfMonths={2}
         />
@@ -150,8 +156,8 @@ export function DatePickerRangePopoverDemo() {
  * Date range picker with preset options in a popover.
  */
 export function DatePickerRangeWithPresetsDemo() {
-  const [range, setRange] = useState<DateRange | undefined>();
-  const [month, setMonth] = useState<Date>(new Date());
+  const [range, setRange] = createSignal<DateRange | undefined>();
+  const [month, setMonth] = createSignal<Date>(new Date());
 
   const today = new Date();
 
@@ -206,39 +212,48 @@ export function DatePickerRangeWithPresetsDemo() {
   };
 
   const isPresetActive = (preset: { range: DateRange }) => {
-    if (!range?.from || !range?.to || !preset.range.from || !preset.range.to)
+    const current = range();
+    if (
+      !current?.from ||
+      !current.to ||
+      !preset.range.from ||
+      !preset.range.to
+    ) {
       return false;
+    }
     // Compare dates only (ignore time)
     const sameFrom =
-      range.from.toDateString() === preset.range.from.toDateString();
-    const sameTo = range.to.toDateString() === preset.range.to.toDateString();
+      current.from.toDateString() === preset.range.from.toDateString();
+    const sameTo = current.to.toDateString() === preset.range.to.toDateString();
     return sameFrom && sameTo;
   };
 
   const formatRange = () => {
-    if (!range?.from) return "Select dates";
-    if (!range.to) return range.from.toLocaleDateString();
-    return `${range.from.toLocaleDateString()} – ${range.to.toLocaleDateString()}`;
+    const current = range();
+    if (!current?.from) return "Select dates";
+    if (!current.to) return current.from.toLocaleDateString();
+    return `${current.from.toLocaleDateString()} – ${current.to.toLocaleDateString()}`;
   };
 
   return (
     <Popover>
       <Popover.Trigger
-        render={<Button variant="outline" icon={CalendarDotsIcon} />}
+        render={(renderProps) => (
+          <Button {...renderProps} variant="outline" icon={CalendarDotsIcon} />
+        )}
       >
         {formatRange()}
       </Popover.Trigger>
       <Popover.Content className="p-0">
-        <div className="flex">
-          <div className="flex flex-col gap-1 border-r border-kumo-hairline p-2 text-sm">
+        <div class="flex">
+          <div class="flex flex-col gap-1 border-r border-kumo-hairline p-2 text-sm">
             {presets.map((preset) => {
               const isActive = isPresetActive(preset);
               return (
                 <button
-                  key={preset.label}
                   type="button"
                   onClick={() => handlePresetClick(preset)}
-                  className={`rounded-md px-3 py-1.5 text-left whitespace-nowrap ${
+                  class={`rounded-md px-3 py-1.5 text-left whitespace-nowrap ${
                     isActive
                       ? "bg-kumo-bg-inverse text-kumo-text-inverse"
                       : "text-kumo-subtle hover:bg-kumo-control"
@@ -249,12 +264,12 @@ export function DatePickerRangeWithPresetsDemo() {
               );
             })}
           </div>
-          <div className="p-3">
+          <div class="p-3">
             <DatePicker
               mode="range"
-              selected={range}
+              selected={range()}
               onChange={setRange}
-              month={month}
+              month={month()}
               onMonthChange={setMonth}
               numberOfMonths={2}
             />
@@ -269,7 +284,7 @@ export function DatePickerRangeWithPresetsDemo() {
  * Date picker with disabled dates and a footer showing usage limits.
  */
 export function DatePickerDisabledWithFooterDemo() {
-  const [dates, setDates] = useState<Date[] | undefined>();
+  const [dates, setDates] = createSignal<Date[] | undefined>();
   const today = new Date();
 
   // Example: some dates are already used/unavailable
@@ -280,20 +295,21 @@ export function DatePickerDisabledWithFooterDemo() {
     new Date(today.getFullYear(), today.getMonth(), 25),
   ];
 
-  const selectedCount = dates?.length ?? 0;
+  const selectedCount = () => dates()?.length ?? 0;
   const maxDays = 5;
 
   return (
     <DatePicker
       mode="multiple"
-      selected={dates}
+      selected={dates()}
       onChange={setDates}
       max={maxDays}
       disabled={unavailableDates}
       fixedWeeks
       footer={
-        <p className="w-full pt-2 text-xs text-kumo-subtle">
-          {selectedCount}/{maxDays} days selected. Grayed dates are unavailable.
+        <p class="w-full pt-2 text-xs text-kumo-subtle">
+          {selectedCount()}/{maxDays} days selected. Grayed dates are
+          unavailable.
         </p>
       }
     />

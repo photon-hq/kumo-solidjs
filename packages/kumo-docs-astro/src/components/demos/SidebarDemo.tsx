@@ -1,10 +1,12 @@
+import { createMemo, createSignal, type Component, type JSX } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import {
   Sidebar,
   useSidebar,
   DropdownMenu,
   Breadcrumbs,
   type SidebarState,
-} from "@cloudflare/kumo";
+} from "@photon-ai/kumo-solid";
 import {
   HouseIcon,
   GlobeIcon,
@@ -27,24 +29,23 @@ import {
   ClockCounterClockwiseIcon,
   FileMagnifyingGlassIcon,
   ChartPieIcon,
-} from "@phosphor-icons/react";
-import { Fragment, useState } from "react";
+} from "~/components/icons";
 
 // ---------------------------------------------------------------------------
 // Shared helpers
 // ---------------------------------------------------------------------------
 
-function DemoContainer({ children }: { children: React.ReactNode }) {
+function DemoContainer({ children }: { children: JSX.Element }) {
   return (
-    <div className="relative h-[540px] w-full overflow-hidden rounded-lg border border-kumo-line bg-kumo-base">
+    <div class="relative h-[540px] w-full overflow-hidden rounded-lg border border-kumo-line bg-kumo-base">
       {children}
     </div>
   );
 }
 
-function DemoMain({ children }: { children?: React.ReactNode }) {
+function DemoMain({ children }: { children?: JSX.Element }) {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-2 p-8 text-base text-kumo-subtle">
+    <main class="flex flex-1 flex-col items-center justify-center gap-2 p-8 text-base text-kumo-subtle">
       {children ?? "Main content area"}
     </main>
   );
@@ -52,9 +53,9 @@ function DemoMain({ children }: { children?: React.ReactNode }) {
 
 function BrandLogo() {
   return (
-    <div className="flex w-full min-w-0 items-center gap-2 px-3 transition-[padding] duration-(--sidebar-animation-duration) ease-(--sidebar-easing) group-data-[state=collapsed]/sidebar:px-2">
+    <div class="flex w-full min-w-0 items-center gap-2 px-3 transition-[padding] duration-(--sidebar-animation-duration) ease-(--sidebar-easing) group-data-[state=collapsed]/sidebar:px-2">
       <CubeIcon className="size-4 shrink-0 text-kumo-brand" weight="duotone" />
-      <span className="flex-1 truncate text-sm font-semibold text-kumo-strong">
+      <span class="flex-1 truncate text-sm font-semibold text-kumo-strong">
         Company
       </span>
     </div>
@@ -68,39 +69,40 @@ const accounts = [
 ];
 
 function AccountSwitcher() {
-  const [active, setActive] = useState(accounts[0]);
+  const [active, setActive] = createSignal(accounts[0]);
 
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger
-        render={
+        render={(renderProps) => (
           <button
+            {...renderProps}
             type="button"
-            className="flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-kumo-default transition-[padding] duration-(--sidebar-animation-duration) ease-(--sidebar-easing) outline-none hover:bg-kumo-tint focus-visible:ring-1 focus-visible:ring-kumo-line"
+            class="flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-kumo-default transition-[padding] duration-(--sidebar-animation-duration) ease-(--sidebar-easing) outline-none hover:bg-kumo-tint focus-visible:ring-1 focus-visible:ring-kumo-line"
           >
-            <active.icon
+            <Dynamic
+              component={active().icon}
               className="size-4 shrink-0 text-kumo-brand"
               weight="duotone"
             />
-            <span className="flex min-w-0 flex-1 items-center overflow-hidden text-left">
-              {active.name}
+            <span class="flex min-w-0 flex-1 items-center overflow-hidden text-left">
+              {active().name}
             </span>
-            <span className="w-4 shrink-0 overflow-hidden transition-[width] duration-(--sidebar-animation-duration) ease-(--sidebar-easing) group-data-[state=collapsed]/sidebar:w-0">
+            <span class="w-4 shrink-0 overflow-hidden transition-[width] duration-(--sidebar-animation-duration) ease-(--sidebar-easing) group-data-[state=collapsed]/sidebar:w-0">
               <CaretUpDownIcon className="size-4 text-kumo-subtle" />
             </span>
           </button>
-        }
+        )}
       />
       <DropdownMenu.Content className="w-(--anchor-width)">
         {accounts.map((account) => (
           <DropdownMenu.Item
-            key={account.id}
             className="cursor-pointer gap-2"
             onClick={() => setActive(account)}
           >
             <account.icon className="size-4 text-kumo-brand" weight="duotone" />
             {account.name}
-            {account.id === active.id && (
+            {account.id === active().id && (
               <CheckIcon className="ml-auto size-4" />
             )}
           </DropdownMenu.Item>
@@ -129,12 +131,12 @@ function AccountAvatar({ name, size = 28 }: { name: string; size?: number }) {
   return (
     <span
       aria-hidden
-      style={{ width: size, height: size }}
-      className="flex shrink-0 items-center justify-center rounded-[30%] bg-kumo-control text-kumo-default shadow-xs ring ring-kumo-line"
+      style={{ width: `${size}px`, height: `${size}px` }}
+      class="flex shrink-0 items-center justify-center rounded-[30%] bg-kumo-control text-kumo-default shadow-xs ring ring-kumo-line"
     >
       <span
-        className="leading-none font-semibold tracking-tight"
-        style={{ fontSize: size * 0.4 }}
+        class="leading-none font-semibold tracking-tight"
+        style={{ "font-size": `${size * 0.4}px` }}
       >
         {initialsFor(name)}
       </span>
@@ -147,31 +149,31 @@ function AccountAvatar({ name, size = 28 }: { name: string; size?: number }) {
  * freeing the header row for the breadcrumb trail.
  */
 function CompactAccountSwitcher() {
-  const [active, setActive] = useState(accounts[0]);
+  const [active, setActive] = createSignal(accounts[0]);
 
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger
-        render={
+        render={(renderProps) => (
           <button
+            {...renderProps}
             type="button"
-            aria-label={`Account: ${active.name}`}
-            className="shrink-0 cursor-pointer rounded-full transition-opacity outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-kumo-line"
+            aria-label={`Account: ${active().name}`}
+            class="shrink-0 cursor-pointer rounded-full transition-opacity outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-kumo-line"
           >
-            <AccountAvatar name={active.name} />
+            <AccountAvatar name={active().name} />
           </button>
-        }
+        )}
       />
       <DropdownMenu.Content align="start">
         {accounts.map((account) => (
           <DropdownMenu.Item
-            key={account.id}
             className="cursor-pointer gap-2"
             onClick={() => setActive(account)}
           >
             <AccountAvatar name={account.name} size={20} />
             {account.name}
-            {account.id === active.id && (
+            {account.id === active().id && (
               <CheckIcon className="ml-auto size-4" />
             )}
           </DropdownMenu.Item>
@@ -213,24 +215,24 @@ export function SidebarBasicDemo() {
                 <Sidebar.MenuItem>
                   <Sidebar.Collapsible defaultOpen>
                     <Sidebar.CollapsibleTrigger
-                      render={
-                        <Sidebar.MenuButton icon={CodeIcon}>
+                      render={(renderProps) => (
+                        <Sidebar.MenuButton {...renderProps} icon={CodeIcon}>
                           Compute
                           <Sidebar.MenuChevron />
                         </Sidebar.MenuButton>
-                      }
+                      )}
                     />
                     <Sidebar.CollapsibleContent>
                       <Sidebar.MenuSub>
                         <Sidebar.MenuSubItem>
                           <Sidebar.Collapsible>
                             <Sidebar.CollapsibleTrigger
-                              render={
-                                <Sidebar.MenuSubButton>
+                              render={(renderProps) => (
+                                <Sidebar.MenuSubButton {...renderProps}>
                                   Workers & Pages
                                   <Sidebar.MenuChevron />
                                 </Sidebar.MenuSubButton>
-                              }
+                              )}
                             />
                             <Sidebar.CollapsibleContent>
                               <Sidebar.MenuSub>
@@ -277,7 +279,7 @@ function ToggleButton() {
     <button
       type="button"
       onClick={toggleSidebar}
-      className="cursor-pointer rounded-lg border border-kumo-line bg-kumo-base px-3 py-1.5 text-base text-kumo-default transition-colors hover:bg-kumo-tint"
+      class="cursor-pointer rounded-lg border border-kumo-line bg-kumo-base px-3 py-1.5 text-base text-kumo-default transition-colors hover:bg-kumo-tint"
     >
       {state === "expanded" ? "Collapse" : "Expand"}
     </button>
@@ -330,7 +332,7 @@ export function SidebarToggleDemo() {
 
 /** Loading state: nav-item-shaped skeleton rows shown until the nav is ready. */
 export function SidebarLoadingDemo() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = createSignal(true);
   return (
     <DemoContainer>
       <Sidebar.Provider contained defaultOpen className="h-full min-h-0!">
@@ -338,7 +340,7 @@ export function SidebarLoadingDemo() {
           <Sidebar.Header>
             <BrandLogo />
           </Sidebar.Header>
-          {loading ? (
+          {loading() ? (
             <Sidebar.Loading />
           ) : (
             <Sidebar.Content>
@@ -368,9 +370,9 @@ export function SidebarLoadingDemo() {
           <button
             type="button"
             onClick={() => setLoading((l) => !l)}
-            className="cursor-pointer rounded-lg border border-kumo-line bg-kumo-base px-3 py-1.5 text-base text-kumo-default transition-colors hover:bg-kumo-tint"
+            class="cursor-pointer rounded-lg border border-kumo-line bg-kumo-base px-3 py-1.5 text-base text-kumo-default transition-colors hover:bg-kumo-tint"
           >
-            {loading ? "Show loaded nav" : "Show loading"}
+            {loading() ? "Show loaded nav" : "Show loading"}
           </button>
           <p>Toggle to compare the loading state with the loaded nav</p>
         </DemoMain>
@@ -476,8 +478,8 @@ function PeekStateIndicator() {
     peeking: "Peeking",
   };
   return (
-    <div className="flex flex-col items-center gap-2">
-      <span className="text font-medium text-kumo-default">
+    <div class="flex flex-col items-center gap-2">
+      <span class="text font-medium text-kumo-default">
         State: {labels[state]}
       </span>
       <p>Collapse, then hover the sidebar to peek</p>
@@ -536,7 +538,7 @@ export function SidebarPeekingDemo() {
 /** Long sidebar where opening a lower collapsible scrolls its revealed content into view. */
 export function SidebarAutoScrollDemo() {
   return (
-    <div className="relative h-[420px] w-full overflow-hidden rounded-lg border border-kumo-line bg-kumo-base">
+    <div class="relative h-[420px] w-full overflow-hidden rounded-lg border border-kumo-line bg-kumo-base">
       <Sidebar.Provider contained defaultOpen className="h-full min-h-0!">
         <Sidebar>
           <Sidebar.Header>
@@ -582,12 +584,12 @@ export function SidebarAutoScrollDemo() {
                 <Sidebar.MenuItem>
                   <Sidebar.Collapsible autoScrollOnOpen>
                     <Sidebar.CollapsibleTrigger
-                      render={
-                        <Sidebar.MenuButton icon={CodeIcon}>
+                      render={(renderProps) => (
+                        <Sidebar.MenuButton {...renderProps} icon={CodeIcon}>
                           Workers
                           <Sidebar.MenuChevron />
                         </Sidebar.MenuButton>
-                      }
+                      )}
                     />
                     <Sidebar.CollapsibleContent>
                       <Sidebar.MenuSub>
@@ -628,7 +630,7 @@ export function SidebarAutoScrollDemo() {
 
 /** Sidebar with animated sliding views between Account and Zone navigation. */
 export function SidebarSlidingViewsDemo() {
-  const [surface, setSurface] = useState<"account" | "zone">("account");
+  const [surface, setSurface] = createSignal<"account" | "zone">("account");
 
   return (
     <DemoContainer>
@@ -640,18 +642,18 @@ export function SidebarSlidingViewsDemo() {
               onClick={() =>
                 setSurface((s) => (s === "account" ? "zone" : "account"))
               }
-              className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint"
+              class="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint"
             >
               <ArrowsLeftRightIcon className="size-4 shrink-0 text-kumo-brand" />
-              <span className="flex-1 text-left font-semibold text-kumo-strong">
-                {surface === "account" ? "Account Nav" : "Zone Nav"}
+              <span class="flex-1 text-left font-semibold text-kumo-strong">
+                {surface() === "account" ? "Account Nav" : "Zone Nav"}
               </span>
             </button>
           </Sidebar.Header>
 
           <Sidebar.SlidingViews
-            activeKey={surface}
-            direction={surface === "zone" ? "left" : "right"}
+            activeKey={surface()}
+            direction={surface() === "zone" ? "left" : "right"}
           >
             <Sidebar.SlidingView value="account">
               <Sidebar.Content>
@@ -699,9 +701,9 @@ export function SidebarSlidingViewsDemo() {
           </Sidebar.SlidingViews>
         </Sidebar>
         <DemoMain>
-          <div className="flex flex-col items-center gap-2">
-            <p className="font-medium text-kumo-default">
-              Active: {surface === "account" ? "Account" : "Zone"} surface
+          <div class="flex flex-col items-center gap-2">
+            <p class="font-medium text-kumo-default">
+              Active: {surface() === "account" ? "Account" : "Zone"} surface
             </p>
             <p>Click the header button to slide between views</p>
           </div>
@@ -717,7 +719,7 @@ export function SidebarSlidingViewsDemo() {
 
 /** Kitchen sink sidebar showcasing every subcomponent: header with account switcher, groups with labels, collapsible sections with nested expandable, badges, sliding views via Domains, and a footer trigger. */
 export function SidebarFullDemo() {
-  const [surface, setSurface] = useState<"account" | "domain">("account");
+  const [surface, setSurface] = createSignal<"account" | "domain">("account");
 
   return (
     <DemoContainer>
@@ -732,8 +734,8 @@ export function SidebarFullDemo() {
             <AccountSwitcher />
           </Sidebar.Header>
           <Sidebar.SlidingViews
-            activeKey={surface}
-            direction={surface === "domain" ? "left" : "right"}
+            activeKey={surface()}
+            direction={surface() === "domain" ? "left" : "right"}
           >
             <Sidebar.SlidingView value="account">
               <Sidebar.Content>
@@ -771,24 +773,27 @@ export function SidebarFullDemo() {
                     <Sidebar.MenuItem>
                       <Sidebar.Collapsible defaultOpen>
                         <Sidebar.CollapsibleTrigger
-                          render={
-                            <Sidebar.MenuButton icon={CodeIcon}>
+                          render={(renderProps) => (
+                            <Sidebar.MenuButton
+                              {...renderProps}
+                              icon={CodeIcon}
+                            >
                               Compute
                               <Sidebar.MenuChevron />
                             </Sidebar.MenuButton>
-                          }
+                          )}
                         />
                         <Sidebar.CollapsibleContent>
                           <Sidebar.MenuSub>
                             <Sidebar.MenuSubItem>
                               <Sidebar.Collapsible>
                                 <Sidebar.CollapsibleTrigger
-                                  render={
-                                    <Sidebar.MenuSubButton>
+                                  render={(renderProps) => (
+                                    <Sidebar.MenuSubButton {...renderProps}>
                                       Workers & Pages
                                       <Sidebar.MenuChevron />
                                     </Sidebar.MenuSubButton>
-                                  }
+                                  )}
                                 />
                                 <Sidebar.CollapsibleContent>
                                   <Sidebar.MenuSub>
@@ -893,7 +898,7 @@ function MobileToggleButton() {
     <button
       type="button"
       onClick={toggleSidebar}
-      className="cursor-pointer rounded-lg border border-kumo-line bg-kumo-base px-3 py-1.5 text-base text-kumo-default transition-colors hover:bg-kumo-tint"
+      class="cursor-pointer rounded-lg border border-kumo-line bg-kumo-base px-3 py-1.5 text-base text-kumo-default transition-colors hover:bg-kumo-tint"
     >
       {openMobile ? "Close sidebar" : "Open sidebar"}
     </button>
@@ -903,7 +908,7 @@ function MobileToggleButton() {
 /** Mobile sidebar demo. Uses a high `mobileBreakpoint` to force mobile mode at any viewport width. */
 export function SidebarMobileDemo() {
   return (
-    <div className="relative h-[540px] w-full overflow-hidden rounded-lg border border-kumo-line bg-kumo-base">
+    <div class="relative h-[540px] w-full overflow-hidden rounded-lg border border-kumo-line bg-kumo-base">
       <Sidebar.Provider contained mobileBreakpoint={9999} className="h-full">
         <Sidebar>
           <Sidebar.Header>
@@ -942,7 +947,7 @@ export function SidebarMobileDemo() {
         <DemoMain>
           <MobileToggleButton />
           <p>Click the button to open the mobile sidebar</p>
-          <p className="text-sm text-kumo-subtle">
+          <p class="text-sm text-kumo-subtle">
             Press Escape or click the backdrop to close
           </p>
         </DemoMain>
@@ -957,16 +962,16 @@ export function SidebarMobileDemo() {
 /** A node in the nav tree. Leaves are navigable; branches expand. */
 interface NavNode {
   label: string;
-  icon?: React.ElementType;
+  icon?: Component;
   /** Small status pill, e.g. "Beta" / "New". */
   badge?: string;
   children?: NavNode[];
 }
 
 /** Status pill used beside nav labels. */
-function NavBadge({ children }: { children: React.ReactNode }) {
+function NavBadge({ children }: { children: JSX.Element }) {
   return (
-    <span className="ml-1.5 shrink-0 rounded-full border border-dashed border-kumo-line px-1.5 py-px text-[10px] font-medium text-kumo-subtle">
+    <span class="ml-1.5 shrink-0 rounded-full border border-dashed border-kumo-line px-1.5 py-px text-[10px] font-medium text-kumo-subtle">
       {children}
     </span>
   );
@@ -977,11 +982,11 @@ function QuickSearch() {
   return (
     <button
       type="button"
-      className="group flex h-8 w-full shrink-0 cursor-pointer items-center gap-2 overflow-x-clip rounded-lg border-0 bg-kumo-base px-3 text-left text-sm font-normal !text-kumo-default shadow-xs ring ring-kumo-line transition-[color,background,border,box-shadow] duration-250 select-none not-disabled:hover:bg-kumo-tint focus:ring-kumo-focus/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand"
+      class="group flex h-8 w-full shrink-0 cursor-pointer items-center gap-2 overflow-x-clip rounded-lg border-0 bg-kumo-base px-3 text-left text-sm font-normal !text-kumo-default shadow-xs ring ring-kumo-line transition-[color,background,border,box-shadow] duration-250 select-none not-disabled:hover:bg-kumo-tint focus:ring-kumo-focus/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand"
     >
       <MagnifyingGlassIcon className="size-4 shrink-0" />
-      <span className="flex-1 text-left">Quick search...</span>
-      <kbd className="shrink-0 font-sans text-xs text-kumo-subtle">⌘K</kbd>
+      <span class="flex-1 text-left">Quick search...</span>
+      <kbd class="shrink-0 font-sans text-xs text-kumo-subtle">⌘K</kbd>
     </button>
   );
 }
@@ -1069,12 +1074,7 @@ const NAV_TREE: { group: string | null; items: NavNode[] }[] = [
  * Renders a nav subtree. Branches are collapsible and auto-open when they are
  * on the selected path; leaves select and close the nav.
  */
-function NavSubtree({
-  nodes,
-  path,
-  selected,
-  onSelect,
-}: {
+function NavSubtree(props: {
   nodes: NavNode[];
   path: string[];
   selected: string[];
@@ -1082,16 +1082,19 @@ function NavSubtree({
 }) {
   return (
     <Sidebar.MenuSub>
-      {nodes.map((node) => {
-        const nodePath = [...path, node.label];
-        const onSelectedPath = nodePath.every((p, i) => selected[i] === p);
+      {props.nodes.map((node) => {
+        const nodePath = [...props.path, node.label];
+        const onSelectedPath = () =>
+          nodePath.every((part, index) => props.selected[index] === part);
 
         if (!node.children) {
           return (
-            <Sidebar.MenuSubItem key={node.label}>
+            <Sidebar.MenuSubItem>
               <Sidebar.MenuSubButton
-                active={onSelectedPath && selected.length === nodePath.length}
-                onClick={() => onSelect(nodePath)}
+                active={
+                  onSelectedPath() && props.selected.length === nodePath.length
+                }
+                onClick={() => props.onSelect(nodePath)}
               >
                 {node.label}
                 {node.badge && <NavBadge>{node.badge}</NavBadge>}
@@ -1101,22 +1104,22 @@ function NavSubtree({
         }
 
         return (
-          <Sidebar.MenuSubItem key={node.label}>
-            <Sidebar.Collapsible defaultOpen={onSelectedPath}>
+          <Sidebar.MenuSubItem>
+            <Sidebar.Collapsible defaultOpen={onSelectedPath()}>
               <Sidebar.CollapsibleTrigger
-                render={
-                  <Sidebar.MenuSubButton>
+                render={(renderProps) => (
+                  <Sidebar.MenuSubButton {...renderProps}>
                     {node.label}
                     <Sidebar.MenuChevron />
                   </Sidebar.MenuSubButton>
-                }
+                )}
               />
               <Sidebar.CollapsibleContent>
                 <NavSubtree
                   nodes={node.children}
                   path={nodePath}
-                  selected={selected}
-                  onSelect={onSelect}
+                  selected={props.selected}
+                  onSelect={props.onSelect}
                 />
               </Sidebar.CollapsibleContent>
             </Sidebar.Collapsible>
@@ -1128,35 +1131,31 @@ function NavSubtree({
 }
 
 /** Closes the mobile nav after a leaf is chosen, mirroring real navigation. */
-function NavTree({
-  selected,
-  onSelect,
-}: {
+function NavTree(props: {
   selected: string[];
   onSelect: (path: string[]) => void;
 }) {
   const { setOpenMobile } = useSidebar();
   const select = (path: string[]) => {
-    onSelect(path);
+    props.onSelect(path);
     setOpenMobile(false);
   };
 
   return (
     <>
       {NAV_TREE.map(({ group, items }) => (
-        <Sidebar.Group key={group ?? "root"}>
+        <Sidebar.Group>
           {group && <Sidebar.GroupLabel>{group}</Sidebar.GroupLabel>}
           <Sidebar.Menu>
             {items.map((node) => {
               const nodePath = [node.label];
-              const onSelectedPath = selected[0] === node.label;
+              const onSelectedPath = () => props.selected[0] === node.label;
 
               if (!node.children) {
                 return (
                   <Sidebar.MenuButton
-                    key={node.label}
                     icon={node.icon}
-                    active={onSelectedPath && selected.length === 1}
+                    active={onSelectedPath() && props.selected.length === 1}
                     onClick={() => select(nodePath)}
                   >
                     {node.label}
@@ -1165,21 +1164,21 @@ function NavTree({
               }
 
               return (
-                <Sidebar.MenuItem key={node.label}>
-                  <Sidebar.Collapsible defaultOpen={onSelectedPath}>
+                <Sidebar.MenuItem>
+                  <Sidebar.Collapsible defaultOpen={onSelectedPath()}>
                     <Sidebar.CollapsibleTrigger
-                      render={
-                        <Sidebar.MenuButton icon={node.icon}>
+                      render={(renderProps) => (
+                        <Sidebar.MenuButton {...renderProps} icon={node.icon}>
                           {node.label}
                           <Sidebar.MenuChevron />
                         </Sidebar.MenuButton>
-                      }
+                      )}
                     />
                     <Sidebar.CollapsibleContent>
                       <NavSubtree
                         nodes={node.children}
                         path={nodePath}
-                        selected={selected}
+                        selected={props.selected}
                         onSelect={select}
                       />
                     </Sidebar.CollapsibleContent>
@@ -1201,14 +1200,17 @@ function NavTree({
  */
 export function SidebarFullScreenMobileDemo() {
   // Deep default selection, so the trail starts in a realistic overflow state.
-  const [selected, setSelected] = useState(["Analytics", "Account analytics"]);
+  const [selected, setSelected] = createSignal([
+    "Analytics",
+    "Account analytics",
+  ]);
   // Narrower than the demo box, so overflow collapsing is visible without
   // needing to resize the browser.
-  const [width, setWidth] = useState(390);
+  const [width, setWidth] = createSignal(390);
 
   // Trail derived from the selection: ancestors collapse, leaf is current.
-  const ancestors = selected.slice(0, -1);
-  const current = selected[selected.length - 1];
+  const ancestors = createMemo(() => selected().slice(0, -1));
+  const current = createMemo(() => selected()[selected().length - 1]);
   // No overflow machinery: render the trail plainly and let the leaf truncate
   // when it runs out of room. Simpler, and the route stays readable because it
   // is the only thing allowed to shrink.
@@ -1217,24 +1219,24 @@ export function SidebarFullScreenMobileDemo() {
   const trail = ancestors;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div class="flex flex-col gap-3">
       {/* Width control — stands in for resizing a real phone viewport. */}
-      <label className="flex items-center gap-3 text-sm text-kumo-subtle">
-        <span className="shrink-0">Viewport</span>
+      <label class="flex items-center gap-3 text-sm text-kumo-subtle">
+        <span class="shrink-0">Viewport</span>
         <input
           type="range"
           min={280}
           max={720}
-          value={width}
-          onChange={(e) => setWidth(Number(e.target.value))}
-          className="flex-1 cursor-pointer"
+          value={width()}
+          onInput={(e) => setWidth(Number(e.target.value))}
+          class="flex-1 cursor-pointer"
         />
-        <span className="w-14 shrink-0 text-right tabular-nums">{width}px</span>
+        <span class="w-14 shrink-0 text-right tabular-nums">{width()}px</span>
       </label>
 
       <div
-        className="relative h-[540px] overflow-hidden rounded-lg border border-kumo-line bg-kumo-base"
-        style={{ width }}
+        class="relative h-[540px] overflow-hidden rounded-lg border border-kumo-line bg-kumo-base"
+        style={{ width: `${width()}px` }}
       >
         <Sidebar.Provider contained mobileBreakpoint={9999} className="h-full">
           <Sidebar fullScreenOnMobile>
@@ -1242,45 +1244,45 @@ export function SidebarFullScreenMobileDemo() {
                 Mirrors the product header — account mark, then breadcrumbs. */}
             <Sidebar.Header className="gap-2 px-3.5">
               <CompactAccountSwitcher />
-              <div className="min-w-0 flex-1">
+              <div class="min-w-0 flex-1">
                 <Breadcrumbs size="sm">
-                  {trail.map((label) => (
-                    <Fragment key={label}>
+                  {trail().map((label) => (
+                    <>
                       <Breadcrumbs.Link href="#">{label}</Breadcrumbs.Link>
                       <Breadcrumbs.Separator />
-                    </Fragment>
+                    </>
                   ))}
-                  <Breadcrumbs.Current>{current}</Breadcrumbs.Current>
+                  <Breadcrumbs.Current>{current()}</Breadcrumbs.Current>
                 </Breadcrumbs>
               </div>
               <Sidebar.Close />
             </Sidebar.Header>
             <Sidebar.Content>
-              <div className="pt-1 pb-2">
+              <div class="pt-1 pb-2">
                 <QuickSearch />
               </div>
-              <NavTree selected={selected} onSelect={setSelected} />
+              <NavTree selected={selected()} onSelect={setSelected} />
             </Sidebar.Content>
           </Sidebar>
 
-          <div className="flex min-w-0 flex-1 flex-col">
-            <header className="flex h-12 shrink-0 items-center gap-2 border-b border-kumo-line px-3">
+          <div class="flex min-w-0 flex-1 flex-col">
+            <header class="flex h-12 shrink-0 items-center gap-2 border-b border-kumo-line px-3">
               <Sidebar.Trigger />
-              <div className="min-w-0 flex-1">
+              <div class="min-w-0 flex-1">
                 <Breadcrumbs size="sm">
-                  {trail.map((label) => (
-                    <Fragment key={label}>
+                  {trail().map((label) => (
+                    <>
                       <Breadcrumbs.Link href="#">{label}</Breadcrumbs.Link>
                       <Breadcrumbs.Separator />
-                    </Fragment>
+                    </>
                   ))}
-                  <Breadcrumbs.Current>{current}</Breadcrumbs.Current>
+                  <Breadcrumbs.Current>{current()}</Breadcrumbs.Current>
                 </Breadcrumbs>
               </div>
             </header>
             <DemoMain>
-              <p className="text-kumo-default">{current}</p>
-              <p className="text-sm text-kumo-subtle">
+              <p class="text-kumo-default">{current()}</p>
+              <p class="text-sm text-kumo-subtle">
                 Drill into the nav — the trail is derived from the tree, so it
                 always matches where you are.
               </p>

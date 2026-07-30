@@ -40,12 +40,12 @@ import {
 
 ### Barrel
 
-<CodeBlock code={`import { Checkbox } from "@cloudflare/kumo";`} lang="tsx" />
+<CodeBlock code={`import { Checkbox } from "@photon-ai/kumo-solid";`} lang="tsx" />
 
 ### Granular
 
   <CodeBlock
-    code={`import { Checkbox } from "@cloudflare/kumo/components/checkbox";`}
+    code={`import { Checkbox } from "@photon-ai/kumo-solid/components/checkbox";`}
     lang="tsx"
   />
 </ComponentSection>
@@ -57,7 +57,7 @@ import {
 ## Usage
 
 ```tsx
-import { Checkbox } from "@cloudflare/kumo";
+import { Checkbox } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return <Checkbox label="Accept terms" />;
@@ -141,7 +141,7 @@ export default function Example() {
 ### Visually Hidden Legend
 
 <p>
-  Use `Checkbox.Legend` with `className="sr-only"` to keep the legend accessible
+  Use `Checkbox.Legend` with `class="sr-only"` to keep the legend accessible
   to screen readers while hiding it visually. This is useful when the group is
   already labeled by a parent `Field` or heading, and showing the legend would
   create a redundant label.
@@ -185,7 +185,7 @@ export default function Example() {
 
 <p>
   Composable legend sub-component for Checkbox.Group. Accepts `className` for
-  full styling control (e.g. `className="sr-only"` to visually hide). Use
+  full styling control (e.g. `class="sr-only"` to visually hide). Use
   instead of the `legend` string prop when you need custom legend styling.
 </p>
 <PropsTable component="Checkbox.Legend" />

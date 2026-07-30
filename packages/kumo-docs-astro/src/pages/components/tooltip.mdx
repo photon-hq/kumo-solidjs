@@ -34,13 +34,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Tooltip, TooltipProvider } from "@cloudflare/kumo";
+import { Tooltip, TooltipProvider } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Tooltip, TooltipProvider } from "@cloudflare/kumo/components/tooltip";
+import { Tooltip, TooltipProvider } from "@photon-ai/kumo-solid/components/tooltip";
 ```
 
 </ComponentSection>
@@ -52,11 +52,14 @@ import { Tooltip, TooltipProvider } from "@cloudflare/kumo/components/tooltip";
 ## Usage
 
 ```tsx
-import { Tooltip, Button } from "@cloudflare/kumo";
+import { Tooltip, Button } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
-    <Tooltip content="Tooltip text" render={<Button />}>
+    <Tooltip
+      content="Tooltip text"
+      render={(triggerProps) => <Button {...triggerProps} />}
+    >
       Hover me
     </Tooltip>
   );
@@ -126,7 +129,12 @@ For delay grouping across multiple tooltips, see [TooltipProvider](#tooltipprovi
 </TooltipProvider>
 
 // Then use Tooltip anywhere inside
-<Tooltip content="Add" render={<Button shape="square" icon={PlusIcon} />} />
+<Tooltip
+  content="Add"
+  render={(triggerProps) => (
+    <Button {...triggerProps} shape="square" icon={PlusIcon} />
+  )}
+/>
 ```
 
 </ComponentSection>

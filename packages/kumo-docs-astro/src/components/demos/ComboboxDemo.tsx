@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { CaretUpDownIcon } from "@phosphor-icons/react";
-import { Combobox, Text, Button } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { CaretUpDownIcon } from "~/components/icons";
+import { Combobox, Text, Button } from "@photon-ai/kumo-solid";
 import { languages, type Language } from "./data/languages";
 
 // Basic fruits list for simple demos (expanded to test scrolling)
@@ -138,11 +139,11 @@ const databases: DatabaseItem[] = [
 
 // Basic demo with TriggerInput
 export function ComboboxDemo() {
-  const [value, setValue] = useState<string | null>("Apple");
+  const [value, setValue] = createSignal<string | null>("Apple");
 
   return (
     <Combobox
-      value={value}
+      value={value()}
       onValueChange={(v) => setValue(v as string | null)}
       items={fruits}
     >
@@ -150,11 +151,7 @@ export function ComboboxDemo() {
       <Combobox.Content>
         <Combobox.Empty />
         <Combobox.List>
-          {(item: string) => (
-            <Combobox.Item key={item} value={item}>
-              {item}
-            </Combobox.Item>
-          )}
+          {(item: string) => <Combobox.Item value={item}>{item}</Combobox.Item>}
         </Combobox.List>
       </Combobox.Content>
     </Combobox>
@@ -163,11 +160,11 @@ export function ComboboxDemo() {
 
 // Searchable inside popup with TriggerValue
 export function ComboboxSearchableInsideDemo() {
-  const [value, setValue] = useState<Language>(languages[0]);
+  const [value, setValue] = createSignal<Language>(languages[0]);
 
   return (
     <Combobox
-      value={value}
+      value={value()}
       onValueChange={(v) => setValue(v as Language)}
       items={languages}
     >
@@ -177,7 +174,7 @@ export function ComboboxSearchableInsideDemo() {
         <Combobox.Empty />
         <Combobox.List>
           {(item: Language) => (
-            <Combobox.Item key={item.value} value={item}>
+            <Combobox.Item value={item}>
               {item.emoji} {item.label}
             </Combobox.Item>
           )}
@@ -190,11 +187,11 @@ export function ComboboxSearchableInsideDemo() {
 /** Demonstrates using TriggerValue with a placeholder, behaving like a
  * searchable Select field. The placeholder is shown until a value is selected. */
 export function ComboboxSearchableSelectDemo() {
-  const [value, setValue] = useState<Language | null>(null);
+  const [value, setValue] = createSignal<Language | null>(null);
 
   return (
     <Combobox
-      value={value}
+      value={value()}
       onValueChange={(v) => setValue(v as Language | null)}
       items={languages}
     >
@@ -207,7 +204,7 @@ export function ComboboxSearchableSelectDemo() {
         <Combobox.Empty />
         <Combobox.List>
           {(item: Language) => (
-            <Combobox.Item key={item.value} value={item}>
+            <Combobox.Item value={item}>
               {item.emoji} {item.label}
             </Combobox.Item>
           )}
@@ -219,11 +216,11 @@ export function ComboboxSearchableSelectDemo() {
 
 // Grouped items demo
 export function ComboboxGroupedDemo() {
-  const [value, setValue] = useState<ServerLocation | null>(null);
+  const [value, setValue] = createSignal<ServerLocation | null>(null);
 
   return (
     <Combobox
-      value={value}
+      value={value()}
       onValueChange={(v) => setValue(v as ServerLocation | null)}
       items={servers}
     >
@@ -235,13 +232,11 @@ export function ComboboxGroupedDemo() {
         <Combobox.Empty />
         <Combobox.List>
           {(group: ServerLocationGroup) => (
-            <Combobox.Group key={group.value} items={group.items}>
+            <Combobox.Group items={group.items}>
               <Combobox.GroupLabel>{group.value}</Combobox.GroupLabel>
               <Combobox.Collection>
                 {(item: ServerLocation) => (
-                  <Combobox.Item key={item.value} value={item}>
-                    {item.label}
-                  </Combobox.Item>
+                  <Combobox.Item value={item}>{item.label}</Combobox.Item>
                 )}
               </Combobox.Collection>
             </Combobox.Group>
@@ -282,12 +277,12 @@ const bots: BotItem[] = [
 ];
 
 export function ComboboxMultipleDemo() {
-  const [value, setValue] = useState<BotItem[]>([]);
+  const [value, setValue] = createSignal<BotItem[]>([]);
 
   return (
-    <div className="flex gap-2">
+    <div class="flex gap-2">
       <Combobox
-        value={value}
+        value={value()}
         onValueChange={setValue}
         items={bots}
         isItemEqualToValue={(bot: BotItem, selected: BotItem) =>
@@ -299,7 +294,7 @@ export function ComboboxMultipleDemo() {
           className="w-[400px]"
           placeholder="Select bots"
           renderItem={(selected: BotItem) => (
-            <Combobox.Chip key={selected.value}>{selected.label}</Combobox.Chip>
+            <Combobox.Chip>{selected.label}</Combobox.Chip>
           )}
           inputSide="right"
         />
@@ -307,8 +302,8 @@ export function ComboboxMultipleDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: BotItem) => (
-              <Combobox.Item key={item.value} value={item}>
-                <div className="flex gap-2">
+              <Combobox.Item value={item}>
+                <div class="flex gap-2">
                   <Text>{item.label}</Text>
                   <Text variant="secondary">{item.author}</Text>
                 </div>
@@ -323,13 +318,13 @@ export function ComboboxMultipleDemo() {
 }
 
 export function ComboboxWithFieldDemo() {
-  const [value, setValue] = useState<DatabaseItem | null>(null);
+  const [value, setValue] = createSignal<DatabaseItem | null>(null);
 
   return (
-    <div className="w-80">
+    <div class="w-80">
       <Combobox
         items={databases}
-        value={value}
+        value={value()}
         onValueChange={setValue}
         label="Database"
         description="Select your preferred database"
@@ -339,9 +334,7 @@ export function ComboboxWithFieldDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: DatabaseItem) => (
-              <Combobox.Item key={item.value} value={item}>
-                {item.label}
-              </Combobox.Item>
+              <Combobox.Item value={item}>{item.label}</Combobox.Item>
             )}
           </Combobox.List>
         </Combobox.Content>
@@ -352,7 +345,7 @@ export function ComboboxWithFieldDemo() {
 
 export function ComboboxDisabledDemo() {
   return (
-    <div className="flex flex-wrap items-start gap-4">
+    <div class="flex flex-wrap items-start gap-4">
       <Combobox value="Apple" items={fruits} disabled>
         <Combobox.TriggerInput
           className="w-[200px]"
@@ -362,9 +355,7 @@ export function ComboboxDisabledDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: string) => (
-              <Combobox.Item key={item} value={item}>
-                {item}
-              </Combobox.Item>
+              <Combobox.Item value={item}>{item}</Combobox.Item>
             )}
           </Combobox.List>
         </Combobox.Content>
@@ -377,7 +368,7 @@ export function ComboboxDisabledDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: Language) => (
-              <Combobox.Item key={item.value} value={item}>
+              <Combobox.Item value={item}>
                 {item.emoji} {item.label}
               </Combobox.Item>
             )}
@@ -414,21 +405,17 @@ export function ComboboxDisabledItemsDemo() {
     { value: "d1", label: "Cloudflare D1" },
   ];
 
-  const [value, setValue] = useState<DatabaseItemWithDisabled | null>(null);
+  const [value, setValue] = createSignal<DatabaseItemWithDisabled | null>(null);
 
   return (
-    <div className="w-80">
-      <Combobox value={value} onValueChange={setValue} items={items}>
+    <div class="w-80">
+      <Combobox value={value()} onValueChange={setValue} items={items}>
         <Combobox.TriggerInput placeholder="Select database" />
         <Combobox.Content>
           <Combobox.Empty />
           <Combobox.List>
             {(item: DatabaseItemWithDisabled) => (
-              <Combobox.Item
-                key={item.value}
-                value={item}
-                disabled={item.disabled}
-              >
+              <Combobox.Item value={item} disabled={item.disabled}>
                 <span>
                   {item.label}
                   {item.reason && (
@@ -448,13 +435,13 @@ export function ComboboxDisabledItemsDemo() {
 }
 
 export function ComboboxErrorDemo() {
-  const [value, setValue] = useState<DatabaseItem | null>(null);
+  const [value, setValue] = createSignal<DatabaseItem | null>(null);
 
   return (
-    <div className="w-80">
+    <div class="w-80">
       <Combobox
         items={databases}
-        value={value}
+        value={value()}
         onValueChange={setValue}
         label="Database"
         error={{ message: "Please select a database", match: true }}
@@ -464,9 +451,7 @@ export function ComboboxErrorDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: DatabaseItem) => (
-              <Combobox.Item key={item.value} value={item}>
-                {item.label}
-              </Combobox.Item>
+              <Combobox.Item value={item}>{item.label}</Combobox.Item>
             )}
           </Combobox.List>
         </Combobox.Content>
@@ -477,14 +462,14 @@ export function ComboboxErrorDemo() {
 
 /** Demonstrates the different size variants: xs, sm, base, and lg. */
 export function ComboboxSizesDemo() {
-  const [smValue, setSmValue] = useState<string | null>(null);
-  const [baseValue, setBaseValue] = useState<string | null>(null);
+  const [smValue, setSmValue] = createSignal<string | null>(null);
+  const [baseValue, setBaseValue] = createSignal<string | null>(null);
 
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div class="flex flex-wrap items-center gap-4">
       <Combobox
         size="sm"
-        value={smValue}
+        value={smValue()}
         onValueChange={(v) => setSmValue(v as string | null)}
         items={fruits.slice(0, 8)}
       >
@@ -493,16 +478,14 @@ export function ComboboxSizesDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: string) => (
-              <Combobox.Item key={item} value={item}>
-                {item}
-              </Combobox.Item>
+              <Combobox.Item value={item}>{item}</Combobox.Item>
             )}
           </Combobox.List>
         </Combobox.Content>
       </Combobox>
       <Combobox
         size="base"
-        value={baseValue}
+        value={baseValue()}
         onValueChange={(v) => setBaseValue(v as string | null)}
         items={fruits.slice(0, 8)}
       >
@@ -511,9 +494,7 @@ export function ComboboxSizesDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: string) => (
-              <Combobox.Item key={item} value={item}>
-                {item}
-              </Combobox.Item>
+              <Combobox.Item value={item}>{item}</Combobox.Item>
             )}
           </Combobox.List>
         </Combobox.Content>
@@ -524,14 +505,14 @@ export function ComboboxSizesDemo() {
 
 /** Demonstrates size variants with TriggerValue (searchable inside). */
 export function ComboboxSizesSearchableInsideDemo() {
-  const [smValue, setSmValue] = useState<Language>(languages[0]);
-  const [baseValue, setBaseValue] = useState<Language>(languages[1]);
+  const [smValue, setSmValue] = createSignal<Language>(languages[0]);
+  const [baseValue, setBaseValue] = createSignal<Language>(languages[1]);
 
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div class="flex flex-wrap items-center gap-4">
       <Combobox
         size="sm"
-        value={smValue}
+        value={smValue()}
         onValueChange={(v) => setSmValue(v as Language)}
         items={languages}
       >
@@ -541,7 +522,7 @@ export function ComboboxSizesSearchableInsideDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: Language) => (
-              <Combobox.Item key={item.value} value={item}>
+              <Combobox.Item value={item}>
                 {item.emoji} {item.label}
               </Combobox.Item>
             )}
@@ -550,7 +531,7 @@ export function ComboboxSizesSearchableInsideDemo() {
       </Combobox>
       <Combobox
         size="base"
-        value={baseValue}
+        value={baseValue()}
         onValueChange={(v) => setBaseValue(v as Language)}
         items={languages}
       >
@@ -560,7 +541,7 @@ export function ComboboxSizesSearchableInsideDemo() {
           <Combobox.Empty />
           <Combobox.List>
             {(item: Language) => (
-              <Combobox.Item key={item.value} value={item}>
+              <Combobox.Item value={item}>
                 {item.emoji} {item.label}
               </Combobox.Item>
             )}
@@ -572,18 +553,22 @@ export function ComboboxSizesSearchableInsideDemo() {
 }
 
 export function ComboboxCustomTriggerDemo() {
-  const [value, setValue] = useState<Language>(languages[0]);
+  const [value, setValue] = createSignal<Language>(languages[0]);
 
   return (
     <Combobox
-      value={value}
+      value={value()}
       onValueChange={(v) => setValue(v as Language)}
       items={languages}
     >
-      <Combobox.Trigger render={<Button variant="ghost" size="sm" />}>
+      <Combobox.Trigger
+        render={(renderProps) => (
+          <Button {...renderProps} variant="ghost" size="sm" />
+        )}
+      >
         <Combobox.Value>
-          <span className="truncate">
-            {value.emoji} {value.label}
+          <span class="truncate">
+            {value().emoji} {value().label}
           </span>
         </Combobox.Value>
         <CaretUpDownIcon size={14} className="shrink-0 text-kumo-subtle" />
@@ -593,7 +578,7 @@ export function ComboboxCustomTriggerDemo() {
         <Combobox.Empty />
         <Combobox.List>
           {(item: Language) => (
-            <Combobox.Item key={item.value} value={item}>
+            <Combobox.Item value={item}>
               {item.emoji} {item.label}
             </Combobox.Item>
           )}

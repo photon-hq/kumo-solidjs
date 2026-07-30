@@ -1,5 +1,10 @@
-import { Button, Toasty, useKumoToastManager, Link } from "@cloudflare/kumo";
-import { CheckCircleIcon } from "@phosphor-icons/react/dist/ssr";
+import {
+  Button,
+  Toasty,
+  useKumoToastManager,
+  Link,
+} from "@photon-ai/kumo-solid";
+import { CheckCircleIcon } from "~/components/icons";
 
 function ToastTriggerButton() {
   const toastManager = useKumoToastManager();
@@ -227,7 +232,7 @@ function ToastCustomContentButton() {
         toastManager.add({
           content: (
             <div>
-              <div className="flex items-center gap-2">
+              <div class="flex items-center gap-2">
                 <CheckCircleIcon />
                 <Link href="/">my-first-worker</Link> created!
               </div>

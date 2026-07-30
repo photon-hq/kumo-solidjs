@@ -1,12 +1,12 @@
 import { PageHeader } from "../kumo/page-header/page-header";
-import { Breadcrumbs, Button } from "@cloudflare/kumo";
+import { Breadcrumbs, Button } from "@photon-ai/kumo-solid";
 import {
   HouseIcon,
   GearIcon,
   CodeIcon,
   GlobeIcon,
   PlusIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 // Full-featured hero demo matching original
 export function PageHeaderHeroDemo() {

@@ -1,7 +1,8 @@
-import type { ReactNode } from "react";
-import { Tabs } from "@cloudflare/kumo";
-import type { TabsItem } from "@cloudflare/kumo";
-import { cn } from "@cloudflare/kumo";
+import { type JSX } from "solid-js";
+
+import { Tabs } from "@photon-ai/kumo-solid";
+import type { TabsItem } from "@photon-ai/kumo-solid";
+import { cn } from "@photon-ai/kumo-solid";
 
 export const KUMO_PAGE_HEADER_VARIANTS = {
   spacing: {
@@ -41,14 +42,14 @@ export function pageHeaderVariants({
 }
 
 export interface PageHeaderProps extends KumoPageHeaderVariantsProps {
-  breadcrumbs: ReactNode;
+  breadcrumbs: JSX.Element;
   title?: string;
   description?: string;
   tabs?: TabsItem[];
   defaultTab?: string;
   onValueChange?: (value: string) => void;
   className?: string;
-  children?: React.ReactNode;
+  children?: JSX.Element;
 }
 
 export function PageHeader({
@@ -63,26 +64,24 @@ export function PageHeader({
   children,
 }: PageHeaderProps) {
   return (
-    <div className={cn(pageHeaderVariants({ spacing }), className)}>
-      <div className="border-b border-kumo-hairline">{breadcrumbs}</div>
+    <div class={cn(pageHeaderVariants({ spacing }), className)}>
+      <div class="border-b border-kumo-hairline">{breadcrumbs}</div>
 
       {(title || description) && (
-        <div className="flex flex-col gap-2 py-3 pl-3">
+        <div class="flex flex-col gap-2 py-3 pl-3">
           {title && (
-            <h1 className="font-heading text-3xl font-semibold tracking-tight text-kumo-default">
+            <h1 class="font-heading text-3xl font-semibold tracking-tight text-kumo-default">
               {title}
             </h1>
           )}
           {description && (
-            <p className="max-w-prose text-base text-kumo-subtle">
-              {description}
-            </p>
+            <p class="max-w-prose text-base text-kumo-subtle">{description}</p>
           )}
         </div>
       )}
 
       {tabs && (
-        <div className="flex w-full items-center justify-between border-b border-kumo-hairline pt-1 pb-3 pl-3">
+        <div class="flex w-full items-center justify-between border-b border-kumo-hairline pt-1 pb-3 pl-3">
           <Tabs
             tabs={tabs}
             selectedValue={defaultTab}
@@ -92,7 +91,7 @@ export function PageHeader({
             }}
           />
 
-          <div className="flex items-center gap-2">{children}</div>
+          <div class="flex items-center gap-2">{children}</div>
         </div>
       )}
     </div>

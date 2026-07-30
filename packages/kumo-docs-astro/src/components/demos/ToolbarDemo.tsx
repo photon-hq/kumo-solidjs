@@ -1,11 +1,11 @@
-import { InputGroup, Toolbar } from "@cloudflare/kumo";
+import { InputGroup, Toolbar } from "@photon-ai/kumo-solid";
 import {
   DownloadSimpleIcon,
   FunnelSimpleIcon,
   GearSixIcon,
   MagnifyingGlassIcon,
   UploadSimpleIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 /** Basic Toolbar with an InputGroup and adjacent action buttons. */
 export function ToolbarDemo() {
@@ -26,10 +26,10 @@ export function ToolbarDemo() {
 /** Toolbar locks supported item sizes to the toolbar size. */
 export function ToolbarSizesDemo() {
   return (
-    <div className="grid gap-3">
+    <div class="grid gap-3">
       {(["xs", "sm", "base", "lg"] as const).map((size) => (
-        <div key={size} className="flex items-center gap-3">
-          <span className="w-10 text-sm text-kumo-subtle">{size}</span>
+        <div class="flex items-center gap-3">
+          <span class="w-10 text-sm text-kumo-subtle">{size}</span>
           <Toolbar size={size} className="w-fit">
             <Toolbar.Input
               aria-label={`${size} search`}

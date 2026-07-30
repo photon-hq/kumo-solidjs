@@ -341,6 +341,96 @@ export const THEME_CONFIG: ThemeConfig = {
         },
       },
     },
+    "kumo-switch-track": {
+      newName: "",
+      description: "Unchecked default switch track",
+      theme: {
+        kumo: {
+          light: "var(--color-neutral-200, oklch(92.2% 0 0))",
+          dark: "var(--color-neutral-700, oklch(37.1% 0 0))",
+        },
+      },
+    },
+    "kumo-switch-track-checked": {
+      newName: "",
+      description: "Checked default switch track",
+      theme: {
+        kumo: {
+          light: "var(--color-blue-500, oklch(62.3% 0.214 259.815))",
+          dark: "var(--color-blue-600, oklch(54.6% 0.245 262.881))",
+        },
+      },
+    },
+    "kumo-switch-ring": {
+      newName: "",
+      description: "Unchecked default switch ring",
+      theme: {
+        kumo: {
+          light: "var(--color-neutral-300, oklch(87% 0 0))",
+          dark: "var(--color-neutral-600, oklch(43.9% 0 0))",
+        },
+      },
+    },
+    "kumo-switch-ring-checked": {
+      newName: "",
+      description: "Checked default switch ring",
+      theme: {
+        kumo: {
+          light: "var(--color-blue-600, oklch(54.6% 0.245 262.881))",
+          dark: "var(--color-blue-500, oklch(62.3% 0.214 259.815))",
+        },
+      },
+    },
+    "kumo-switch-neutral-track": {
+      newName: "",
+      description: "Unchecked neutral switch track",
+      theme: {
+        kumo: {
+          light: "transparent",
+          dark: "var(--color-kumo-neutral-925, oklch(17% 0 0))",
+        },
+      },
+    },
+    "kumo-switch-neutral-track-checked": {
+      newName: "",
+      description: "Checked neutral switch track",
+      theme: {
+        kumo: {
+          light: "var(--color-neutral-500, oklch(55.6% 0 0))",
+          dark: "var(--color-kumo-neutral-925, oklch(17% 0 0))",
+        },
+      },
+    },
+    "kumo-switch-neutral-ring-checked": {
+      newName: "",
+      description: "Checked neutral switch ring",
+      theme: {
+        kumo: {
+          light: "var(--color-neutral-600, oklch(43.9% 0 0))",
+          dark: "var(--color-neutral-700, oklch(37.1% 0 0))",
+        },
+      },
+    },
+    "kumo-switch-thumb-checked": {
+      newName: "",
+      description: "Checked default switch thumb",
+      theme: {
+        kumo: {
+          light: "var(--color-white, #fff)",
+          dark: "var(--color-blue-300, oklch(80.9% 0.105 251.813))",
+        },
+      },
+    },
+    "kumo-switch-neutral-thumb-checked": {
+      newName: "",
+      description: "Checked neutral switch thumb",
+      theme: {
+        kumo: {
+          light: "var(--color-white, #fff)",
+          dark: "var(--color-neutral-400, oklch(70.8% 0 0))",
+        },
+      },
+    },
     "kumo-shadow-edge": {
       newName: "",
       description: "Tight spread shadow color for control thumbs/knobs",

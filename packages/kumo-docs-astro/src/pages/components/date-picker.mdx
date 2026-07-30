@@ -36,7 +36,7 @@ import {
 ### Barrel
 
 ```tsx
-import { DatePicker, type DateRange } from "@cloudflare/kumo";
+import { DatePicker, type DateRange } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
@@ -45,7 +45,7 @@ import { DatePicker, type DateRange } from "@cloudflare/kumo";
 import {
   DatePicker,
   type DateRange,
-} from "@cloudflare/kumo/components/date-picker";
+} from "@photon-ai/kumo-solid/components/date-picker";
 ```
 
 </ComponentSection>
@@ -61,13 +61,13 @@ import {
 </p>
 
 ```tsx
-import { useState } from "react";
-import { DatePicker } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+import { DatePicker } from "@photon-ai/kumo-solid";
 
 export default function Example() {
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = createSignal<Date>();
 
-  return <DatePicker mode="single" selected={date} onChange={setDate} />;
+  return <DatePicker mode="single" selected={date()} onChange={setDate} />;
 }
 ```
 
@@ -156,25 +156,27 @@ export default function Example() {
 <p>Here's a complete example showing how to compose DatePicker with Popover:</p>
 
 ```tsx
-import { useState } from "react";
-import { DatePicker, Popover, Button } from "@cloudflare/kumo";
-import { CalendarDotsIcon } from "@phosphor-icons/react";
+import { createSignal } from "solid-js";
+import { DatePicker, Popover, Button } from "@photon-ai/kumo-solid";
+import { CalendarDotsIcon } from "~/components/icons";
 
 export function DatePickerDropdown() {
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = createSignal<Date>();
 
   return (
     <Popover>
       <Popover.Trigger
-        render={<Button variant="outline" icon={CalendarDotsIcon} />}
+        render={(triggerProps) => (
+          <Button {...triggerProps} variant="outline" icon={CalendarDotsIcon} />
+        )}
       >
-        {date ? date.toLocaleDateString() : "Pick a date"}
+        {date()?.toLocaleDateString() ?? "Pick a date"}
       </Popover.Trigger>
-      <Popover.Content className="p-3">
+      <Popover.Content class="p-3">
         <DatePicker
           mode="single"
-          selected={date}
-          onChange={(d) => setDate(d)}
+          selected={date()}
+          onChange={setDate}
         />
       </Popover.Content>
     </Popover>
@@ -191,15 +193,16 @@ export function DatePickerDropdown() {
 ## API Reference
 
 <p>
-  DatePicker forwards all props to
+  DatePicker provides a Solid-native, type-safe API inspired by
   <a
     href="https://daypicker.dev/api/interfaces/PropsBase"
     target="_blank"
     rel="noopener noreferrer"
   >
-    react-day-picker
+    DayPicker
   </a>
-  . Key props include:
+  . It is implemented natively for Solid and does not ship `react-day-picker`.
+  Key props include:
 </p>
 <ul class="mt-4 list-disc list-inside space-y-2">
   <li>
@@ -211,25 +214,26 @@ export function DatePickerDropdown() {
   <li>`disabled` — Dates that cannot be selected</li>
   <li>`min` / `max` — Min/max selection constraints</li>
   <li>`footer` — Content rendered below the calendar</li>
-  <li>`locale` — date-fns locale for internationalization</li>
+  <li>`locale` — Intl locale or Kumo locale settings</li>
   <li>`className` — Additional CSS classes</li>
 </ul>
 <p class="mt-4 text-kumo-subtle text-sm">
-  See the
+  The
   <a
     href="https://daypicker.dev/docs"
     target="_blank"
     rel="noopener noreferrer"
   >
-    react-day-picker documentation
+    DayPicker documentation
   </a>
-  for the full API.
+  is useful background for the familiar concepts, while the Kumo prop types
+  remain the source of truth.
 </p>
 
-### Differences from react-day-picker
+### Differences from DayPicker
 
   <p>
-    For consistency with other Kumo form components, DatePicker uses `onChange` instead of react-day-picker's `onSelect`.
+    For consistency with other Kumo form components, DatePicker uses `onChange` instead of DayPicker's `onSelect`.
     Full type inference is preserved — TypeScript will correctly narrow the callback signature based on the `mode` prop.
   </p>
 </ComponentSection>

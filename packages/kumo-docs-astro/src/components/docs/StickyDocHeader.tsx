@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@cloudflare/kumo";
-import { GithubLogoIcon } from "@phosphor-icons/react";
+import { createRef } from "~/lib/solid-reactivity";
+import { createEffect, createSignal, onCleanup } from "solid-js";
+
+import { cn } from "@photon-ai/kumo-solid";
+import { GithubLogoIcon } from "~/components/icons";
 import { ThemeToggle } from "../ThemeToggle";
 import { BaseUIIcon } from "./icons/BaseUIIcon";
 
@@ -15,12 +17,12 @@ export function StickyDocHeader({
   githubSourceUrl,
   baseUIUrl,
 }: StickyDocHeaderProps) {
-  const [showStickyTitle, setShowStickyTitle] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const headerRef = useRef<HTMLElement>(null);
+  const [showStickyTitle, setShowStickyTitle] = createSignal(false);
+  const [sidebarOpen, setSidebarOpen] = createSignal(true);
+  const headerRef = createRef<HTMLElement>(null);
 
   // Watch for sidebar state changes
-  useEffect(() => {
+  createEffect(() => {
     const checkSidebarState = () => {
       const sidebar = document.querySelector("aside[data-sidebar-open]");
       if (sidebar) {
@@ -42,11 +44,11 @@ export function StickyDocHeader({
       attributeFilter: ["data-sidebar-open"],
     });
 
-    return () => observer.disconnect();
-  }, []);
+    onCleanup(() => observer.disconnect());
+  });
 
   // Watch for page header visibility
-  useEffect(() => {
+  createEffect(() => {
     const pageHeader = document.getElementById("page-header");
     if (!headerRef.current || !pageHeader) return;
 
@@ -61,32 +63,32 @@ export function StickyDocHeader({
     );
 
     observer.observe(pageHeader);
-    return () => observer.disconnect();
-  }, []);
+    onCleanup(() => observer.disconnect());
+  });
 
   return (
     <>
       {/* Sticky title that appears when sidebar is collapsed - positioned to appear after "Kumo" */}
-      {!sidebarOpen && (
+      {!sidebarOpen() && (
         <div
-          className={cn(
+          class={cn(
             "pointer-events-none fixed top-0 left-9 z-50 flex h-12 items-center font-medium transition-opacity duration-200 select-none",
-            showStickyTitle ? "opacity-100" : "opacity-0",
+            showStickyTitle() ? "opacity-100" : "opacity-0",
           )}
-          style={{ paddingLeft: "4.25rem" }} // Position after "Kumo" text (px-4 + "Kumo" width)
+          style={{ "padding-left": "4.25rem" }} // Position after "Kumo" text (px-4 + "Kumo" width)
         >
-          <span className="pointer-events-auto flex items-center gap-2 text-base">
-            <span className="text-kumo-subtle">/ </span>
-            <span className="font-semibold tracking-tight">{title}</span>
+          <span class="pointer-events-auto flex items-center gap-2 text-base">
+            <span class="text-kumo-subtle">/ </span>
+            <span class="font-semibold tracking-tight">{title}</span>
             {githubSourceUrl && (
               <a
                 href={githubSourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-kumo-subtle transition-colors hover:text-kumo-default"
+                class="text-kumo-subtle transition-colors hover:text-kumo-default"
                 title="View source on GitHub"
                 aria-label="View source on GitHub"
-                tabIndex={showStickyTitle ? 0 : -1}
+                tabIndex={showStickyTitle() ? 0 : -1}
               >
                 <GithubLogoIcon size={14} weight="fill" />
               </a>
@@ -96,10 +98,10 @@ export function StickyDocHeader({
                 href={baseUIUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-kumo-subtle transition-colors hover:text-kumo-default"
+                class="text-kumo-subtle transition-colors hover:text-kumo-default"
                 title="View Base UI documentation"
                 aria-label="View Base UI documentation"
-                tabIndex={showStickyTitle ? 0 : -1}
+                tabIndex={showStickyTitle() ? 0 : -1}
               >
                 <BaseUIIcon size={14} />
               </a>
@@ -110,28 +112,28 @@ export function StickyDocHeader({
 
       {/* Sticky header bar */}
       <header
-        ref={headerRef}
-        className="sticky top-12 z-10 flex h-12 border-b border-kumo-hairline bg-kumo-canvas lg:top-0"
+        ref={(element) => (headerRef.current = element)}
+        class="sticky top-12 z-10 flex h-12 border-b border-kumo-hairline bg-kumo-canvas lg:top-0"
       >
-        <div className="flex min-w-0 flex-1 items-center justify-between px-4 md:px-6 lg:border-r lg:border-kumo-hairline lg:px-4">
+        <div class="flex min-w-0 flex-1 items-center justify-between px-4 md:px-6 lg:border-r lg:border-kumo-hairline lg:px-4">
           <div
-            className={cn(
+            class={cn(
               "flex items-center gap-2 transition-opacity duration-200",
-              showStickyTitle && sidebarOpen
+              showStickyTitle() && sidebarOpen()
                 ? "opacity-100"
                 : "pointer-events-none opacity-0",
             )}
           >
-            <span className="text-base font-medium">{title}</span>
+            <span class="text-base font-medium">{title}</span>
             {githubSourceUrl && (
               <a
                 href={githubSourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-kumo-subtle transition-colors hover:text-kumo-default"
+                class="text-kumo-subtle transition-colors hover:text-kumo-default"
                 title="View source on GitHub"
                 aria-label="View source on GitHub"
-                tabIndex={showStickyTitle && sidebarOpen ? 0 : -1}
+                tabIndex={showStickyTitle() && sidebarOpen() ? 0 : -1}
               >
                 <GithubLogoIcon size={14} weight="fill" />
               </a>
@@ -141,25 +143,25 @@ export function StickyDocHeader({
                 href={baseUIUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-kumo-subtle transition-colors hover:text-kumo-default"
+                class="text-kumo-subtle transition-colors hover:text-kumo-default"
                 title="View Base UI documentation"
                 aria-label="View Base UI documentation"
-                tabIndex={showStickyTitle && sidebarOpen ? 0 : -1}
+                tabIndex={showStickyTitle() && sidebarOpen() ? 0 : -1}
               >
                 <BaseUIIcon size={14} />
               </a>
             )}
           </div>
           <a
-            href="https://github.com/cloudflare/kumo"
+            href="https://github.com/photon-hq/kumo-solidjs"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-sm text-kumo-subtle transition-colors hover:text-kumo-default"
+            class="font-mono text-sm text-kumo-subtle transition-colors hover:text-kumo-default"
           >
-            @cloudflare/kumo
+            @photon-ai/kumo-solid
           </a>
         </div>
-        <div className="hidden w-12 shrink-0 items-center justify-center lg:flex">
+        <div class="hidden w-12 shrink-0 items-center justify-center lg:flex">
           <ThemeToggle />
         </div>
       </header>

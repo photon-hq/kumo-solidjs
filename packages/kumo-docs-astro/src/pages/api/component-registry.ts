@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import componentRegistry from "@cloudflare/kumo/ai/component-registry.json";
+import { kumoRegistryJson as componentRegistry } from "virtual:kumo-registry";
 
 export const GET: APIRoute = () => {
   return new Response(JSON.stringify(componentRegistry), {

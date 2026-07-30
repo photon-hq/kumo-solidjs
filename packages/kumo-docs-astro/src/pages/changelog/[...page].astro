@@ -1,7 +1,7 @@
 ---
 import DocLayout from "~/layouts/DocLayout.astro";
-import { Badge, Text } from "@cloudflare/kumo";
-import { GithubLogoIcon, LinkSimple } from "@phosphor-icons/react";
+import { Badge, Text } from "@photon-ai/kumo-solid";
+import { GithubLogoIcon, LinkSimple } from "~/components/icons";
 import { ChangelogPagination } from "~/components/docs/ChangelogPagination";
 import { ChangelogEntry } from "~/components/docs/ChangelogEntry";
 import fs from "node:fs";
@@ -159,7 +159,7 @@ const GITHUB_RELEASE_URL = "https://github.com/cloudflare/kumo/releases/tag/%40c
               class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100"
               aria-hidden="true"
             >
-              <LinkSimple className="size-4 text-kumo-subtle" />
+              <LinkSimple class="size-4 text-kumo-subtle" />
             </span>
             <Text as="span" variant="heading2">{v.version}</Text>
           </a>

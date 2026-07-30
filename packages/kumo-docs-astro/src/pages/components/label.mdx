@@ -11,7 +11,7 @@ import {
   LabelBasicDemo,
   LabelOptionalFieldDemo,
   LabelWithTooltipDemo,
-  LabelReactNodeDemo,
+  LabelRichContentDemo,
   LabelFormMixedDemo,
   LabelStandaloneDemo,
 } from "~/components/demos/LabelDemo";
@@ -33,13 +33,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Label } from "@cloudflare/kumo";
+import { Label } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Label } from "@cloudflare/kumo/components/label";
+import { Label } from "@photon-ai/kumo-solid/components/label";
 ```
 
 </ComponentSection>
@@ -57,7 +57,7 @@ import { Label } from "@cloudflare/kumo/components/label";
   </p>
 
 ```tsx
-import { Input } from "@cloudflare/kumo";
+import { Input } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -80,7 +80,7 @@ export default function Example() {
 <p>For custom form layouts, use the `Label` component directly.</p>
 
 ```tsx
-import { Label } from "@cloudflare/kumo";
+import { Label } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return <Label tooltip="This field is mandatory">Username</Label>;
@@ -109,11 +109,11 @@ export default function Example() {
   <LabelWithTooltipDemo client:visible />
 </ComponentExample>
 
-### ReactNode Label Content
+### Rich Label Content
 
-<p>Labels support ReactNode content for rich formatting.</p>
-<ComponentExample demo="LabelReactNodeDemo">
-  <LabelReactNodeDemo client:visible />
+<p>Labels support JSX content for rich formatting.</p>
+<ComponentExample demo="LabelRichContentDemo">
+  <LabelRichContentDemo client:visible />
 </ComponentExample>
 
 ### Form with Mixed Fields
@@ -154,7 +154,7 @@ export default function Example() {
     <tbody>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono text-xs">children</td>
-        <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+        <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
         <td class="px-4 py-3 font-mono text-xs">-</td>
         <td class="px-4 py-3 text-xs">Label content (required)</td>
       </tr>
@@ -168,7 +168,7 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono text-xs">tooltip</td>
-        <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+        <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
         <td class="px-4 py-3 font-mono text-xs">-</td>
         <td class="px-4 py-3 text-xs">Tooltip content shown via info icon</td>
       </tr>
@@ -201,7 +201,7 @@ export default function Example() {
     <tbody>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono text-xs">label</td>
-        <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+        <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
         <td class="px-4 py-3 font-mono text-xs">-</td>
         <td class="px-4 py-3 text-xs">Label content (enables Field wrapper)</td>
       </tr>
@@ -216,7 +216,7 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono text-xs">labelTooltip</td>
-        <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+        <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
         <td class="px-4 py-3 font-mono text-xs">-</td>
         <td class="px-4 py-3 text-xs">
           Tooltip content shown via info icon next to label

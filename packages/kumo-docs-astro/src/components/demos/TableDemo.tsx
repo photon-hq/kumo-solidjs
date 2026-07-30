@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { createSignal } from "solid-js";
+
 import {
   Badge,
   Button,
   DropdownMenu,
   LayerCard,
   Table,
-} from "@cloudflare/kumo";
+} from "@photon-ai/kumo-solid";
 import {
   DotsThree,
   EnvelopeSimple,
   Eye,
   PencilSimple,
   Trash,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 // Sample data for demos
 const emailData = [
@@ -62,7 +63,7 @@ export function TableBasicDemo() {
         </Table.Header>
         <Table.Body>
           {emailData.slice(0, 3).map((row) => (
-            <Table.Row key={row.id}>
+            <Table.Row>
               <Table.Cell>{row.subject}</Table.Cell>
               <Table.Cell>{row.from}</Table.Cell>
               <Table.Cell>{row.date}</Table.Cell>
@@ -76,7 +77,7 @@ export function TableBasicDemo() {
 
 export function TableWithCheckboxDemo() {
   const rows = emailData.slice(0, 3);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedIds, setSelectedIds] = createSignal<Set<string>>(new Set());
 
   const toggleRow = (id: string) => {
     setSelectedIds((prev) => {
@@ -91,8 +92,8 @@ export function TableWithCheckboxDemo() {
   };
 
   const toggleAll = () => {
-    if (selectedIds.size === rows.length) {
-      setSelectedIds(new Set());
+    if (selectedIds().size === rows.length) {
+      setSelectedIds(new Set<string>());
     } else {
       setSelectedIds(new Set(rows.map((r) => r.id)));
     }
@@ -104,9 +105,9 @@ export function TableWithCheckboxDemo() {
         <Table.Header>
           <Table.Row>
             <Table.CheckHead
-              checked={selectedIds.size === rows.length}
+              checked={selectedIds().size === rows.length}
               indeterminate={
-                selectedIds.size > 0 && selectedIds.size < rows.length
+                selectedIds().size > 0 && selectedIds().size < rows.length
               }
               onCheckedChange={toggleAll}
               aria-label="Select all rows"
@@ -118,9 +119,9 @@ export function TableWithCheckboxDemo() {
         </Table.Header>
         <Table.Body>
           {rows.map((row) => (
-            <Table.Row key={row.id}>
+            <Table.Row>
               <Table.CheckCell
-                checked={selectedIds.has(row.id)}
+                checked={selectedIds().has(row.id)}
                 onCheckedChange={() => toggleRow(row.id)}
                 aria-label={`Select ${row.subject}`}
               />
@@ -148,7 +149,7 @@ export function TableWithCompactHeaderDemo() {
         </Table.Header>
         <Table.Body>
           {emailData.slice(0, 3).map((row) => (
-            <Table.Row key={row.id}>
+            <Table.Row>
               <Table.Cell>{row.subject}</Table.Cell>
               <Table.Cell>{row.from}</Table.Cell>
               <Table.Cell>{row.date}</Table.Cell>
@@ -162,7 +163,9 @@ export function TableWithCompactHeaderDemo() {
 
 export function TableSelectedRowDemo() {
   const rows = emailData.slice(0, 3);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(["2"]));
+  const [selectedIds, setSelectedIds] = createSignal<Set<string>>(
+    new Set(["2"]),
+  );
 
   const toggleRow = (id: string) => {
     setSelectedIds((prev) => {
@@ -177,8 +180,8 @@ export function TableSelectedRowDemo() {
   };
 
   const toggleAll = () => {
-    if (selectedIds.size === rows.length) {
-      setSelectedIds(new Set());
+    if (selectedIds().size === rows.length) {
+      setSelectedIds(new Set<string>());
     } else {
       setSelectedIds(new Set(rows.map((r) => r.id)));
     }
@@ -190,9 +193,9 @@ export function TableSelectedRowDemo() {
         <Table.Header>
           <Table.Row>
             <Table.CheckHead
-              checked={selectedIds.size === rows.length}
+              checked={selectedIds().size === rows.length}
               indeterminate={
-                selectedIds.size > 0 && selectedIds.size < rows.length
+                selectedIds().size > 0 && selectedIds().size < rows.length
               }
               onCheckedChange={toggleAll}
               aria-label="Select all rows"
@@ -205,11 +208,10 @@ export function TableSelectedRowDemo() {
         <Table.Body>
           {rows.map((row) => (
             <Table.Row
-              key={row.id}
-              variant={selectedIds.has(row.id) ? "selected" : "default"}
+              variant={selectedIds().has(row.id) ? "selected" : "default"}
             >
               <Table.CheckCell
-                checked={selectedIds.has(row.id)}
+                checked={selectedIds().has(row.id)}
                 onCheckedChange={() => toggleRow(row.id)}
                 aria-label={`Select ${row.subject}`}
               />
@@ -230,8 +232,8 @@ export function TableFixedLayoutDemo() {
       <Table layout="fixed">
         <colgroup>
           <col />
-          <col className="w-[150px]" />
-          <col className="w-[150px]" />
+          <col class="w-[150px]" />
+          <col class="w-[150px]" />
         </colgroup>
         <Table.Header>
           <Table.Row>
@@ -242,7 +244,7 @@ export function TableFixedLayoutDemo() {
         </Table.Header>
         <Table.Body>
           {emailData.map((row) => (
-            <Table.Row key={row.id}>
+            <Table.Row>
               <Table.Cell>{row.subject}</Table.Cell>
               <Table.Cell>{row.from}</Table.Cell>
               <Table.Cell>{row.date}</Table.Cell>
@@ -270,13 +272,13 @@ export function TableCompactStickyDemo() {
             <Table.Head>Date</Table.Head>
             <Table.Head>Tags</Table.Head>
             <Table.Head sticky="right">
-              <span className="sr-only">Actions</span>
+              <span class="sr-only">Actions</span>
             </Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {emailData.map((row) => (
-            <Table.Row key={row.id}>
+            <Table.Row>
               <Table.Cell className="whitespace-nowrap">
                 {row.subject}
               </Table.Cell>
@@ -284,9 +286,9 @@ export function TableCompactStickyDemo() {
               <Table.Cell className="whitespace-nowrap">{row.date}</Table.Cell>
               <Table.Cell className="whitespace-nowrap">
                 {row.tags ? (
-                  <div className="inline-flex gap-1">
+                  <div class="inline-flex gap-1">
                     {row.tags.map((tag) => (
-                      <Badge key={tag}>{tag}</Badge>
+                      <Badge>{tag}</Badge>
                     ))}
                   </div>
                 ) : (
@@ -296,8 +298,9 @@ export function TableCompactStickyDemo() {
               <Table.Cell sticky="right" className="text-right">
                 <DropdownMenu>
                   <DropdownMenu.Trigger
-                    render={
+                    render={(renderProps) => (
                       <Button
+                        {...renderProps}
                         variant="ghost"
                         size="sm"
                         shape="square"
@@ -305,7 +308,7 @@ export function TableCompactStickyDemo() {
                       >
                         <DotsThree weight="bold" size={16} />
                       </Button>
-                    }
+                    )}
                   />
                   <DropdownMenu.Content>
                     <DropdownMenu.Item icon={Eye}>View</DropdownMenu.Item>
@@ -344,13 +347,13 @@ export function TableStickyColumnDemo() {
             <Table.Head>Date</Table.Head>
             <Table.Head>Tags</Table.Head>
             <Table.Head sticky="right">
-              <span className="sr-only">Actions</span>
+              <span class="sr-only">Actions</span>
             </Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {emailData.map((row) => (
-            <Table.Row key={row.id}>
+            <Table.Row>
               <Table.Cell className="whitespace-nowrap">
                 {row.subject}
               </Table.Cell>
@@ -358,9 +361,9 @@ export function TableStickyColumnDemo() {
               <Table.Cell className="whitespace-nowrap">{row.date}</Table.Cell>
               <Table.Cell className="whitespace-nowrap">
                 {row.tags ? (
-                  <div className="inline-flex gap-1">
+                  <div class="inline-flex gap-1">
                     {row.tags.map((tag) => (
-                      <Badge key={tag}>{tag}</Badge>
+                      <Badge>{tag}</Badge>
                     ))}
                   </div>
                 ) : (
@@ -370,8 +373,9 @@ export function TableStickyColumnDemo() {
               <Table.Cell sticky="right" className="text-right">
                 <DropdownMenu>
                   <DropdownMenu.Trigger
-                    render={
+                    render={(renderProps) => (
                       <Button
+                        {...renderProps}
                         variant="ghost"
                         size="sm"
                         shape="square"
@@ -379,7 +383,7 @@ export function TableStickyColumnDemo() {
                       >
                         <DotsThree weight="bold" size={16} />
                       </Button>
-                    }
+                    )}
                   />
                   <DropdownMenu.Content>
                     <DropdownMenu.Item icon={Eye}>View</DropdownMenu.Item>
@@ -402,7 +406,9 @@ export function TableStickyColumnDemo() {
 }
 
 export function TableFullDemo() {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(["2"]));
+  const [selectedIds, setSelectedIds] = createSignal<Set<string>>(
+    new Set(["2"]),
+  );
 
   const toggleRow = (id: string) => {
     setSelectedIds((prev) => {
@@ -417,8 +423,8 @@ export function TableFullDemo() {
   };
 
   const toggleAll = () => {
-    if (selectedIds.size === emailData.length) {
-      setSelectedIds(new Set());
+    if (selectedIds().size === emailData.length) {
+      setSelectedIds(new Set<string>());
     } else {
       setSelectedIds(new Set(emailData.map((r) => r.id)));
     }
@@ -428,7 +434,7 @@ export function TableFullDemo() {
     <LayerCard className="w-full overflow-x-auto p-0">
       <Table layout="fixed">
         <colgroup>
-          <col />{" "}
+          <col />
           {/* Checkbox column - width handled by Table.CheckHead/CheckCell */}
           <col />
           <col style={{ width: "150px" }} />
@@ -438,9 +444,9 @@ export function TableFullDemo() {
         <Table.Header>
           <Table.Row>
             <Table.CheckHead
-              checked={selectedIds.size === emailData.length}
+              checked={selectedIds().size === emailData.length}
               indeterminate={
-                selectedIds.size > 0 && selectedIds.size < emailData.length
+                selectedIds().size > 0 && selectedIds().size < emailData.length
               }
               onCheckedChange={toggleAll}
               aria-label="Select all rows"
@@ -454,38 +460,38 @@ export function TableFullDemo() {
         <Table.Body>
           {emailData.map((row) => (
             <Table.Row
-              key={row.id}
-              variant={selectedIds.has(row.id) ? "selected" : "default"}
+              variant={selectedIds().has(row.id) ? "selected" : "default"}
             >
               <Table.CheckCell
-                checked={selectedIds.has(row.id)}
+                checked={selectedIds().has(row.id)}
                 onCheckedChange={() => toggleRow(row.id)}
                 aria-label={`Select ${row.subject}`}
               />
               <Table.Cell>
-                <div className="flex items-center gap-2">
+                <div class="flex items-center gap-2">
                   <EnvelopeSimple size={16} />
-                  <span className="truncate">{row.subject}</span>
+                  <span class="truncate">{row.subject}</span>
                   {row.tags && (
-                    <div className="ml-2 inline-flex gap-1">
+                    <div class="ml-2 inline-flex gap-1">
                       {row.tags.map((tag) => (
-                        <Badge key={tag}>{tag}</Badge>
+                        <Badge>{tag}</Badge>
                       ))}
                     </div>
                   )}
                 </div>
               </Table.Cell>
               <Table.Cell>
-                <span className="truncate">{row.from}</span>
+                <span class="truncate">{row.from}</span>
               </Table.Cell>
               <Table.Cell>
-                <span className="truncate">{row.date}</span>
+                <span class="truncate">{row.date}</span>
               </Table.Cell>
               <Table.Cell className="text-right">
                 <DropdownMenu>
                   <DropdownMenu.Trigger
-                    render={
+                    render={(renderProps) => (
                       <Button
+                        {...renderProps}
                         variant="ghost"
                         size="sm"
                         shape="square"
@@ -493,7 +499,7 @@ export function TableFullDemo() {
                       >
                         <DotsThree weight="bold" size={16} />
                       </Button>
-                    }
+                    )}
                   />
                   <DropdownMenu.Content>
                     <DropdownMenu.Item icon={Eye}>View</DropdownMenu.Item>

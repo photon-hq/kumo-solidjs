@@ -9,8 +9,8 @@ import {
   StatusBannerDemo,
 } from "~/components/demos/ColorsDemo";
 import ComponentExample from "~/components/docs/ComponentExample.astro";
-import { Badge, Banner } from "@cloudflare/kumo";
-import { InfoIcon } from "@phosphor-icons/react";
+import { Badge, Banner } from "@photon-ai/kumo-solid";
+import { InfoIcon } from "~/components/icons";
 
 ## Usage
 
@@ -19,9 +19,9 @@ Always use semantic tokens instead of raw Tailwind colors. This ensures your UI 
 #### Correct
 
 ```tsx
-<div className="bg-kumo-base text-kumo-default border-kumo-hairline">
-  <button className="bg-kumo-brand text-white">Primary</button>
-  <button className="bg-kumo-control text-kumo-default">Secondary</button>
+<div class="bg-kumo-base text-kumo-default border-kumo-hairline">
+  <button class="bg-kumo-brand text-white">Primary</button>
+  <button class="bg-kumo-control text-kumo-default">Secondary</button>
 </div>
 ```
 
@@ -31,8 +31,8 @@ Always use semantic tokens instead of raw Tailwind colors. This ensures your UI 
 {
   /* Never use raw Tailwind colors */
 }
-<div className="bg-white dark:bg-gray-900 text-black dark:text-white">
-  <button className="bg-blue-500">Primary</button>
+<div class="bg-white dark:bg-gray-900 text-black dark:text-white">
+  <button class="bg-blue-500">Primary</button>
 </div>;
 ```
 
@@ -48,7 +48,7 @@ Set `data-mode` on a parent element to control light/dark mode. Never use Tailwi
 <html data-mode="dark">   // Dark mode
 
 // Components automatically adapt - no dark: variants needed
-<div className="bg-kumo-base text-kumo-default" />
+<div class="bg-kumo-base text-kumo-default" />
 ```
 
 ## Themes
@@ -73,7 +73,9 @@ Themes override semantic token values while preserving the same token names. Set
 
 ### Theme Generator
 
-Themes are defined in a centralized config and generated as CSS files. The theme generator ensures consistency across all themes.
+Themes are defined in the shared Kumo style config and generated as CSS files.
+The React source package remains the canonical token generator; the Solid build
+copies those generated styles so both implementations stay visually identical.
 
 ```bash
 
@@ -88,6 +90,10 @@ pnpm --filter @cloudflare/kumo codegen:themes
 # Preview changes without writing files
 
 pnpm --filter @cloudflare/kumo codegen:themes --dry-run
+
+# Copy the canonical generated styles into the Solid package
+
+pnpm --filter @photon-ai/kumo-solid build
 ```
 
 Theme config: `packages/kumo/scripts/theme-generator/config.ts`
@@ -327,7 +333,7 @@ Use the solid token `bg-kumo-*` for status dots, `fill-kumo-*` for icons, and `b
     <tbody>
       <tr>
         <td>
-          <span className="inline-flex items-center gap-2">
+          <span class="inline-flex items-center gap-2">
             <code>kumo-hairline</code>
             <Badge variant="info">New</Badge>
           </span>

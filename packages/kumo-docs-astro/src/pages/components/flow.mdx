@@ -39,13 +39,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Flow } from "@cloudflare/kumo";
+import { Flow } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Flow } from "@cloudflare/kumo/components/flow";
+import { Flow } from "@photon-ai/kumo-solid/components/flow";
 ```
 
 </ComponentSection>
@@ -66,7 +66,7 @@ import { Flow } from "@cloudflare/kumo/components/flow";
   </p>
 
 ```tsx
-import { Flow } from "@cloudflare/kumo";
+import { Flow } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -124,7 +124,8 @@ export default function Example() {
 
 <p>
   Use the `render` prop to completely customize node appearance. The render prop
-  accepts a React element that will be used instead of the default styled node.
+  accepts a Solid render callback that receives the props to merge onto your
+  custom element.
 </p>
 <ComponentExample demo="FlowCustomContentDemo">
   <FlowCustomContentDemo client:visible />
@@ -265,7 +266,7 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono">children</td>
-        <td class="px-4 py-3 font-mono">ReactNode</td>
+        <td class="px-4 py-3 font-mono">JSX.Element</td>
         <td class="px-4 py-3">Flow.Node and Flow.Parallel components</td>
       </tr>
     </tbody>
@@ -290,7 +291,7 @@ export default function Example() {
     <tbody>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono">render</td>
-        <td class="px-4 py-3 font-mono">ReactElement</td>
+        <td class="px-4 py-3 font-mono">RenderProp</td>
         <td class="px-4 py-3">
           Custom element to render instead of the default styled node
         </td>
@@ -305,7 +306,7 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono">children</td>
-        <td class="px-4 py-3 font-mono">ReactNode</td>
+        <td class="px-4 py-3 font-mono">JSX.Element</td>
         <td class="px-4 py-3">Content to display inside the node</td>
       </tr>
     </tbody>
@@ -339,12 +340,12 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono">render</td>
-        <td class="px-4 py-3 font-mono">ReactElement</td>
+        <td class="px-4 py-3 font-mono">RenderProp</td>
         <td class="px-4 py-3">Custom element to render for the anchor point</td>
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono">children</td>
-        <td class="px-4 py-3 font-mono">ReactNode</td>
+        <td class="px-4 py-3 font-mono">JSX.Element</td>
         <td class="px-4 py-3">Content to render at the anchor point</td>
       </tr>
     </tbody>
@@ -377,7 +378,7 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono">children</td>
-        <td class="px-4 py-3 font-mono">ReactNode</td>
+        <td class="px-4 py-3 font-mono">JSX.Element</td>
         <td class="px-4 py-3">
           Flow.Node or Flow.List components to display in parallel
         </td>
@@ -405,7 +406,7 @@ export default function Example() {
       <tbody>
         <tr class="border-b border-kumo-hairline">
           <td class="px-4 py-3 font-mono">children</td>
-          <td class="px-4 py-3 font-mono">ReactNode</td>
+          <td class="px-4 py-3 font-mono">JSX.Element</td>
           <td class="px-4 py-3">Flow.Node components to display in sequence</td>
         </tr>
       </tbody>

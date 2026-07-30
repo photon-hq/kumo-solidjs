@@ -1,10 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import { cn, Button } from "@cloudflare/kumo";
-import {
-  CaretDownIcon,
-  MagnifyingGlassIcon,
-  XIcon,
-} from "@phosphor-icons/react";
+import { createRef } from "~/lib/solid-reactivity";
+import { createEffect, createSignal, onCleanup } from "solid-js";
+
+import { cn, Button } from "@photon-ai/kumo-solid";
+import { CaretDownIcon, MagnifyingGlassIcon, XIcon } from "~/components/icons";
 import { KumoMenuIcon } from "./KumoMenuIcon";
 import { SearchDialog } from "./SearchDialog";
 import { ThemeToggle } from "./ThemeToggle";
@@ -93,18 +91,12 @@ const chartItems: NavItem[] = [
 ];
 
 // Blocks are CLI-installed components that you own and can customize
-// Use `npx @cloudflare/kumo blocks` to see available blocks
-// Use `npx @cloudflare/kumo add <block>` to install
+// Solid blocks are currently copied from src/components/kumo.
 const blockItems: NavItem[] = [
   { label: "Page Header", href: "/blocks/page-header" },
   { label: "Resource List", href: "/blocks/resource-list" },
   { label: "Delete Resource", href: "/blocks/delete-resource" },
 ];
-
-// Build info injected via Vite define in astro.config.mjs
-declare const __DOCS_VERSION__: string;
-declare const __BUILD_COMMIT__: string;
-declare const __BUILD_DATE__: string;
 
 const LI_STYLE =
   "block rounded-lg text-kumo-subtle hover:text-kumo-default hover:bg-kumo-tint p-2 my-[.05rem] cursor-pointer transition-colors no-underline relative z-10 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-kumo-brand";
@@ -115,39 +107,41 @@ interface SidebarNavProps {
 }
 
 export function SidebarNav({ currentPath }: SidebarNavProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [componentsOpen, setComponentsOpen] = useState(true);
-  const [chartsOpen, setChartsOpen] = useState(true);
-  const [blocksOpen, setBlocksOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = createSignal(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = createSignal(false);
+  const [componentsOpen, setComponentsOpen] = createSignal(true);
+  const [chartsOpen, setChartsOpen] = createSignal(true);
+  const [blocksOpen, setBlocksOpen] = createSignal(true);
 
   // The sidebar is persisted across view-transition navigations
   // (`transition:persist`), so the `currentPath` prop is only correct for the
   // first render. Track the live pathname client-side and update it on each
   // soft navigation so the active-link highlight stays in sync.
-  const [livePath, setLivePath] = useState(currentPath);
-  useEffect(() => {
+  const [livePath, setLivePath] = createSignal(currentPath);
+  createEffect(() => {
     const sync = () => setLivePath(window.location.pathname);
     sync();
     document.addEventListener("astro:page-load", sync);
-    return () => document.removeEventListener("astro:page-load", sync);
-  }, []);
-  const activePath = normalizePathname(livePath);
+    onCleanup(() => document.removeEventListener("astro:page-load", sync));
+  });
+  const activePath = () => normalizePathname(livePath());
 
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = createSignal(false);
 
   // Refs for scroll containers
-  const mobileScrollRef = useRef<HTMLDivElement>(null);
-  const desktopScrollRef = useRef<HTMLDivElement>(null);
+  const mobileScrollRef = createRef<HTMLDivElement>(null);
+  const desktopScrollRef = createRef<HTMLDivElement>(null);
 
   const toggleSidebar = () => setSidebarOpen((v) => !v);
   const toggleMobileMenu = () => setMobileMenuOpen((v) => !v);
-  const preventPointerFocus = (e: React.MouseEvent<HTMLElement>) => {
+  const preventPointerFocus = (
+    e: MouseEvent & { currentTarget: HTMLElement },
+  ) => {
     e.preventDefault();
   };
 
   // Keyboard shortcut: Cmd+K / Ctrl+K + custom event from headers
-  useEffect(() => {
+  createEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
@@ -158,14 +152,14 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
 
     document.addEventListener("keydown", handleKeyDown);
     window.addEventListener("kumo:open-search", handleOpenSearch);
-    return () => {
+    onCleanup(() => {
       document.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("kumo:open-search", handleOpenSearch);
-    };
-  }, []);
+    });
+  });
 
   // Save scroll position on scroll and navigation
-  useEffect(() => {
+  createEffect(() => {
     const STORAGE_KEY = "kumo-sidebar-scroll";
 
     // Save scroll position before navigation
@@ -197,7 +191,7 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
       desktopContainer.addEventListener("scroll", handleScroll);
     }
 
-    return () => {
+    onCleanup(() => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       if (mobileContainer) {
         mobileContainer.removeEventListener("scroll", handleScroll);
@@ -205,29 +199,29 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
       if (desktopContainer) {
         desktopContainer.removeEventListener("scroll", handleScroll);
       }
-    };
-  }, []);
+    });
+  });
 
   // Shared nav content for both mobile and desktop
-  const navContent = (
+  const navContent = () => (
     <>
       <button
         onClick={() => setSearchOpen(true)}
-        className="mb-3 flex w-full items-center gap-2 rounded-lg bg-kumo-control px-3 py-2 text-sm text-kumo-subtle ring-1 ring-kumo-line transition-all hover:ring-kumo-hairline focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
+        class="mb-3 flex w-full items-center gap-2 rounded-lg bg-kumo-control px-3 py-2 text-sm text-kumo-subtle ring-1 ring-kumo-line transition-all hover:ring-kumo-hairline focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
       >
         <MagnifyingGlassIcon size={16} className="shrink-0" />
         <span>Search...</span>
       </button>
 
-      <ul className="flex flex-col gap-px">
+      <ul class="flex flex-col gap-px">
         {staticPages.map((item) => (
-          <li key={item.href}>
+          <li>
             <a
               href={item.href}
               onMouseDown={preventPointerFocus}
-              className={cn(
+              class={cn(
                 LI_STYLE,
-                isActivePath(activePath, item.href) && LI_ACTIVE_STYLE,
+                isActivePath(activePath(), item.href) && LI_ACTIVE_STYLE,
               )}
             >
               {item.label}
@@ -236,39 +230,41 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
         ))}
       </ul>
 
-      <div className="my-4 border-b border-kumo-hairline" />
+      <div class="my-4 border-b border-kumo-hairline" />
 
-      <div className="mb-4">
+      <div class="mb-4">
         {/* Components Section */}
         <button
           type="button"
-          className="flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
-          onClick={() => setComponentsOpen(!componentsOpen)}
+          class="flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
+          onClick={() => setComponentsOpen(!componentsOpen())}
         >
           <span>Components</span>
           <CaretDownIcon
             size={12}
             className={cn(
               "text-kumo-subtle transition-transform duration-200",
-              !componentsOpen && "-rotate-90",
+              !componentsOpen() && "-rotate-90",
             )}
           />
         </button>
         <ul
-          className={cn(
+          class={cn(
             "mt-1 flex flex-col gap-px overflow-x-visible overflow-y-hidden transition-all duration-300 ease-in-out",
-            componentsOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0",
+            componentsOpen()
+              ? "max-h-[2000px] opacity-100"
+              : "max-h-0 opacity-0",
           )}
         >
           {componentItems.map((item) => (
-            <li key={item.href}>
+            <li>
               <a
                 href={item.href}
                 onMouseDown={preventPointerFocus}
-                className={cn(
+                class={cn(
                   LI_STYLE,
                   "pl-4",
-                  activePath === normalizePathname(item.href) &&
+                  activePath() === normalizePathname(item.href) &&
                     LI_ACTIVE_STYLE,
                 )}
               >
@@ -279,36 +275,36 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
         </ul>
       </div>
 
-      <div className="mb-4">
+      <div class="mb-4">
         <button
           type="button"
-          className="flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
-          onClick={() => setChartsOpen(!chartsOpen)}
+          class="flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
+          onClick={() => setChartsOpen(!chartsOpen())}
         >
           <span>Charts</span>
           <CaretDownIcon
             size={12}
             className={cn(
               "text-kumo-subtle transition-transform duration-200",
-              !chartsOpen && "-rotate-90",
+              !chartsOpen() && "-rotate-90",
             )}
           />
         </button>
         <ul
-          className={cn(
+          class={cn(
             "mt-1 flex flex-col gap-px overflow-x-visible overflow-y-hidden transition-all duration-300 ease-in-out",
-            chartsOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
+            chartsOpen() ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
           )}
         >
           {chartItems.map((item) => (
-            <li key={item.href}>
+            <li>
               <a
                 href={item.href}
                 onMouseDown={preventPointerFocus}
-                className={cn(
+                class={cn(
                   LI_STYLE,
                   "pl-4",
-                  livePath === item.href && LI_ACTIVE_STYLE,
+                  livePath() === item.href && LI_ACTIVE_STYLE,
                 )}
               >
                 {item.label}
@@ -322,33 +318,33 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
         {/* Blocks Section */}
         <button
           type="button"
-          className="flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
-          onClick={() => setBlocksOpen(!blocksOpen)}
+          class="flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-sm font-medium text-kumo-default transition-colors hover:bg-kumo-tint focus:outline-none focus-visible:ring-2 focus-visible:ring-kumo-brand focus-visible:ring-inset"
+          onClick={() => setBlocksOpen(!blocksOpen())}
         >
           <span>Blocks</span>
           <CaretDownIcon
             size={12}
             className={cn(
               "text-kumo-subtle transition-transform duration-200",
-              !blocksOpen && "-rotate-90",
+              !blocksOpen() && "-rotate-90",
             )}
           />
         </button>
         <ul
-          className={cn(
+          class={cn(
             "mt-1 flex flex-col gap-px overflow-x-visible overflow-y-hidden transition-all duration-300 ease-in-out",
-            blocksOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
+            blocksOpen() ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
           )}
         >
           {blockItems.map((item) => (
-            <li key={item.href}>
+            <li>
               <a
                 href={item.href}
                 onMouseDown={preventPointerFocus}
-                className={cn(
+                class={cn(
                   LI_STYLE,
                   "pl-4",
-                  activePath === normalizePathname(item.href) &&
+                  activePath() === normalizePathname(item.href) &&
                     LI_ACTIVE_STYLE,
                 )}
               >
@@ -365,7 +361,7 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
     <>
       {/* Mobile header bar with hamburger */}
       <div
-        className={cn(
+        class={cn(
           "fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between border-b border-kumo-hairline bg-kumo-canvas px-3 md:px-6 lg:hidden",
         )}
       >
@@ -377,20 +373,22 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
         >
           <KumoMenuIcon />
         </Button>
-        <h1 className="text-base font-medium">Kumo</h1>
+        <h1 class="text-base font-medium">Kumo</h1>
         <ThemeToggle />
       </div>
 
       {/* Mobile slide-out drawer */}
       <aside
-        className={cn(
+        aria-hidden={!mobileMenuOpen()}
+        inert={!mobileMenuOpen()}
+        class={cn(
           "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-kumo-hairline bg-kumo-canvas lg:hidden",
           "transition-transform duration-300 will-change-transform",
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full",
+          mobileMenuOpen() ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-12 flex-none items-center justify-between border-b border-kumo-hairline px-3">
-          <h1 className="text-base font-medium">Kumo</h1>
+        <div class="flex h-12 flex-none items-center justify-between border-b border-kumo-hairline px-3">
+          <h1 class="text-base font-medium">Kumo</h1>
           <Button
             variant="ghost"
             shape="square"
@@ -401,29 +399,29 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
           </Button>
         </div>
         <div
-          ref={mobileScrollRef}
+          ref={(element) => (mobileScrollRef.current = element)}
           data-sidebar-scroll="mobile"
-          className="min-h-0 grow overflow-y-auto overscroll-contain px-3 py-4 text-sm text-kumo-subtle"
-          style={{ scrollBehavior: "auto" }}
+          class="min-h-0 grow overflow-y-auto overscroll-contain px-3 py-4 text-sm text-kumo-subtle"
+          style={{ "scroll-behavior": "auto" }}
         >
-          {navContent}
+          {navContent()}
         </div>
       </aside>
 
       {/* Desktop: Left rail that always stays put */}
       <div
-        className={cn(
+        class={cn(
           "fixed inset-y-0 left-0 z-50 hidden w-12 bg-kumo-canvas lg:block",
           "border-r border-kumo-hairline",
         )}
       >
-        <div className="relative h-12 border-b border-kumo-hairline">
-          <div className="absolute inset-0 grid place-items-center">
+        <div class="relative h-12 border-b border-kumo-hairline">
+          <div class="absolute inset-0 grid place-items-center">
             <Button
               variant="ghost"
               shape="square"
               aria-label="Toggle sidebar"
-              aria-pressed={sidebarOpen}
+              aria-pressed={sidebarOpen()}
               onClick={toggleSidebar}
             >
               <KumoMenuIcon />
@@ -433,34 +431,34 @@ export function SidebarNav({ currentPath }: SidebarNavProps) {
       </div>
 
       {/* Desktop: Kumo brand label - always visible, panel slides behind it */}
-      <div className="pointer-events-none fixed top-0 left-12 z-50 hidden h-12 items-center px-3 font-medium select-none lg:flex">
-        <h1 className="text-base">Kumo</h1>
+      <div class="pointer-events-none fixed top-0 left-12 z-50 hidden h-12 items-center px-3 font-medium select-none lg:flex">
+        <h1 class="text-base">Kumo</h1>
       </div>
 
       {/* Desktop: Sliding panel that opens to the right of the rail */}
       <aside
-        data-sidebar-open={sidebarOpen}
-        className={cn(
+        data-sidebar-open={sidebarOpen()}
+        class={cn(
           "fixed inset-y-0 left-12 z-40 hidden w-64 flex-col bg-kumo-canvas lg:flex",
           "transition-transform duration-300 ease-out will-change-transform",
-          sidebarOpen
+          sidebarOpen()
             ? "translate-x-0 border-r border-kumo-hairline"
             : "-translate-x-full",
         )}
       >
-        <div className="h-12 flex-none border-b border-kumo-hairline" />
+        <div class="h-12 flex-none border-b border-kumo-hairline" />
 
         <div
-          ref={desktopScrollRef}
+          ref={(element) => (desktopScrollRef.current = element)}
           data-sidebar-scroll="desktop"
-          className="min-h-0 grow overflow-y-auto overscroll-contain px-3 py-4 text-sm text-kumo-subtle"
+          class="min-h-0 grow overflow-y-auto overscroll-contain px-3 py-4 text-sm text-kumo-subtle"
         >
-          {navContent}
+          {navContent()}
         </div>
       </aside>
 
       {/* Search Dialog */}
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+      <SearchDialog open={searchOpen()} onOpenChange={setSearchOpen} />
     </>
   );
 }

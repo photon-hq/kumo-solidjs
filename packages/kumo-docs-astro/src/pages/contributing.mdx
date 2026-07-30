@@ -1,26 +1,21 @@
 ---
 layout: ~/layouts/MdxDocLayout.astro
 title: "Contributing"
-description: "Learn how to contribute to Kumo, from setup and workflows to PR and release guidelines. Everything you need for setup, development, quality checks, and PR process is documented here."
+description: "Develop and validate the SolidJS port, its Astro documentation, and compatibility fixes."
 ---
 
 ## Before You Start
 
-For non-trivial changes, start with alignment before coding:
+For a non-trivial API change, align on scope and compatibility first. The Solid
+port aims to preserve the original Kumo API and visual behavior unless Solid's
+reactivity model requires a documented difference.
 
-- Comment on an existing issue or open one first.
-- Confirm scope, API direction, and migration impact.
-- For small fixes/docs tweaks, you can go straight to a PR.
-
----
-
-## 1. Get Set Up Once
-
-From repo root:
+## 1. Set Up the Repository
 
 ```bash
+git clone https://github.com/photon-hq/kumo-solidjs.git
+cd kumo-solidjs
 pnpm install
-pnpm build
 ```
 
 Requirements:
@@ -28,174 +23,81 @@ Requirements:
 - Node `^24.12.0`
 - pnpm `>=10.21.0`
 
-Recommended local setup:
+The local
+[`base-ui-solid`](https://github.com/msviderok/base-ui-solid) project is the
+reference for primitive behavior and Solid render-prop conventions.
 
-- Use a Node version manager (`nvm`, `fnm`, etc.).
-- Use VS Code and select the workspace TypeScript version.
-- If dependencies changed after rebase, run `pnpm install` again.
+## 2. Pick the Right Location
 
-### Repository Access and Branching
+- **Solid component:** `packages/kumo-solid/src/components/`
+- **Solid code utilities:** `packages/kumo-solid/src/code/`
+- **Solid block:** `packages/kumo-docs-astro/src/components/kumo/`
+- **Demo:** `packages/kumo-docs-astro/src/components/demos/`
+- **Documentation:** `packages/kumo-docs-astro/src/pages/`
 
-Internal contributors normally clone and push directly to `cloudflare/kumo`:
+Keep the component name, variants, semantic tokens, and accessibility behavior
+aligned with the corresponding implementation under `packages/kumo/`.
 
-```bash
-git clone https://github.com/cloudflare/kumo.git
-git switch -c <branch-name>
-git push -u origin <branch-name>
-```
-
-If you do not have write access, contact your manager or Kumo maintainers.
-
----
-
-## 2. Pick the Right Contribution Type
-
-Use this to decide where your change belongs:
-
-- **Component**: reusable UI primitive in `packages/kumo/src/components/`
-- **Block**: installable composition pattern in `packages/kumo/src/blocks/`
-- **Docs only**: docs/demo/navigation updates in `packages/kumo-docs-astro/`
-
-When adding a new **component**, scaffold it (do not create files manually):
+## 3. Start the Development Server
 
 ```bash
-pnpm --filter @cloudflare/kumo new:component
+pnpm --filter @cloudflare/kumo-docs-astro dev
 ```
 
----
+The Astro development configuration resolves
+`@photon-ai/kumo-solid` imports directly to source, so component changes
+hot-reload without rebuilding the package.
 
-## 3. Start the Dev Loop
-
-Run these in separate terminals:
+To validate the same distribution files a consumer will use:
 
 ```bash
-# Terminal 1: watch Kumo package output
-pnpm --filter @cloudflare/kumo dev
-
-# Terminal 2: docs site
-pnpm dev
+pnpm --filter @photon-ai/kumo-solid build
+pnpm --filter @cloudflare/kumo-docs-astro build
 ```
 
-This gives you a fast loop while verifying your change in the actual docs environment.
+## 4. Implement Compatibility Changes
 
----
+When porting or fixing a component:
 
-## 4. Implement the Change
+1. Compare its public API and styling with `packages/kumo/src/`.
+2. Use the matching primitive from `@msviderok/base-ui-solid` when available.
+3. Model local state with Solid signals, memos, effects, and cleanup.
+4. Preserve semantic HTML, ARIA attributes, focus behavior, and keyboard
+   interactions.
+5. Add or update a Solid demo and focused tests.
 
-Typical internal change flow:
+Use Kumo semantic tokens such as `bg-kumo-base`, `text-kumo-default`, and
+`border-kumo-line`. Do not add raw palette colors or Tailwind `dark:` variants.
 
-1. Build the feature in `packages/kumo/src/...`.
-2. Add or update demos in `packages/kumo-docs-astro/src/components/demos/`.
-3. Add/update tests in `packages/kumo`.
-4. Add or update docs pages in `packages/kumo-docs-astro/src/pages/`.
-
-If your demos should appear in registry metadata, keep demo naming exact:
-
-- File: `{Component}Demo.tsx`
-- Export names must end with `Demo`
-
-Implementation expectations:
-
-- Preserve accessibility semantics and keyboard behavior.
-- Keep APIs focused and avoid one-off abstractions.
-- Follow existing Kumo patterns for variants, props, and structure.
-
----
-
-## 5. Run Validation Before PR
-
-Run these from repo root before opening or updating your PR:
+## 5. Validate Before a PR
 
 ```bash
-pnpm lint
-pnpm typecheck
-pnpm --filter @cloudflare/kumo test
+pnpm --filter @photon-ai/kumo-solid typecheck
+pnpm --filter @photon-ai/kumo-solid lint
+pnpm --filter @photon-ai/kumo-solid test
+pnpm --filter @photon-ai/kumo-solid build
+
+pnpm --filter @cloudflare/kumo-docs-astro typecheck
+pnpm --filter @cloudflare/kumo-docs-astro lint
+pnpm --filter @cloudflare/kumo-docs-astro test
+pnpm --filter @cloudflare/kumo-docs-astro build
 ```
 
-If you changed exports/build behavior, also run:
+Also exercise the affected demo in the browser at desktop and mobile widths.
+For interactive primitives, verify pointer, keyboard, focus-return, controlled,
+and uncontrolled behavior.
 
-```bash
-pnpm --filter @cloudflare/kumo build
-```
+## 6. Changesets
 
-Optional (when relevant):
+`@photon-ai/kumo-solid` is currently private and versioned as workspace
+development software, so it does not yet participate in the public release
+flow. Do not run version or publish commands. Add release tooling only when the
+package is intentionally prepared for publication.
 
-```bash
-pnpm format
-pnpm --filter @cloudflare/kumo test:run
-```
+## 7. Pull Requests
 
-Windsurf and hooks catch additional issues, but you should still run checks locally before requesting review.
-
----
-
-## 6. Handle Changesets Correctly
-
-If your change touches `packages/kumo/` and should ship, add a changeset:
-
-```bash
-pnpm changeset
-```
-
-Changeset guidance:
-
-- Use `patch` for bug fixes and low-risk improvements.
-- Use `minor` for new backward-compatible features.
-- Use `major` only for breaking changes.
-- Keep the summary focused on user-visible impact.
-
-If your change is docs-only or non-releasable package work, a changeset is usually not required.
-
----
-
-## 7. Open and Maintain the PR
-
-- Branch from `main` and push to `origin`.
-- Use PR title format: `[package] short description` (example: `[kumo] add meter warning variant`).
-- Fill in the PR template with testing details and impact.
-- After review starts, prefer follow-up commits over force-pushing rewritten history.
-
-Git hygiene expectations:
-
-- Keep commit history readable before first review.
-- After reviews begin, avoid rewriting already-reviewed commits.
-- Add follow-up commits for feedback (`fixup` commits are fine).
-
-PR review is required before merge.
-
----
-
-## PR Previews and Tests
-
-- PRs publish prerelease artifacts via `pkg.pr.new` links in CI comments.
-- Every PR should include tests for behavior changes.
-- Most Kumo tests are Vitest-based and live under `packages/kumo`.
-
----
-
-## Release Process (How Your Change Ships)
-
-- Releases are managed through Changesets.
-- Merged changesets on `main` feed the automated versioning/publish flow.
-- If you need an urgent out-of-cadence release, contact maintainers.
-
----
-
-## Practical Guidelines
-
-- Use semantic Kumo tokens and avoid raw Tailwind color classes.
-- Compose class names with `cn(...)`.
-- Prefer extending existing patterns over introducing one-off API designs.
-- Include tests for behavior changes, not just rendering snapshots.
-
-Common pitfalls to avoid:
-
-- Do not scaffold components manually; use `new:component`.
-- Do not rely on raw Tailwind color classes (`bg-blue-500`, etc.).
-- Do not skip changesets for releasable `packages/kumo` changes.
-
----
-
-## Related Docs
-
-Follow the [changeset guide](https://github.com/cloudflare/kumo/blob/main/.changeset/README.md) to document releasable library changes and see the [AGENTS.md](https://github.com/cloudflare/kumo/blob/main/packages/kumo/AGENTS.md) for conventions and patterns.
+- Branch from the repository's current mainline branch.
+- Keep changes focused on one compatibility area.
+- Describe intentional differences from React Kumo.
+- Include the exact commands and browser interactions used for validation.
+- Avoid editing generated registry and theme files directly.

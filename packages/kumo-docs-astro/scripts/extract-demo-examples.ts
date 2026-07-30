@@ -23,7 +23,7 @@ import {
 } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
-import * as ts from "typescript";
+import ts from "typescript";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const demosDir = join(__dirname, "../src/components/demos");

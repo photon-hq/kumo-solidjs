@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Select } from "@cloudflare/kumo";
+import { createMemo, createSignal } from "solid-js";
+
+import { Select } from "@photon-ai/kumo-solid";
 
 // ============================================================================
 // STRESS TEST: TypeScript Generic Inference
@@ -22,14 +23,18 @@ const users: User[] = [
  * The bug caused T to infer as `never` making callbacks unusable.
  */
 export function SelectStrictNullChecksDemo() {
-  const [selected, setSelected] = useState<User | null>(null);
+  const [selected, setSelected] = createSignal<User | null>(null);
+  const selectedLabel = createMemo(() => {
+    const current = selected();
+    return current ? `${current.name} (${current.email})` : "None";
+  });
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select<User>
         label="Select User (Object | Null)"
         placeholder="Choose a user..."
-        value={selected}
+        value={selected()}
         onValueChange={(value) => {
           // This callback should receive User | null, not never
           setSelected(value);
@@ -41,15 +46,12 @@ export function SelectStrictNullChecksDemo() {
         )}
       >
         {users.map((user) => (
-          <Select.Option key={user.id} value={user}>
-            {user.name}
-          </Select.Option>
+          <Select.Option value={user}>{user.name}</Select.Option>
         ))}
       </Select>
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Selected:</strong>{" "}
-        {selected ? `${selected.name} (${selected.email})` : "None"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Selected:</strong> {selectedLabel()}
       </div>
     </div>
   );
@@ -78,14 +80,20 @@ const countries: Country[] = [
  * Placeholder should show when no value selected.
  */
 export function SelectRenderValuePlaceholderDemo() {
-  const [country, setCountry] = useState<Country | null>(null);
+  const [country, setCountry] = createSignal<Country | null>(null);
+  const countryLabel = createMemo(() => {
+    const current = country();
+    return current
+      ? `Selected: ${current.flag} ${current.name}`
+      : "No selection (placeholder should be visible above)";
+  });
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select<Country>
         label="Select Country"
         placeholder="Pick a country..."
-        value={country}
+        value={country()}
         onValueChange={setCountry}
         renderValue={(c) => (
           <span>
@@ -94,17 +102,14 @@ export function SelectRenderValuePlaceholderDemo() {
         )}
       >
         {countries.map((c) => (
-          <Select.Option key={c.code} value={c}>
+          <Select.Option value={c}>
             {c.flag} {c.name}
           </Select.Option>
         ))}
       </Select>
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Status:</strong>{" "}
-        {country
-          ? `Selected: ${country.flag} ${country.name}`
-          : "No selection (placeholder should be visible above)"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Status:</strong> {countryLabel()}
       </div>
     </div>
   );
@@ -131,33 +136,36 @@ const priorities: Priority[] = [
  * Tests: items prop with array of { label, value } objects.
  */
 export function SelectItemsArrayDemo() {
-  const [priority, setPriority] = useState<Priority | null>(null);
+  const [priority, setPriority] = createSignal<Priority | null>(null);
+  const priorityLabel = createMemo(() => {
+    const current = priority();
+    return current ? `Level ${current.level}: ${current.name}` : "None";
+  });
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select<Priority>
         label="Priority (items array)"
         placeholder="Select priority..."
-        value={priority}
+        value={priority()}
         onValueChange={setPriority}
         items={priorities.map((p) => ({
           label: (
-            <span className={p.color}>
+            <span class={p.color}>
               [{p.level}] {p.name}
             </span>
           ),
           value: p,
         }))}
         renderValue={(p) => (
-          <span className={p.color}>
+          <span class={p.color}>
             [{p.level}] {p.name}
           </span>
         )}
       />
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Selected:</strong>{" "}
-        {priority ? `Level ${priority.level}: ${priority.name}` : "None"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Selected:</strong> {priorityLabel()}
       </div>
     </div>
   );
@@ -171,7 +179,7 @@ export function SelectItemsArrayDemo() {
  * Tests: items prop with object map + renderValue.
  */
 export function SelectItemsObjectMapDemo() {
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = createSignal<string | null>(null);
 
   const statusItems = {
     active: "🟢 Active",
@@ -181,17 +189,17 @@ export function SelectItemsObjectMapDemo() {
   };
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select
         label="Status (object map)"
         placeholder="Select status..."
-        value={status}
+        value={status()}
         onValueChange={setStatus}
         items={statusItems}
       />
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Selected:</strong> {status || "None"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Selected:</strong> {status() || "None"}
       </div>
     </div>
   );
@@ -205,31 +213,31 @@ export function SelectItemsObjectMapDemo() {
  * Tests: multiple selection with object values.
  */
 export function SelectMultipleDemo() {
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = createSignal<User[]>([]);
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select<User, true>
         label="Select Users (Multiple)"
         placeholder="Choose users..."
         multiple
-        value={selectedUsers}
+        value={selectedUsers()}
         onValueChange={setSelectedUsers}
         renderValue={(users) => (
           <span>{users.map((u) => u.name).join(", ") || "None selected"}</span>
         )}
       >
         {users.map((user) => (
-          <Select.Option key={user.id} value={user}>
-            {user.name}
-          </Select.Option>
+          <Select.Option value={user}>{user.name}</Select.Option>
         ))}
       </Select>
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Selected ({selectedUsers.length}):</strong>{" "}
-        {selectedUsers.length > 0
-          ? selectedUsers.map((u) => u.name).join(", ")
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Selected ({selectedUsers().length}):</strong>{" "}
+        {selectedUsers().length > 0
+          ? selectedUsers()
+              .map((u) => u.name)
+              .join(", ")
           : "None"}
       </div>
     </div>
@@ -244,27 +252,27 @@ export function SelectMultipleDemo() {
  * Tests: Switching between controlled and uncontrolled modes.
  */
 export function SelectControlledVsUncontrolledDemo() {
-  const [controlled, setControlled] = useState<string | null>(null);
-  const [isControlled, setIsControlled] = useState(true);
+  const [controlled, setControlled] = createSignal<string | null>(null);
+  const [isControlled, setIsControlled] = createSignal(true);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <label className="flex items-center gap-2 text-sm">
+    <div class="space-y-4">
+      <div class="flex items-center gap-2">
+        <label class="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={isControlled}
-            onChange={(e) => setIsControlled(e.target.checked)}
+            checked={isControlled()}
+            onInput={(e) => setIsControlled(e.target.checked)}
           />
           Controlled mode
         </label>
       </div>
 
-      {isControlled ? (
+      {isControlled() ? (
         <Select
           label="Controlled Select"
           placeholder="Select a fruit..."
-          value={controlled}
+          value={controlled()}
           onValueChange={setControlled}
           items={{
             apple: "Apple",
@@ -285,13 +293,13 @@ export function SelectControlledVsUncontrolledDemo() {
         />
       )}
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        {isControlled ? (
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        {isControlled() ? (
           <>
-            <strong>Controlled value:</strong> {controlled || "None"}
+            <strong>Controlled value:</strong> {controlled() || "None"}
           </>
         ) : (
-          <span className="text-kumo-subtle">
+          <span class="text-kumo-subtle">
             Uncontrolled mode - state managed internally
           </span>
         )}
@@ -308,14 +316,14 @@ export function SelectControlledVsUncontrolledDemo() {
  * Tests: Grouped options with separators.
  */
 export function SelectGroupedOptionsDemo() {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = createSignal<string | null>(null);
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select
         label="Grouped Options"
         placeholder="Select an option..."
-        value={selected}
+        value={selected()}
         onValueChange={setSelected}
       >
         <Select.Group>
@@ -333,8 +341,8 @@ export function SelectGroupedOptionsDemo() {
         </Select.Group>
       </Select>
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Selected:</strong> {selected || "None"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Selected:</strong> {selected() || "None"}
       </div>
     </div>
   );
@@ -351,17 +359,17 @@ export function SelectGroupedOptionsDemo() {
  * This stress test verifies that toggling between the two states works correctly.
  */
 export function SelectFieldIntegrationDemo() {
-  const [value, setValue] = useState<string | null>(null);
-  const [showError, setShowError] = useState(false);
+  const [value, setValue] = createSignal<string | null>(null);
+  const [showError, setShowError] = createSignal(false);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <label className="flex items-center gap-2 text-sm">
+    <div class="space-y-4">
+      <div class="flex items-center gap-2">
+        <label class="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={showError}
-            onChange={(e) => setShowError(e.target.checked)}
+            checked={showError()}
+            onInput={(e) => setShowError(e.target.checked)}
           />
           Show validation error
         </label>
@@ -371,10 +379,10 @@ export function SelectFieldIntegrationDemo() {
         label="Required Field"
         placeholder="This field is required..."
         required
-        value={value}
+        value={value()}
         onValueChange={setValue}
         description="Please select an option from the list."
-        error={showError && !value ? "This field is required" : undefined}
+        error={showError() && !value() ? "This field is required" : undefined}
         labelTooltip="This is a helpful tooltip explaining the field."
         items={{
           option1: "Option 1",
@@ -383,9 +391,9 @@ export function SelectFieldIntegrationDemo() {
         }}
       />
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Value:</strong> {value || "None"} | <strong>Valid:</strong>{" "}
-        {value ? "Yes" : "No"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Value:</strong> {value() || "None"} | <strong>Valid:</strong>{" "}
+        {value() ? "Yes" : "No"}
       </div>
     </div>
   );
@@ -402,7 +410,7 @@ export function SelectSizeVariantsDemo() {
   const items = { a: "Option A", b: "Option B", c: "Option C" };
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select
         size="xs"
         label="Extra Small (xs)"
@@ -439,16 +447,16 @@ export function SelectSizeVariantsDemo() {
  * Tests: Loading state shows skeleton.
  */
 export function SelectLoadingStateDemo() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = createSignal(true);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <label className="flex items-center gap-2 text-sm">
+    <div class="space-y-4">
+      <div class="flex items-center gap-2">
+        <label class="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={loading}
-            onChange={(e) => setLoading(e.target.checked)}
+            checked={loading()}
+            onInput={(e) => setLoading(e.target.checked)}
           />
           Loading state
         </label>
@@ -457,7 +465,7 @@ export function SelectLoadingStateDemo() {
       <Select
         label="Data Loading"
         placeholder="Select when loaded..."
-        loading={loading}
+        loading={loading()}
         items={{
           data1: "Loaded Data 1",
           data2: "Loaded Data 2",
@@ -476,14 +484,14 @@ export function SelectLoadingStateDemo() {
  * Tests: Individual disabled options.
  */
 export function SelectDisabledOptionsDemo() {
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = createSignal<string | null>(null);
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select
         label="With Disabled Options"
         placeholder="Select an option..."
-        value={value}
+        value={value()}
         onValueChange={setValue}
         items={{
           available1: "Available Option 1",
@@ -494,8 +502,8 @@ export function SelectDisabledOptionsDemo() {
         }}
       />
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Selected:</strong> {value || "None"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Selected:</strong> {value() || "None"}
       </div>
     </div>
   );
@@ -510,14 +518,14 @@ export function SelectDisabledOptionsDemo() {
  */
 export function SelectInferenceDemo() {
   // No explicit type - should infer from items
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = createSignal<string | null>(null);
 
   return (
-    <div className="space-y-4">
+    <div class="space-y-4">
       <Select
         label="Inferred Types"
         placeholder="Select..."
-        value={value}
+        value={value()}
         onValueChange={(v) => {
           // v should be inferred correctly
           setValue(v);
@@ -529,8 +537,8 @@ export function SelectInferenceDemo() {
         }}
       />
 
-      <div className="rounded bg-kumo-tint p-3 text-sm">
-        <strong>Inferred value:</strong> {value || "None"}
+      <div class="rounded bg-kumo-tint p-3 text-sm">
+        <strong>Inferred value:</strong> {value() || "None"}
       </div>
     </div>
   );

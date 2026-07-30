@@ -32,13 +32,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Link } from "@cloudflare/kumo";
+import { Link } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Link } from "@cloudflare/kumo/components/link";
+import { Link } from "@photon-ai/kumo-solid/components/link";
 ```
 
 </ComponentSection>
@@ -56,7 +56,7 @@ import { Link } from "@cloudflare/kumo/components/link";
   </p>
 
 ```tsx
-import { Link } from "@cloudflare/kumo";
+import { Link } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -75,7 +75,7 @@ export default function Example() {
 </p>
 
 ```tsx
-import { Link } from "@cloudflare/kumo";
+import { Link } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -100,23 +100,22 @@ export default function Example() {
 </p>
 
 ```tsx
-import { forwardRef } from "react";
-import { LinkProvider } from "@cloudflare/kumo";
-import { Link as RouterLink } from "react-router-dom";
+import { splitProps } from "solid-js";
+import { A } from "@solidjs/router";
+import { LinkProvider } from "@photon-ai/kumo-solid";
 
 // Your app's wrapper maps href to the router's navigation prop
 // and handles external URLs with a plain <a>
-const AppLink = forwardRef(({ href, to, ...rest }, ref) => {
-  const destination = href ?? to;
-  const isExternal =
-    destination?.startsWith("http") &&
-    new URL(destination).origin !== window.location.origin;
+function AppLink(props) {
+  const [local, rest] = splitProps(props, ["href", "to", "ref"]);
+  const destination = () => local.href ?? local.to ?? "";
+  const isExternal = () => /^(https?:)?\/\//.test(destination());
 
-  if (isExternal) {
-    return <a ref={ref} href={destination} {...rest} />;
+  if (isExternal()) {
+    return <a ref={local.ref} href={destination()} {...rest} />;
   }
-  return <RouterLink ref={ref} to={destination} {...rest} />;
-});
+  return <A ref={local.ref} href={destination()} {...rest} />;
+}
 
 // Wrap your app once
 export function App() {
@@ -139,19 +138,27 @@ export function App() {
 </p>
 
 ```tsx
-import { Link } from "@cloudflare/kumo";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "@photon-ai/kumo-solid";
+import { A } from "@solidjs/router";
 
 export default function Example() {
   return (
     <>
       {/* Force a specific router link (bypasses LinkProvider) */}
-      <Link render={<RouterLink to="/dashboard" />} variant="inline">
+      <Link
+        render={(linkProps) => <A {...linkProps} href="/dashboard" />}
+        variant="inline"
+      >
         Dashboard
       </Link>
 
       {/* Force a plain anchor (bypasses LinkProvider) */}
-      <Link render={<a />} href="https://example.com" target="_blank" rel="noopener noreferrer">
+      <Link
+        render={(linkProps) => <a {...linkProps} />}
+        href="https://example.com"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         External Site <Link.ExternalIcon />
       </Link>
     </>
@@ -236,7 +243,7 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono text-xs">render</td>
-        <td class="px-4 py-3 font-mono text-xs">ReactElement</td>
+        <td class="px-4 py-3 font-mono text-xs">RenderProp</td>
         <td class="px-4 py-3 font-mono text-xs">-</td>
         <td class="px-4 py-3 text-xs">
           Element to render with Link props merged onto it
@@ -269,7 +276,7 @@ export default function Example() {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="px-4 py-3 font-mono text-xs">children</td>
-        <td class="px-4 py-3 font-mono text-xs">ReactNode</td>
+        <td class="px-4 py-3 font-mono text-xs">JSX.Element</td>
         <td class="px-4 py-3 font-mono text-xs">-</td>
         <td class="px-4 py-3 text-xs">Link content</td>
       </tr>
@@ -377,7 +384,7 @@ export default function Example() {
         </li>
         <li>
           Your wrapper receives `href` and maps it to your router's
-          navigation prop (e.g. React Router's `to`)
+          navigation prop (for example, Solid Router's `href`)
         </li>
         <li>
           The wrapper should handle external URLs by rendering a plain

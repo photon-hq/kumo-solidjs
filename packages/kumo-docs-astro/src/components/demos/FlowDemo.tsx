@@ -1,36 +1,44 @@
-import { forwardRef, useState } from "react";
-import { Flow } from "@cloudflare/kumo";
-import { CaretDownIcon } from "@phosphor-icons/react";
+import { createSignal, splitProps, type JSX } from "solid-js";
 
-const ExpandableNode = forwardRef<
-  HTMLLIElement,
-  { title: string; children: React.ReactNode }
->(function ExpandableNode({ title, children, ...props }, ref) {
-  const [open, setOpen] = useState(false);
+import { Flow } from "@photon-ai/kumo-solid";
+import { CaretDownIcon } from "~/components/icons";
+
+type ExpandableNodeProps = Omit<
+  JSX.LiHTMLAttributes<HTMLLIElement>,
+  "children" | "ref" | "title"
+> & {
+  children: JSX.Element;
+  ref?: (element: HTMLLIElement) => void;
+  title: string;
+};
+
+function ExpandableNode(inputProps: ExpandableNodeProps) {
+  const [props, rest] = splitProps(inputProps, ["children", "ref", "title"]);
+  const [open, setOpen] = createSignal(false);
   return (
     <li
-      ref={ref}
-      {...props}
-      className="overflow-hidden rounded-lg bg-kumo-base shadow ring ring-kumo-hairline"
+      ref={props.ref}
+      {...rest}
+      class="overflow-hidden rounded-lg bg-kumo-base shadow ring ring-kumo-hairline"
     >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-2 text-sm font-medium text-kumo-default"
+        class="flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-2 text-sm font-medium text-kumo-default"
       >
-        {title}
+        {props.title}
         <CaretDownIcon
-          className={`size-4 text-kumo-subtle transition-transform ${open ? "rotate-180" : ""}`}
+          className={`size-4 text-kumo-subtle transition-transform ${open() ? "rotate-180" : ""}`}
         />
       </button>
-      {open && (
-        <div className="border-t border-kumo-hairline px-3 py-2 text-sm text-kumo-subtle">
-          {children}
+      {open() && (
+        <div class="border-t border-kumo-hairline px-3 py-2 text-sm text-kumo-subtle">
+          {props.children}
         </div>
       )}
     </li>
   );
-});
+}
 
 /** Basic flow diagram with sequential nodes */
 export function FlowBasicDemo() {
@@ -92,14 +100,19 @@ export function FlowCustomContentDemo() {
   return (
     <Flow>
       <Flow.Node
-        render={<li className="size-4 rounded-full bg-kumo-hairline" />}
+        render={(renderProps) => (
+          <li {...renderProps} class="size-4 rounded-full bg-kumo-hairline" />
+        )}
       />
       <Flow.Node
-        render={
-          <li className="rounded-lg bg-kumo-contrast px-3 py-2 font-medium text-kumo-inverse">
+        render={(renderProps) => (
+          <li
+            {...renderProps}
+            class="rounded-lg bg-kumo-contrast px-3 py-2 font-medium text-kumo-inverse"
+          >
             my-worker
           </li>
-        }
+        )}
       />
     </Flow>
   );
@@ -130,27 +143,36 @@ export function FlowAnchorDemo() {
     <Flow>
       <Flow.Node>Load balancer</Flow.Node>
       <Flow.Node
-        render={
-          <li className="rounded-lg bg-kumo-overlay shadow-none ring ring-kumo-hairline">
+        render={(renderProps) => (
+          <li
+            {...renderProps}
+            class="rounded-lg bg-kumo-overlay shadow-none ring ring-kumo-hairline"
+          >
             <Flow.Anchor
               type="end"
-              render={
-                <div className="flex h-10 items-center px-2.5 text-kumo-subtle">
+              render={(renderProps) => (
+                <div
+                  {...renderProps}
+                  class="flex h-10 items-center px-2.5 text-kumo-subtle"
+                >
                   my-worker
                 </div>
-              }
+              )}
             />
             <Flow.Anchor
               type="start"
-              render={
-                <div className="m-1.5 mt-0 rounded bg-kumo-base px-2 py-1.5 shadow ring ring-kumo-hairline">
+              render={(renderProps) => (
+                <div
+                  {...renderProps}
+                  class="m-1.5 mt-0 rounded bg-kumo-base px-2 py-1.5 shadow ring ring-kumo-hairline"
+                >
                   Bindings
-                  <span className="ml-3 w-5 text-kumo-subtle">2</span>
+                  <span class="ml-3 w-5 text-kumo-subtle">2</span>
                 </div>
-              }
+              )}
             />
           </li>
-        }
+        )}
       />
       <Flow.Parallel>
         <Flow.Node>DATABASE</Flow.Node>
@@ -165,15 +187,20 @@ export function FlowCenteredDemo() {
   return (
     <Flow align="center">
       <Flow.Node
-        render={<li className="size-4 rounded-full bg-kumo-hairline" />}
+        render={(renderProps) => (
+          <li {...renderProps} class="size-4 rounded-full bg-kumo-hairline" />
+        )}
       />
       <Flow.Node>my-worker</Flow.Node>
       <Flow.Node
-        render={
-          <li className="rounded-md bg-kumo-base px-3 py-6 shadow ring ring-kumo-hairline">
+        render={(renderProps) => (
+          <li
+            {...renderProps}
+            class="rounded-md bg-kumo-base px-3 py-6 shadow ring ring-kumo-hairline"
+          >
             Taller node
           </li>
-        }
+        )}
       />
     </Flow>
   );
@@ -269,20 +296,20 @@ export function FlowSequentialParallelDemo() {
 
 /** Flow diagram where a node can be dynamically added and removed */
 export function FlowDynamicNodeDemo() {
-  const [showMiddle, setShowMiddle] = useState(false);
+  const [showMiddle, setShowMiddle] = createSignal(false);
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div class="flex flex-col items-center gap-6">
       <button
         type="button"
         onClick={() => setShowMiddle((v) => !v)}
-        className="rounded-md bg-kumo-elevated px-3 py-1.5 text-sm font-medium text-kumo-default ring ring-kumo-line transition-colors hover:bg-kumo-base"
+        class="rounded-md bg-kumo-elevated px-3 py-1.5 text-sm font-medium text-kumo-default ring ring-kumo-line transition-colors hover:bg-kumo-base"
       >
-        {showMiddle ? "Remove middle node" : "Add middle node"}
+        {showMiddle() ? "Remove middle node" : "Add middle node"}
       </button>
       <Flow>
         <Flow.Node>Start</Flow.Node>
-        {showMiddle && <Flow.Node>Middle</Flow.Node>}
+        {showMiddle() && <Flow.Node>Middle</Flow.Node>}
         <Flow.Node>End</Flow.Node>
       </Flow>
     </div>
@@ -296,22 +323,20 @@ export function FlowExpandableDemo() {
       <Flow.Node>Incoming Request</Flow.Node>
       <Flow.Parallel>
         <Flow.Node
-          render={
-            <ExpandableNode title="Auth Service">
+          render={(renderProps) => (
+            <ExpandableNode {...renderProps} title="Auth Service">
               <p>Validates JWT tokens and session cookies.</p>
-              <p className="mt-1">
-                Connects to identity provider via OAuth 2.0.
-              </p>
+              <p class="mt-1">Connects to identity provider via OAuth 2.0.</p>
             </ExpandableNode>
-          }
+          )}
         />
         <Flow.Node
-          render={
-            <ExpandableNode title="Rate Limiter">
+          render={(renderProps) => (
+            <ExpandableNode {...renderProps} title="Rate Limiter">
               <p>Enforces per-IP request limits.</p>
-              <p className="mt-1">Sliding window: 100 req/min.</p>
+              <p class="mt-1">Sliding window: 100 req/min.</p>
             </ExpandableNode>
-          }
+          )}
         />
       </Flow.Parallel>
       <Flow.Node>Route to Origin</Flow.Node>

@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { SensitiveInput, Button } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { SensitiveInput, Button } from "@photon-ai/kumo-solid";
 
 export function SensitiveInputDemo() {
   return (
-    <div className="w-80">
+    <div class="w-80">
       <SensitiveInput label="API Key" defaultValue="sk_live_abc123xyz789" />
     </div>
   );
@@ -12,10 +13,10 @@ export function SensitiveInputDemo() {
 export function SensitiveInputSizesDemo() {
   const sizes = ["xs", "sm", "base", "lg"] as const;
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       {sizes.map((size) => (
-        <div key={size} className="flex items-center gap-2">
-          <span className="w-12 text-sm text-kumo-subtle">{size}</span>
+        <div class="flex items-center gap-2">
+          <span class="w-12 text-sm text-kumo-subtle">{size}</span>
           <SensitiveInput
             label={`${size} size`}
             size={size}
@@ -28,19 +29,19 @@ export function SensitiveInputSizesDemo() {
 }
 
 export function SensitiveInputControlledDemo() {
-  const [value, setValue] = useState("my-secret-value");
+  const [value, setValue] = createSignal("my-secret-value");
 
   return (
-    <div className="flex w-80 flex-col gap-4">
+    <div class="flex w-80 flex-col gap-4">
       <SensitiveInput
         label="Controlled Secret"
-        value={value}
+        value={value()}
         onValueChange={setValue}
       />
-      <div className="text-sm text-kumo-subtle">
-        Current value: <code className="text-kumo-default">{value}</code>
+      <div class="text-sm text-kumo-subtle">
+        Current value: <code class="text-kumo-default">{value()}</code>
       </div>
-      <div className="flex gap-2">
+      <div class="flex gap-2">
         <Button
           onClick={() => setValue("new-secret-" + Date.now())}
           variant="primary"
@@ -58,7 +59,7 @@ export function SensitiveInputControlledDemo() {
 
 export function SensitiveInputStatesDemo() {
   return (
-    <div className="flex w-80 flex-col gap-4">
+    <div class="flex w-80 flex-col gap-4">
       <SensitiveInput
         label="Error State"
         variant="error"

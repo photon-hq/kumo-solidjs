@@ -1,14 +1,19 @@
-import { Tooltip, TooltipProvider, Button } from "@cloudflare/kumo";
-import { Info, PlusIcon, TranslateIcon } from "@phosphor-icons/react";
+import { Tooltip, TooltipProvider, Button } from "@photon-ai/kumo-solid";
+import { Info, PlusIcon, TranslateIcon } from "~/components/icons";
 
 export function TooltipHeroDemo() {
   return (
     <TooltipProvider>
       <Tooltip
         content="Add new item"
-        render={
-          <Button shape="square" icon={PlusIcon} aria-label="Add new item" />
-        }
+        render={(renderProps) => (
+          <Button
+            {...renderProps}
+            shape="square"
+            icon={PlusIcon}
+            aria-label="Add new item"
+          />
+        )}
       />
     </TooltipProvider>
   );
@@ -19,7 +24,14 @@ export function TooltipBasicDemo() {
     <TooltipProvider>
       <Tooltip
         content="Add"
-        render={<Button shape="square" icon={PlusIcon} aria-label="Add" />}
+        render={(renderProps) => (
+          <Button
+            {...renderProps}
+            shape="square"
+            icon={PlusIcon}
+            aria-label="Add"
+          />
+        )}
       />
     </TooltipProvider>
   );
@@ -28,20 +40,28 @@ export function TooltipBasicDemo() {
 export function TooltipMultipleDemo() {
   return (
     <TooltipProvider>
-      <div className="flex gap-2">
+      <div class="flex gap-2">
         <Tooltip
           content="Add"
-          render={<Button shape="square" icon={PlusIcon} aria-label="Add" />}
+          render={(renderProps) => (
+            <Button
+              {...renderProps}
+              shape="square"
+              icon={PlusIcon}
+              aria-label="Add"
+            />
+          )}
         />
         <Tooltip
           content="Change language"
-          render={
+          render={(renderProps) => (
             <Button
+              {...renderProps}
               shape="square"
               icon={TranslateIcon}
               aria-label="Change language"
             />
-          }
+          )}
         />
       </div>
     </TooltipProvider>
@@ -81,25 +101,31 @@ export function TooltipOverflowDemo() {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.";
   return (
     <TooltipProvider>
-      <div className="flex w-full justify-between">
+      <div class="flex w-full justify-between">
         <Tooltip
           content={longContent}
           side="bottom"
-          render={<Button variant="secondary" />}
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
         >
           Near left edge
         </Tooltip>
         <Tooltip
           content={longContent}
           side="bottom"
-          render={<Button variant="secondary" />}
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
         >
           Centered
         </Tooltip>
         <Tooltip
           content={longContent}
           side="bottom"
-          render={<Button variant="secondary" />}
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
         >
           Near right edge
         </Tooltip>
@@ -111,18 +137,22 @@ export function TooltipOverflowDemo() {
 export function TooltipDelayDemo() {
   return (
     <TooltipProvider>
-      <div className="flex gap-4">
+      <div class="flex gap-4">
         <Tooltip
           content="Opens after 1 second"
           delay={1000}
-          render={<Button variant="secondary" />}
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
         >
           1s open delay
         </Tooltip>
         <Tooltip
           content="Stays open 500ms after leaving"
           closeDelay={500}
-          render={<Button variant="secondary" />}
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
         >
           500ms close delay
         </Tooltip>
@@ -130,7 +160,9 @@ export function TooltipDelayDemo() {
           content="Instant open, stays 1s"
           delay={0}
           closeDelay={1000}
-          render={<Button variant="secondary" />}
+          render={(renderProps) => (
+            <Button {...renderProps} variant="secondary" />
+          )}
         >
           Instant + 1s close
         </Tooltip>

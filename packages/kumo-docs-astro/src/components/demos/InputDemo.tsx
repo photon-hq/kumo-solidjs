@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Input } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { Input } from "@photon-ai/kumo-solid";
 
 export function InputBasicDemo() {
   return (
@@ -49,7 +50,7 @@ export function InputErrorObjectDemo() {
 
 export function InputSizesDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <Input size="xs" label="Extra Small" placeholder="Extra small input" />
       <Input size="sm" label="Small" placeholder="Small input" />
       <Input label="Base" placeholder="Base input (default)" />
@@ -69,7 +70,7 @@ export function InputBareDemo() {
 /** Input without a visible label, showing error and description via `aria-label`. */
 export function InputErrorWithoutLabelDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <Input
         aria-label="Hostname"
         placeholder="example.com"
@@ -89,7 +90,7 @@ export function InputErrorWithoutLabelDemo() {
 /** Side-by-side comparison: Keeper shows its icon on the default input but not the ignored one. */
 export function InputPasswordManagerIgnoreDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <Input
         label="API Key (default)"
         type="password"
@@ -107,7 +108,7 @@ export function InputPasswordManagerIgnoreDemo() {
 
 export function InputTypesDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <Input type="email" label="Email" placeholder="you@example.com" />
       <Input type="password" label="Password" placeholder="••••••••" />
       <Input type="number" label="Age" placeholder="18" />
@@ -136,7 +137,7 @@ export function InputLabelTooltipDemo() {
   );
 }
 
-export function InputReactNodeLabelDemo() {
+export function InputRichLabelDemo() {
   return (
     <Input
       label={
@@ -151,29 +152,31 @@ export function InputReactNodeLabelDemo() {
   );
 }
 
-/** Controlled input using `onChange` (native React event). */
-export function InputControlledOnChangeDemo() {
-  const [value, setValue] = useState("");
+/** Controlled input using Solid's native `onInput` event. */
+export function InputControlledOnInputDemo() {
+  const [value, setValue] = createSignal("");
   return (
     <Input
-      label="With onChange"
+      label="With onInput"
       placeholder="Type something..."
-      description={value ? `Value: ${value}` : "Uses e.target.value"}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
+      description={value() ? `Value: ${value()}` : "Uses e.currentTarget.value"}
+      value={value()}
+      onInput={(event) => setValue(event.currentTarget.value)}
     />
   );
 }
 
 /** Controlled input using `onValueChange` (Base UI convenience — gives you the string directly). */
 export function InputControlledOnValueChangeDemo() {
-  const [value, setValue] = useState("");
+  const [value, setValue] = createSignal("");
   return (
     <Input
       label="With onValueChange"
       placeholder="Type something..."
-      description={value ? `Value: ${value}` : "Receives the value directly"}
-      value={value}
+      description={
+        value() ? `Value: ${value()}` : "Receives the value directly"
+      }
+      value={value()}
       onValueChange={(v) => setValue(v)}
     />
   );

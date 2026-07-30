@@ -1,5 +1,5 @@
-import { LayerCard, Button } from "@cloudflare/kumo";
-import { ArrowRightIcon } from "@phosphor-icons/react";
+import { LayerCard, Button } from "@photon-ai/kumo-solid";
+import { ArrowRightIcon } from "~/components/icons";
 
 export function LayerCardDemo() {
   return (
@@ -26,9 +26,7 @@ export function LayerCardBasicDemo() {
     <LayerCard className="w-[250px]">
       <LayerCard.Secondary>Getting Started</LayerCard.Secondary>
       <LayerCard.Primary>
-        <p className="text-sm text-kumo-subtle">
-          Quick start guide for new users
-        </p>
+        <p class="text-sm text-kumo-subtle">Quick start guide for new users</p>
       </LayerCard.Primary>
     </LayerCard>
   );
@@ -37,9 +35,7 @@ export function LayerCardBasicDemo() {
 export function LayerCardSurfaceDemo() {
   return (
     <LayerCard className="w-[250px] p-4">
-      <p className="text-sm text-kumo-subtle">
-        Quick start guide for new users
-      </p>
+      <p class="text-sm text-kumo-subtle">Quick start guide for new users</p>
     </LayerCard>
   );
 }
@@ -52,9 +48,7 @@ export function LayerCardTestIdDemo() {
         Getting Started
       </LayerCard.Secondary>
       <LayerCard.Primary data-testid="card-body">
-        <p className="text-sm text-kumo-subtle">
-          Quick start guide for new users
-        </p>
+        <p class="text-sm text-kumo-subtle">Quick start guide for new users</p>
       </LayerCard.Primary>
     </LayerCard>
   );
@@ -62,17 +56,17 @@ export function LayerCardTestIdDemo() {
 
 export function LayerCardMultipleDemo() {
   return (
-    <div className="flex gap-4">
+    <div class="flex gap-4">
       <LayerCard className="w-[200px]">
         <LayerCard.Secondary>Components</LayerCard.Secondary>
         <LayerCard.Primary>
-          <p className="text-sm">Browse all components</p>
+          <p class="text-sm">Browse all components</p>
         </LayerCard.Primary>
       </LayerCard>
       <LayerCard className="w-[200px]">
         <LayerCard.Secondary>Examples</LayerCard.Secondary>
         <LayerCard.Primary>
-          <p className="text-sm">View code examples</p>
+          <p class="text-sm">View code examples</p>
         </LayerCard.Primary>
       </LayerCard>
     </div>

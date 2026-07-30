@@ -1,9 +1,9 @@
-import { Button, LinkButton } from "@cloudflare/kumo";
-import { ArrowSquareOutIcon, PlusIcon } from "@phosphor-icons/react";
+import { Button, LinkButton } from "@photon-ai/kumo-solid";
+import { ArrowSquareOutIcon, PlusIcon } from "~/components/icons";
 
 export function ButtonBasicDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <Button variant="secondary">Button</Button>
       <Button
         variant="secondary"
@@ -41,7 +41,7 @@ export function ButtonSecondaryDestructiveDemo() {
 
 export function ButtonSizesDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <Button size="xs" variant="secondary">
         Extra Small
       </Button>
@@ -68,7 +68,7 @@ export function ButtonWithIconDemo() {
 
 export function ButtonIconOnlyDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <Button
         variant="secondary"
         shape="square"
@@ -108,7 +108,7 @@ export function ButtonUsageDemo() {
 /** Demonstrates title tooltips on enabled, icon-only, and disabled buttons. */
 export function ButtonTitleDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <Button variant="secondary" title="Create a new Worker">
         Create Worker
       </Button>
@@ -133,7 +133,7 @@ export function ButtonTitleDemo() {
 /** Demonstrates using LinkButton for navigation actions that should look like buttons. */
 export function ButtonLinkAsButtonDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <LinkButton href="/components/link" variant="secondary">
         Read Link docs
       </LinkButton>
@@ -165,7 +165,7 @@ export function ButtonLinkTooltipDemo() {
 /** Demonstrates the disabled LinkButton, including a title tooltip explaining why. */
 export function ButtonDisabledLinkDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <LinkButton href="/components/link" variant="secondary" disabled>
         Disabled link
       </LinkButton>

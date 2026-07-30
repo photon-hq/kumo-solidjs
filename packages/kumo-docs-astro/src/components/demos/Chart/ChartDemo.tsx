@@ -1,3 +1,5 @@
+import { createRef } from "~/lib/solid-reactivity";
+import { createEffect, createMemo, createSignal } from "solid-js";
 import {
   ChartPalette,
   TimeseriesChart,
@@ -6,11 +8,10 @@ import {
   LayerCard,
   Select,
   Switch,
-} from "@cloudflare/kumo";
+} from "@photon-ai/kumo-solid";
 import * as echarts from "echarts/core";
 import type { EChartsOption } from "echarts";
 import { BarChart, LineChart, PieChart } from "echarts/charts";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useIsDarkMode } from "~/lib/use-is-dark-mode";
 import {
   AriaComponent,
@@ -45,35 +46,32 @@ echarts.use([
 export function PieChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const options = useMemo<EChartsOption>(
-    () => ({
-      animation: true,
-      animationDuration: 2000,
-      tooltip: {
-        show: true,
+  const options = createMemo<EChartsOption>(() => ({
+    animation: true,
+    animationDuration: 2000,
+    tooltip: {
+      show: true,
+    },
+    series: [
+      {
+        type: "pie",
+        data: [
+          { value: 101, name: "Series A" },
+          { value: 202, name: "Series B" },
+          { value: 303, name: "Series C" },
+          { value: 404, name: "Series D" },
+          { value: 505, name: "Series E" },
+        ],
       },
-      series: [
-        {
-          type: "pie",
-          data: [
-            { value: 101, name: "Series A" },
-            { value: 202, name: "Series B" },
-            { value: 303, name: "Series C" },
-            { value: 404, name: "Series D" },
-            { value: 505, name: "Series E" },
-          ],
-        },
-      ],
-    }),
-    [],
-  );
+    ],
+  }));
 
   return (
     <Chart
       echarts={echarts}
-      options={options}
+      options={options()}
       height={400}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -84,27 +82,24 @@ export function PieChartDemo() {
 export function BasicLineChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "Errors",
-        data: buildSeriesData(1, 50, 60_000, 0.3),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "Errors",
+      data: buildSeriesData(1, 50, 60_000, 0.3),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+  ]);
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
+      isDarkMode={isDarkMode()}
+      data={data()}
       xAxisName="Time (UTC)"
       yAxisName="Count"
     />
@@ -114,55 +109,49 @@ export function BasicLineChartDemo() {
 export function ReferenceMarkersChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "Errors",
-        data: buildSeriesData(1, 50, 60_000, 0.3),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "Errors",
+      data: buildSeriesData(1, 50, 60_000, 0.3),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+  ]);
 
-  const markers = useMemo(
-    () => [
-      {
-        timestamp: data[0].data[15][0],
-        label: "change a1b2c3d4",
-        description: "Configuration change applied",
-      },
-      {
-        timestamp: data[0].data[16][0],
-        label: "change b2c3d4e5",
-        description: "Routing rule updated",
-      },
-      {
-        timestamp: data[0].data[17][0],
-        label: "change c3d4e5f6",
-        description: "Limit adjusted",
-      },
-      {
-        timestamp: data[0].data[34][0],
-        label: "change e5f6g7h8",
-        description: "New version released",
-        lineStyle: "dotted" as const,
-      },
-    ],
-    [data],
-  );
+  const markers = createMemo(() => [
+    {
+      timestamp: data()[0].data[15][0],
+      label: "change a1b2c3d4",
+      description: "Configuration change applied",
+    },
+    {
+      timestamp: data()[0].data[16][0],
+      label: "change b2c3d4e5",
+      description: "Routing rule updated",
+    },
+    {
+      timestamp: data()[0].data[17][0],
+      label: "change c3d4e5f6",
+      description: "Limit adjusted",
+    },
+    {
+      timestamp: data()[0].data[34][0],
+      label: "change e5f6g7h8",
+      description: "New version released",
+      lineStyle: "dotted" as const,
+    },
+  ]);
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
-      markers={markers}
+      isDarkMode={isDarkMode()}
+      data={data()}
+      markers={markers()}
       xAxisName="Time (UTC)"
       yAxisName="Count"
     />
@@ -172,27 +161,24 @@ export function ReferenceMarkersChartDemo() {
 export function ThresholdsChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Memory used",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Memory used",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+  ]);
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
+      isDarkMode={isDarkMode()}
+      data={data()}
       thresholds={[
         {
           value: 55,
           label: "Memory limit",
-          color: ChartPalette.semantic("Attention", isDarkMode),
+          color: ChartPalette.semantic("Attention", isDarkMode()),
         },
       ]}
       xAxisName="Time (UTC)"
@@ -207,22 +193,19 @@ export function ThresholdsChartDemo() {
 export function CustomAxisLabelFormatDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests",
-        data: buildSeriesData(0, 50, 60_000, 1000),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests",
+      data: buildSeriesData(0, 50, 60_000, 1000),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+  ]);
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
+      isDarkMode={isDarkMode()}
+      data={data()}
       xAxisName="Time (UTC)"
       yAxisName="Requests"
       xAxisTickFormat={(ts) => {
@@ -241,28 +224,25 @@ export function CustomAxisLabelFormatDemo() {
 export function TimeseriesChartPreviewDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests",
-        data: buildSeriesData(0, 30, 60_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "Errors",
-        data: buildSeriesData(1, 30, 60_000, 0.3),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests",
+      data: buildSeriesData(0, 30, 60_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "Errors",
+      data: buildSeriesData(1, 30, 60_000, 0.3),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+  ]);
 
   return (
     <TimeseriesChart
       yAxisTickCount={2}
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
+      isDarkMode={isDarkMode()}
+      data={data()}
       height={160}
     />
   );
@@ -274,27 +254,24 @@ export function TimeseriesChartPreviewDemo() {
 export function GradientLineChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "Errors",
-        data: buildSeriesData(1, 50, 60_000, 0.3),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "Errors",
+      data: buildSeriesData(1, 50, 60_000, 0.3),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+  ]);
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
+      isDarkMode={isDarkMode()}
+      data={data()}
       xAxisName="Time (UTC)"
       yAxisName="Count"
       gradient
@@ -308,27 +285,26 @@ export function GradientLineChartDemo() {
 export function IncompleteDataChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Bandwidth",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.categorical(0, isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Bandwidth",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.categorical(0, isDarkMode()),
+    },
+  ]);
 
-  const incompleteTimestamp = data[0].data[data[0].data.length - 5][0];
+  const incompleteTimestamp = createMemo(
+    () => data()[0].data[data()[0].data.length - 5][0],
+  );
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
+      isDarkMode={isDarkMode()}
+      data={data()}
       xAxisName="Time (UTC)"
       yAxisName="Mbps"
-      incomplete={{ after: incompleteTimestamp }}
+      incomplete={{ after: incompleteTimestamp() }}
     />
   );
 }
@@ -339,22 +315,19 @@ export function IncompleteDataChartDemo() {
 export function TimeRangeSelectionChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "CPU Usage",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.categorical(0, isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "CPU Usage",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.categorical(0, isDarkMode()),
+    },
+  ]);
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
-      data={data}
+      isDarkMode={isDarkMode()}
+      data={data()}
       xAxisName="Time (UTC)"
       yAxisName="%"
       onTimeRangeChange={(from, to) => {
@@ -369,31 +342,28 @@ export function TimeRangeSelectionChartDemo() {
 export function PieChartPreviewDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const options = useMemo<EChartsOption>(
-    () => ({
-      toolbox: {
-        show: false,
+  const options = createMemo<EChartsOption>(() => ({
+    toolbox: {
+      show: false,
+    },
+    series: [
+      {
+        type: "pie",
+        data: [
+          { value: 101, name: "Series A" },
+          { value: 202, name: "Series B" },
+          { value: 303, name: "Series C" },
+        ],
       },
-      series: [
-        {
-          type: "pie",
-          data: [
-            { value: 101, name: "Series A" },
-            { value: 202, name: "Series B" },
-            { value: 303, name: "Series C" },
-          ],
-        },
-      ],
-    }),
-    [],
-  );
+    ],
+  }));
 
   return (
     <Chart
       echarts={echarts}
-      options={options}
+      options={options()}
       height={160}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -405,57 +375,57 @@ export function LegendDefaultDemo() {
   const isDarkMode = useIsDarkMode();
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-sm font-medium">Active State</h3>
+    <div class="space-y-4">
+      <h3 class="text-sm font-medium">Active State</h3>
 
-      <div className="flex flex-wrap gap-4 divide-x divide-kumo-hairline">
+      <div class="flex flex-wrap gap-4 divide-x divide-kumo-hairline">
         <ChartLegend.LargeItem
           name="Requests"
-          color={ChartPalette.semantic("Neutral", isDarkMode)}
+          color={ChartPalette.semantic("Neutral", isDarkMode())}
           value="1,234"
           unit="req/s"
         />
         <ChartLegend.LargeItem
           name="Storage"
-          color={ChartPalette.semantic("Attention", isDarkMode)}
+          color={ChartPalette.semantic("Attention", isDarkMode())}
           value="56"
           unit="GB"
         />
         <ChartLegend.LargeItem
           name="Warnings"
-          color={ChartPalette.semantic("Warning", isDarkMode)}
+          color={ChartPalette.semantic("Warning", isDarkMode())}
           value="128"
         />
       </div>
 
-      <h3 className="mt-12 text-sm font-medium">Inactive State</h3>
+      <h3 class="mt-12 text-sm font-medium">Inactive State</h3>
 
-      <div className="flex flex-wrap gap-4 divide-x divide-kumo-hairline">
+      <div class="flex flex-wrap gap-4 divide-x divide-kumo-hairline">
         <ChartLegend.LargeItem
           name="Requests"
-          color={ChartPalette.semantic("Neutral", isDarkMode)}
+          color={ChartPalette.semantic("Neutral", isDarkMode())}
           value="1,234"
           unit="req/s"
           inactive
         />
         <ChartLegend.LargeItem
           name="Storage"
-          color={ChartPalette.semantic("Attention", isDarkMode)}
+          color={ChartPalette.semantic("Attention", isDarkMode())}
           value="56"
           unit="GB"
           inactive
         />
         <ChartLegend.LargeItem
           name="Warnings"
-          color={ChartPalette.semantic("Warning", isDarkMode)}
+          color={ChartPalette.semantic("Warning", isDarkMode())}
           value="128"
           inactive
         />
       </div>
 
-      <h3 className="mt-12 text-sm font-medium">Loading state</h3>
+      <h3 class="mt-12 text-sm font-medium">Loading state</h3>
 
-      <div className="flex flex-wrap gap-4 divide-x divide-kumo-hairline">
+      <div class="flex flex-wrap gap-4 divide-x divide-kumo-hairline">
         <ChartLegend.LargeItem loading />
       </div>
     </div>
@@ -469,55 +439,55 @@ export function LegendCompactDemo() {
   const isDarkMode = useIsDarkMode();
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-sm font-medium">Active State</h3>
-      <div className="flex flex-wrap gap-4">
+    <div class="space-y-4">
+      <h3 class="text-sm font-medium">Active State</h3>
+      <div class="flex flex-wrap gap-4">
         <ChartLegend.SmallItem
           name="Requests"
-          color={ChartPalette.semantic("Neutral", isDarkMode)}
+          color={ChartPalette.semantic("Neutral", isDarkMode())}
           value="1,234"
           unit="req/s"
         />
         <ChartLegend.SmallItem
           name="Storage"
-          color={ChartPalette.semantic("Attention", isDarkMode)}
+          color={ChartPalette.semantic("Attention", isDarkMode())}
           value="56"
           unit="GB"
         />
         <ChartLegend.SmallItem
           name="Warnings"
-          color={ChartPalette.semantic("Warning", isDarkMode)}
+          color={ChartPalette.semantic("Warning", isDarkMode())}
           value="128"
         />
       </div>
 
-      <h3 className="mt-12 text-sm font-medium">Inactive State</h3>
-      <div className="flex flex-wrap gap-4">
+      <h3 class="mt-12 text-sm font-medium">Inactive State</h3>
+      <div class="flex flex-wrap gap-4">
         <ChartLegend.SmallItem
           name="Requests"
-          color={ChartPalette.semantic("Neutral", isDarkMode)}
+          color={ChartPalette.semantic("Neutral", isDarkMode())}
           value="1,234"
           unit="req/s"
           inactive
         />
         <ChartLegend.SmallItem
           name="Storage"
-          color={ChartPalette.semantic("Attention", isDarkMode)}
+          color={ChartPalette.semantic("Attention", isDarkMode())}
           value="56"
           unit="GB"
           inactive
         />
         <ChartLegend.SmallItem
           name="Warnings"
-          color={ChartPalette.semantic("Warning", isDarkMode)}
+          color={ChartPalette.semantic("Warning", isDarkMode())}
           value="128"
           inactive
         />
       </div>
 
-      <h3 className="mt-12 text-sm font-medium">Loading state</h3>
+      <h3 class="mt-12 text-sm font-medium">Loading state</h3>
 
-      <div className="flex flex-wrap gap-4">
+      <div class="flex flex-wrap gap-4">
         <ChartLegend.SmallItem loading />
       </div>
     </div>
@@ -530,28 +500,25 @@ export function LegendCompactDemo() {
 export function BarChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests where age > 10",
-        data: buildSeriesData(0, 20, 3_600_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "Errors",
-        data: buildSeriesData(1, 20, 3_600_000, 0.3),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests where age > 10",
+      data: buildSeriesData(0, 20, 3_600_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "Errors",
+      data: buildSeriesData(1, 20, 3_600_000, 0.3),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+  ]);
 
   return (
     <TimeseriesChart
       echarts={echarts}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
       type="bar"
-      data={data}
+      data={data()}
       xAxisName="Time (UTC)"
       yAxisName="Count"
       tooltipValueFormat={(r) => r.toFixed(2)}
@@ -565,10 +532,10 @@ export function BarChartDemo() {
 export function LoadingChartDemo() {
   const isDarkMode = useIsDarkMode();
   return (
-    <div className="flex w-full flex-1 flex-col">
+    <div class="flex w-full flex-1 flex-col">
       <TimeseriesChart
         echarts={echarts}
-        isDarkMode={isDarkMode}
+        isDarkMode={isDarkMode()}
         xAxisName="Time (UTC)"
         yAxisName="Count"
         data={[]}
@@ -585,10 +552,10 @@ export function LoadingChartDemo() {
 export function LoadingBarChartDemo() {
   const isDarkMode = useIsDarkMode();
   return (
-    <div className="flex w-full flex-1 flex-col">
+    <div class="flex w-full flex-1 flex-col">
       <TimeseriesChart
         echarts={echarts}
-        isDarkMode={isDarkMode}
+        isDarkMode={isDarkMode()}
         type="bar"
         xAxisName="Time (UTC)"
         yAxisName="Count"
@@ -605,32 +572,29 @@ export function LoadingBarChartDemo() {
  */
 export function LoadingToggleChartDemo() {
   const isDarkMode = useIsDarkMode();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = createSignal(true);
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "Errors",
-        data: buildSeriesData(1, 50, 60_000, 0.3),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "Errors",
+      data: buildSeriesData(1, 50, 60_000, 0.3),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+  ]);
 
   return (
-    <div className="flex w-full flex-1 flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-wrap gap-4">
-          {data.map((series) => (
+    <div class="flex w-full flex-1 flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex flex-wrap gap-4">
+          {data().map((series) => (
             <ChartLegend.SmallItem
-              loading={loading}
-              key={series.name}
+              loading={loading()}
+
               name={series.name}
               color={series.color}
               value={Math.round(series.data.at(-1)?.[1] ?? 0).toLocaleString()}
@@ -639,17 +603,17 @@ export function LoadingToggleChartDemo() {
         </div>
         <Switch
           label="Loading"
-          checked={loading}
+          checked={loading()}
           onCheckedChange={setLoading}
         />
       </div>
       <TimeseriesChart
         echarts={echarts}
-        isDarkMode={isDarkMode}
+        isDarkMode={isDarkMode()}
         xAxisName="Time (UTC)"
         yAxisName="Count"
-        data={loading ? [] : data}
-        loading={loading}
+        data={loading() ? [] : data()}
+        loading={loading()}
       />
     </div>
   );
@@ -658,58 +622,55 @@ export function LoadingToggleChartDemo() {
 export function ChartExampleDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const data = useMemo(
-    () => [
-      {
-        name: "P99",
-        data: buildSeriesData(3, 30, 60_000, 1),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-      {
-        name: "P95",
-        data: buildSeriesData(2, 30, 60_000, 0.6),
-        color: ChartPalette.semantic("Warning", isDarkMode),
-      },
-      {
-        name: "P75",
-        data: buildSeriesData(1, 30, 60_000, 0.4),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "P50",
-        data: buildSeriesData(0, 30, 60_000, 0.2),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "P99",
+      data: buildSeriesData(3, 30, 60_000, 1),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+    {
+      name: "P95",
+      data: buildSeriesData(2, 30, 60_000, 0.6),
+      color: ChartPalette.semantic("Warning", isDarkMode()),
+    },
+    {
+      name: "P75",
+      data: buildSeriesData(1, 30, 60_000, 0.4),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "P50",
+      data: buildSeriesData(0, 30, 60_000, 0.2),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+  ]);
 
   return (
     <LayerCard>
       <LayerCard.Secondary>Read latency</LayerCard.Secondary>
       <LayerCard.Primary>
-        <div className="mb-2 flex gap-4 divide-x divide-kumo-hairline px-2">
+        <div class="mb-2 flex gap-4 divide-x divide-kumo-hairline px-2">
           <ChartLegend.LargeItem
             name="P99"
-            color={ChartPalette.semantic("Attention", isDarkMode)}
+            color={ChartPalette.semantic("Attention", isDarkMode())}
             value="124"
             unit="ms"
           />
           <ChartLegend.LargeItem
             name="P95"
-            color={ChartPalette.semantic("Warning", isDarkMode)}
+            color={ChartPalette.semantic("Warning", isDarkMode())}
             value="76"
             unit="ms"
           />
           <ChartLegend.LargeItem
             name="P75"
-            color={ChartPalette.semantic("Neutral", isDarkMode)}
+            color={ChartPalette.semantic("Neutral", isDarkMode())}
             value="32"
             unit="ms"
           />
           <ChartLegend.LargeItem
             name="P50"
-            color={ChartPalette.semantic("Neutral", isDarkMode)}
+            color={ChartPalette.semantic("Neutral", isDarkMode())}
             value="10"
             unit="ms"
           />
@@ -717,8 +678,8 @@ export function ChartExampleDemo() {
         <TimeseriesChart
           xAxisName="Time (UTC)"
           echarts={echarts}
-          isDarkMode={isDarkMode}
-          data={data}
+          isDarkMode={isDarkMode()}
+          data={data()}
           height={300}
         />
       </LayerCard.Primary>
@@ -732,62 +693,56 @@ export function ChartExampleDemo() {
  */
 export function LegendHighlightDemo() {
   const isDarkMode = useIsDarkMode();
-  const chartRef = useRef<echarts.ECharts>(null);
-  const [hoveredSeries, setHoveredSeries] = useState<string | null>(null);
+  const chartRef = createRef<echarts.ECharts>(null);
+  const [hoveredSeries, setHoveredSeries] = createSignal<string | null>(null);
 
-  const series = useMemo(
-    () => [
-      {
-        name: "P99",
-        color: ChartPalette.semantic("Attention", isDarkMode),
-        value: "124",
-        unit: "ms",
-      },
-      {
-        name: "P95",
-        color: ChartPalette.semantic("Warning", isDarkMode),
-        value: "76",
-        unit: "ms",
-      },
-      {
-        name: "P75",
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-        value: "32",
-        unit: "ms",
-      },
-      {
-        name: "P50",
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-        value: "10",
-        unit: "ms",
-      },
-    ],
-    [isDarkMode],
-  );
+  const series = createMemo(() => [
+    {
+      name: "P99",
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+      value: "124",
+      unit: "ms",
+    },
+    {
+      name: "P95",
+      color: ChartPalette.semantic("Warning", isDarkMode()),
+      value: "76",
+      unit: "ms",
+    },
+    {
+      name: "P75",
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+      value: "32",
+      unit: "ms",
+    },
+    {
+      name: "P50",
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+      value: "10",
+      unit: "ms",
+    },
+  ]);
 
-  const data = useMemo(
-    () =>
-      series.map((s, i) => ({
-        name: s.name,
-        data: buildSeriesData(3 - i, 30, 60_000, 1 - i * 0.2),
-        color: s.color,
-      })),
-    [series],
+  const data = createMemo(() =>
+    series().map((s, i) => ({
+      name: s.name,
+      data: buildSeriesData(3 - i, 30, 60_000, 1 - i * 0.2),
+      color: s.color,
+    })),
   );
 
   return (
     <LayerCard>
       <LayerCard.Secondary>Read latency</LayerCard.Secondary>
       <LayerCard.Primary>
-        <div className="mb-2 flex divide-x divide-kumo-line px-2">
-          {series.map((s) => (
+        <div class="mb-2 flex divide-x divide-kumo-line px-2">
+          {series().map((s) => (
             <ChartLegend.LargeItem
-              key={s.name}
               name={s.name}
               color={s.color}
               value={s.value}
               unit={s.unit}
-              inactive={hoveredSeries !== null && hoveredSeries !== s.name}
+              inactive={hoveredSeries() !== null && hoveredSeries() !== s.name}
               onPointerEnter={() => {
                 setHoveredSeries(s.name);
                 chartRef.current?.dispatchAction({
@@ -810,8 +765,8 @@ export function LegendHighlightDemo() {
           ref={chartRef}
           xAxisName="Time (UTC)"
           echarts={echarts}
-          isDarkMode={isDarkMode}
-          data={data}
+          isDarkMode={isDarkMode()}
+          data={data()}
           height={300}
         />
       </LayerCard.Primary>
@@ -827,54 +782,51 @@ export function LegendHighlightDemo() {
  */
 export function LegendOnClickDemo() {
   const isDarkMode = useIsDarkMode();
-  const chartRef = useRef<echarts.ECharts>(null);
-  const [hiddenSeries, setHiddenSeries] = useState<Record<string, boolean>>({});
-
-  const series = useMemo(
-    () => [
-      {
-        name: "P99",
-        color: ChartPalette.semantic("Attention", isDarkMode),
-        value: "124",
-        unit: "ms",
-      },
-      {
-        name: "P95",
-        color: ChartPalette.semantic("Warning", isDarkMode),
-        value: "76",
-        unit: "ms",
-      },
-      {
-        name: "P75",
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-        value: "32",
-        unit: "ms",
-      },
-      {
-        name: "P50",
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-        value: "10",
-        unit: "ms",
-      },
-    ],
-    [isDarkMode],
+  const chartRef = createRef<echarts.ECharts>(null);
+  const [hiddenSeries, setHiddenSeries] = createSignal<Record<string, boolean>>(
+    {},
   );
 
-  const data = useMemo(
-    () =>
-      series.map((s, i) => ({
-        name: s.name,
-        data: buildSeriesData(3 - i, 30, 60_000, 1 - i * 0.2),
-        color: s.color,
-      })),
-    [series],
+  const series = createMemo(() => [
+    {
+      name: "P99",
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+      value: "124",
+      unit: "ms",
+    },
+    {
+      name: "P95",
+      color: ChartPalette.semantic("Warning", isDarkMode()),
+      value: "76",
+      unit: "ms",
+    },
+    {
+      name: "P75",
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+      value: "32",
+      unit: "ms",
+    },
+    {
+      name: "P50",
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+      value: "10",
+      unit: "ms",
+    },
+  ]);
+
+  const data = createMemo(() =>
+    series().map((s, i) => ({
+      name: s.name,
+      data: buildSeriesData(3 - i, 30, 60_000, 1 - i * 0.2),
+      color: s.color,
+    })),
   );
 
   // A theme switch re-inits the ECharts instance, resetting legend selection to
   // all-visible. Reset our state to match so the legend doesn't desync.
-  useEffect(() => {
+  createEffect(() => {
     setHiddenSeries({});
-  }, [isDarkMode]);
+  });
 
   // Click isolates a series: show only the clicked one and hide the rest via the
   // (hidden) ECharts legend. Clicking the already-isolated series restores all.
@@ -884,12 +836,12 @@ export function LegendOnClickDemo() {
 
     setHiddenSeries((prev) => {
       // Already isolated to this series? (only it visible, everything else hidden)
-      const isIsolated = series.every((s) =>
+      const isIsolated = series().every((s) =>
         s.name === name ? !prev[s.name] : prev[s.name],
       );
 
       const nextHidden: Record<string, boolean> = {};
-      for (const s of series) {
+      for (const s of series()) {
         const shouldHide = isIsolated ? false : s.name !== name;
         nextHidden[s.name] = shouldHide;
         chart.dispatchAction({
@@ -905,15 +857,14 @@ export function LegendOnClickDemo() {
     <LayerCard>
       <LayerCard.Secondary>Read latency</LayerCard.Secondary>
       <LayerCard.Primary>
-        <div className="mb-2 flex divide-x divide-kumo-line px-2">
-          {series.map((s) => (
+        <div class="mb-2 flex divide-x divide-kumo-line px-2">
+          {series().map((s) => (
             <ChartLegend.LargeItem
-              key={s.name}
               name={s.name}
               color={s.color}
               value={s.value}
               unit={s.unit}
-              inactive={hiddenSeries[s.name] ?? false}
+              inactive={hiddenSeries()[s.name] ?? false}
               onClick={() => handleClick(s.name)}
               className="not-first:pl-4"
             />
@@ -923,8 +874,8 @@ export function LegendOnClickDemo() {
           ref={chartRef}
           xAxisName="Time (UTC)"
           echarts={echarts}
-          isDarkMode={isDarkMode}
-          data={data}
+          isDarkMode={isDarkMode()}
+          data={data()}
           height={300}
           enableLegendSelection
         />
@@ -942,22 +893,21 @@ export function LegendOnClickDemo() {
 export function CustomTooltipChartDemo() {
   const isDarkMode = useIsDarkMode();
 
-  const options = useMemo<EChartsOption>(
-    () => ({
-      tooltip: {
-        trigger: "item",
-        formatter: (params: any) => {
-          // IMPORTANT: Always escape ALL dynamic values using encodeHTML
-          // from echarts/format before including in HTML. This prevents
-          // XSS attacks from malicious data like:
-          // { name: "<img src=x onerror=alert('xss')>", value: "..." }
-          const safeName = echarts.format.encodeHTML(params.name);
-          const safeValue = echarts.format.encodeHTML(String(params.value));
-          const safePercent = echarts.format.encodeHTML(
-            String(Math.round(params.percent)),
-          );
+  const options = createMemo<EChartsOption>(() => ({
+    tooltip: {
+      trigger: "item",
+      formatter: (params: any) => {
+        // IMPORTANT: Always escape ALL dynamic values using encodeHTML
+        // from echarts/format before including in HTML. This prevents
+        // XSS attacks from malicious data like:
+        // { name: "<img src=x onerror=alert('xss')>", value: "..." }
+        const safeName = echarts.format.encodeHTML(params.name);
+        const safeValue = echarts.format.encodeHTML(String(params.value));
+        const safePercent = echarts.format.encodeHTML(
+          String(Math.round(params.percent)),
+        );
 
-          return `
+        return `
             <div style="padding: 8px;">
               <div style="font-weight: 600; margin-bottom: 4px;">${safeName}</div>
               <div>Value: <strong>${safeValue}</strong></div>
@@ -966,33 +916,31 @@ export function CustomTooltipChartDemo() {
               </div>
             </div>
           `;
-        },
       },
-      series: [
-        {
-          type: "pie",
-          data: [
-            { value: 101, name: "Series A" },
-            { value: 202, name: "Series B" },
-            // Malicious series name to demonstrate XSS protection via encodeHTML.
-            // Without encoding, this would render an alert popup. With encodeHTML,
-            // it safely displays as plain text.
-            { value: 150, name: "<img src=x onerror=alert('XSS')>" },
-            { value: 303, name: "Series C" },
-            { value: 404, name: "Series D" },
-          ],
-        },
-      ],
-    }),
-    [],
-  );
+    },
+    series: [
+      {
+        type: "pie",
+        data: [
+          { value: 101, name: "Series A" },
+          { value: 202, name: "Series B" },
+          // Malicious series name to demonstrate XSS protection via encodeHTML.
+          // Without encoding, this would render an alert popup. With encodeHTML,
+          // it safely displays as plain text.
+          { value: 150, name: "<img src=x onerror=alert('XSS')>" },
+          { value: 303, name: "Series C" },
+          { value: 404, name: "Series D" },
+        ],
+      },
+    ],
+  }));
 
   return (
     <Chart
       echarts={echarts}
-      options={options}
+      options={options()}
       height={400}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -1013,49 +961,44 @@ const FOLLOW_CURSOR_OPTIONS: FollowCursorOption[] = [
  */
 export function TooltipFollowCursorDemo() {
   const isDarkMode = useIsDarkMode();
-  const [selected, setSelected] = useState<FollowCursorOption>(
+  const [selected, setSelected] = createSignal<FollowCursorOption>(
     FOLLOW_CURSOR_OPTIONS[0],
   );
 
-  const data = useMemo(
-    () => [
-      {
-        name: "P99",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-      {
-        name: "P50",
-        data: buildSeriesData(1, 50, 60_000, 0.4),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "P99",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+    {
+      name: "P50",
+      data: buildSeriesData(1, 50, 60_000, 0.4),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+  ]);
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div class="flex w-full flex-col gap-4">
       <Select
         label="Tooltip follow cursor"
-        value={selected}
+        value={selected()}
         onValueChange={(v) => {
           if (v) setSelected(v);
         }}
         renderValue={(v) => v.label}
       >
         {FOLLOW_CURSOR_OPTIONS.map((opt) => (
-          <Select.Option key={opt.value} value={opt}>
-            {opt.label}
-          </Select.Option>
+          <Select.Option value={opt}>{opt.label}</Select.Option>
         ))}
       </Select>
       <TimeseriesChart
         echarts={echarts}
-        isDarkMode={isDarkMode}
-        data={data}
+        isDarkMode={isDarkMode()}
+        data={data()}
         xAxisName="Time (UTC)"
         yAxisName="Latency (ms)"
-        tooltipFollowCursor={selected.value}
+        tooltipFollowCursor={selected().value}
       />
     </div>
   );
@@ -1068,42 +1011,36 @@ export function TooltipFollowCursorDemo() {
  */
 export function TooltipBoundaryDemo() {
   const isDarkMode = useIsDarkMode();
-  const [boundary, setBoundary] = useState<HTMLDivElement | null>(null);
-  const boundaryRef = useCallback(
-    (el: HTMLDivElement | null) => setBoundary(el),
-    [],
-  );
+  const [boundary, setBoundary] = createSignal<HTMLDivElement | null>(null);
+  const boundaryRef = (el: HTMLDivElement | null) => setBoundary(el);
 
-  const data = useMemo(
-    () => [
-      {
-        name: "Requests",
-        data: buildSeriesData(0, 50, 60_000, 1),
-        color: ChartPalette.semantic("Neutral", isDarkMode),
-      },
-      {
-        name: "Errors",
-        data: buildSeriesData(1, 50, 60_000, 0.3),
-        color: ChartPalette.semantic("Attention", isDarkMode),
-      },
-    ],
-    [isDarkMode],
-  );
+  const data = createMemo(() => [
+    {
+      name: "Requests",
+      data: buildSeriesData(0, 50, 60_000, 1),
+      color: ChartPalette.semantic("Neutral", isDarkMode()),
+    },
+    {
+      name: "Errors",
+      data: buildSeriesData(1, 50, 60_000, 0.3),
+      color: ChartPalette.semantic("Attention", isDarkMode()),
+    },
+  ]);
 
   return (
     <div
       ref={boundaryRef}
-      className="w-full overflow-auto rounded-lg border border-kumo-line"
-      style={{ height: 300 }}
+      class="w-full overflow-auto rounded-lg border border-kumo-line"
+      style={{ height: "300px" }}
     >
       <TimeseriesChart
         echarts={echarts}
-        isDarkMode={isDarkMode}
-        data={data}
+        isDarkMode={isDarkMode()}
+        data={data()}
         xAxisName="Time (UTC)"
         yAxisName="Count"
         height={280}
-        tooltipBoundary={boundary ?? undefined}
+        tooltipBoundary={boundary() ?? undefined}
       />
     </div>
   );

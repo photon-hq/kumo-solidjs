@@ -10,7 +10,7 @@ import ComponentSection from "~/components/docs/ComponentSection.astro";
 import {
   CodeHighlightedBasicDemo,
   CodeHighlightedTypeScriptDemo,
-  CodeHighlightedReactDemo,
+  CodeHighlightedSolidDemo,
   CodeHighlightedBashDemo,
   CodeHighlightedJsonDemo,
   CodeHighlightedHighlightLinesDemo,
@@ -28,7 +28,7 @@ import {
   <div class="mb-4 rounded-md border border-kumo-brand/20 bg-kumo-brand/5 p-4">
     <p class="text-sm text-kumo-strong">
       <strong>New in v1.10:</strong> Shiki-powered syntax highlighting with lazy
-      loading. Import from `@cloudflare/kumo/code` to use.
+      loading. Import from `@photon-ai/kumo-solid/code` to use.
     </p>
   </div>
   <ComponentExample demo="CodeHighlightedBasicDemo">
@@ -43,10 +43,10 @@ import {
 ## Overview
 
   <p>
-    A Shiki-powered syntax highlighter. Supports 200+ languages with TextMate
-    grammars, dual light/dark themes, and lazy loading. Exported from a separate
-    entry point ( `@cloudflare/kumo/code` ) to avoid bundling Shiki for apps
-    that don't need it.
+    A Shiki-powered syntax highlighter with TextMate grammars, dual light/dark
+    themes, and lazy loading. Exported from a separate entry point (
+    `@photon-ai/kumo-solid/code` ) to avoid bundling Shiki for apps that don't
+    need it.
   </p>
 </ComponentSection>
 
@@ -61,12 +61,13 @@ import {
   </p>
 
 ```tsx
-import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
+import { ShikiProvider, CodeHighlighted } from "@photon-ai/kumo-solid/code";
 ```
 
   <div class="mt-4 rounded-md border border-kumo-warning/20 bg-kumo-warning/5 p-4">
     <p class="text-sm text-kumo-strong">
-      <strong>Important:</strong> Do NOT import from the main `@cloudflare/kumo` entry.
+      <strong>Important:</strong> Do not import from the main
+      `@photon-ai/kumo-solid` entry.
       That would pull Shiki into your bundle even if you don't use it.
     </p>
   </div>
@@ -84,7 +85,7 @@ import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
   </p>
 
 ```tsx
-import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
+import { ShikiProvider, CodeHighlighted } from "@photon-ai/kumo-solid/code";
 
 export function App() {
   return (
@@ -110,8 +111,8 @@ export function App() {
 ### Languages
 
 <p>
-  CodeHighlighted supports 200+ languages through Shiki. Only load the languages
-  you need.
+  CodeHighlighted ships a curated set of common Shiki languages. Only load the
+  languages you need.
 </p>
 
 #### TypeScript
@@ -120,10 +121,10 @@ export function App() {
   <CodeHighlightedTypeScriptDemo client:visible />
 </ComponentExample>
 
-#### React / TSX
+#### SolidJS / TSX
 
-<ComponentExample demo="CodeHighlightedReactDemo">
-  <CodeHighlightedReactDemo client:visible />
+<ComponentExample demo="CodeHighlightedSolidDemo">
+  <CodeHighlightedSolidDemo client:visible />
 </ComponentExample>
 
 #### Bash / Shell
@@ -224,19 +225,20 @@ export function App() {
 ## Server-Side Usage
 
   <p>
-    For SSR frameworks (Next.js RSC, Astro, Remix), use the server utilities to highlight at build time.
+    For SSR frameworks such as SolidStart and Astro, use the server utilities
+    to highlight at build time.
   </p>
 
 #### One-off highlighting
 
 ```tsx
-// Next.js RSC or Astro
-import { highlightCode } from "@cloudflare/kumo/code/server";
+// SolidStart server component
+import { highlightCode } from "@photon-ai/kumo-solid/code/server";
 
 export default async function Page() {
   const html = await highlightCode(`const x = 1;`, "typescript");
 
-  return <pre dangerouslySetInnerHTML={{ __html: html }} />;
+  return <pre innerHTML={html} />;
 }
 ```
 
@@ -244,7 +246,7 @@ export default async function Page() {
 
 ```tsx
 // For multiple highlights, reuse the highlighter
-import { createServerHighlighter } from "@cloudflare/kumo/code/server";
+import { createServerHighlighter } from "@photon-ai/kumo-solid/code/server";
 
 const highlighter = await createServerHighlighter({
   languages: ["tsx", "bash", "json"],
@@ -269,35 +271,39 @@ highlighter.dispose(); // Clean up when done
   </p>
 
 ```tsx
-import { useShikiHighlighter } from "@cloudflare/kumo/code";
+import { Show, createMemo } from "solid-js";
+import { useShikiHighlighter } from "@photon-ai/kumo-solid/code";
 
-function CustomCodeBlock({ code, lang }) {
-  const { highlight, isLoading, isReady, error } = useShikiHighlighter();
+function CustomCodeBlock(props) {
+  const { highlight, isLoading, error } = useShikiHighlighter();
+  const html = createMemo(() => highlight(props.code, props.lang));
 
-  if (error) {
-    return <div className="text-red-500">Failed to load highlighter</div>;
-  }
-
-  if (isLoading) {
-    return (
-      <pre className="animate-pulse">
-        <code>{code}</code>
-      </pre>
-    );
-  }
-
-  const html = highlight(code, lang);
-
-  // null means highlighting failed — render plain text
-  if (html === null) {
-    return (
-      <pre>
-        <code>{code}</code>
-      </pre>
-    );
-  }
-
-  return <pre dangerouslySetInnerHTML={{ __html: html }} />;
+  return (
+    <Show
+      when={!error()}
+      fallback={<div class="text-kumo-critical">Failed to load highlighter</div>}
+    >
+      <Show
+        when={!isLoading()}
+        fallback={
+          <pre class="animate-pulse">
+            <code>{props.code}</code>
+          </pre>
+        }
+      >
+        <Show
+          when={html()}
+          fallback={
+            <pre>
+              <code>{props.code}</code>
+            </pre>
+          }
+        >
+          {(highlighted) => <pre innerHTML={highlighted()} />}
+        </Show>
+      </Show>
+    </Show>
+  );
 }
 ```
 
@@ -340,32 +346,16 @@ function CustomCodeBlock({ code, lang }) {
 
 ## Framework Integration
 
-### Next.js App Router
+### SolidStart
 
 ```tsx
-// app/providers.tsx
-"use client";
+import { ShikiProvider } from "@photon-ai/kumo-solid/code";
 
-import { ShikiProvider } from "@cloudflare/kumo/code";
-
-export function Providers({ children }) {
+export function App(props) {
   return (
     <ShikiProvider engine="javascript" languages={["tsx", "bash", "json"]}>
-      {children}
+      {props.children}
     </ShikiProvider>
-  );
-}
-
-// app/layout.tsx
-import { Providers } from "./providers";
-
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
   );
 }
 ```
@@ -380,7 +370,7 @@ export default function RootLayout({ children }) {
 ```tsx
 ---
 // src/components/CodeBlock.astro
-import { highlightCode } from "@cloudflare/kumo/code/server";
+import { highlightCode } from "@photon-ai/kumo-solid/code/server";
 
 const { code, lang } = Astro.props;
 const html = await highlightCode(code, lang);
@@ -434,7 +424,7 @@ const html = await highlightCode(code, lang);
     </table>
   </div>
   <p class="mt-4 text-sm text-kumo-subtle">
-    Teams that don't import from `@cloudflare/kumo/code` pay 0 KB.
+    Teams that don't import from `@photon-ai/kumo-solid/code` pay 0 KB.
   </p>
 </ComponentSection>
 
@@ -451,11 +441,11 @@ const html = await highlightCode(code, lang);
 
 ```tsx
 // Before (deprecated)
-import { Code, CodeBlock } from "@cloudflare/kumo";
+import { Code, CodeBlock } from "@photon-ai/kumo-solid";
 <CodeBlock code="const x = 1;" lang="ts" />
 
 // After
-import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
+import { ShikiProvider, CodeHighlighted } from "@photon-ai/kumo-solid/code";
 
 // Once at app root
 <ShikiProvider engine="javascript" languages={["tsx"]}>
@@ -524,7 +514,7 @@ import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
           <code>children</code>
         </td>
         <td class="py-2 pr-4">
-          <code>ReactNode</code>
+          <code>JSX.Element</code>
         </td>
         <td class="py-2 pr-4">Yes</td>
         <td class="py-2">App content</td>
@@ -641,17 +631,17 @@ import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
         </tr>
         <tr class="border-b border-kumo-hairline/50">
           <td class="py-2 pr-4"><code>isLoading</code></td>
-          <td class="py-2 pr-4"><code>boolean</code></td>
+          <td class="py-2 pr-4"><code>Accessor&lt;boolean&gt;</code></td>
           <td class="py-2">True while Shiki is loading</td>
         </tr>
         <tr class="border-b border-kumo-hairline/50">
           <td class="py-2 pr-4"><code>isReady</code></td>
-          <td class="py-2 pr-4"><code>boolean</code></td>
+          <td class="py-2 pr-4"><code>Accessor&lt;boolean&gt;</code></td>
           <td class="py-2">True when highlight() is safe to call</td>
         </tr>
         <tr>
           <td class="py-2 pr-4"><code>error</code></td>
-          <td class="py-2 pr-4"><code>Error | null</code></td>
+          <td class="py-2 pr-4"><code>Accessor&lt;Error | null&gt;</code></td>
           <td class="py-2">Error if Shiki initialization failed</td>
         </tr>
       </tbody>

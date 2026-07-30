@@ -1,0 +1,140 @@
+{
+  "name": "@photon-ai/kumo-solid",
+  "version": "0.0.0",
+  "private": true,
+  "description": "SolidJS port of Cloudflare Kumo",
+  "files": [
+    "dist",
+    "README.md",
+    "MIGRATION.md"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css",
+    "dist/styles/*.css"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "browser": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "node": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/ssr/index.js"
+      },
+      "worker": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/ssr/index.js"
+      },
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components/*": {
+      "browser": {
+        "types": "./dist/components/*.d.ts",
+        "import": "./dist/components/*.js"
+      },
+      "node": {
+        "types": "./dist/components/*.d.ts",
+        "import": "./dist/ssr/components/*.js"
+      },
+      "worker": {
+        "types": "./dist/components/*.d.ts",
+        "import": "./dist/ssr/components/*.js"
+      },
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./utils": {
+      "browser": {
+        "types": "./dist/utils.d.ts",
+        "import": "./dist/utils.js"
+      },
+      "node": {
+        "types": "./dist/utils.d.ts",
+        "import": "./dist/ssr/utils.js"
+      },
+      "worker": {
+        "types": "./dist/utils.d.ts",
+        "import": "./dist/ssr/utils.js"
+      },
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    },
+    "./code": {
+      "browser": {
+        "types": "./dist/code.d.ts",
+        "import": "./dist/code.js"
+      },
+      "node": {
+        "types": "./dist/code.d.ts",
+        "import": "./dist/ssr/code.js"
+      },
+      "worker": {
+        "types": "./dist/code.d.ts",
+        "import": "./dist/ssr/code.js"
+      },
+      "types": "./dist/code.d.ts",
+      "import": "./dist/code.js"
+    },
+    "./code/server": {
+      "browser": {
+        "types": "./dist/code/server.d.ts",
+        "import": "./dist/code/server.js"
+      },
+      "node": {
+        "types": "./dist/code/server.d.ts",
+        "import": "./dist/ssr/code/server.js"
+      },
+      "worker": {
+        "types": "./dist/code/server.d.ts",
+        "import": "./dist/ssr/code/server.js"
+      },
+      "types": "./dist/code/server.d.ts",
+      "import": "./dist/code/server.js"
+    },
+    "./styles": "./dist/styles/kumo.css",
+    "./styles/tailwind": "./dist/styles/kumo.css",
+    "./styles/standalone": "./dist/styles/kumo-standalone.css",
+    "./styles/*": "./dist/styles/*.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts && tsx scripts/copy-styles.ts && tsx scripts/validate-dist.ts",
+    "lint": "vp lint src test scripts",
+    "test": "vitest run && vitest run --config vitest.ssr.config.ts && pnpm run test:browser",
+    "test:browser": "pnpm run build && tsx scripts/test-browser.ts",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@msviderok/base-ui-solid": "^1.0.0-beta.12",
+    "@shikijs/langs": "^4.0.0",
+    "@shikijs/themes": "^4.0.0",
+    "cnfast": "^0.0.8",
+    "d3-geo": "^3.1.1",
+    "shiki": "^4.0.0"
+  },
+  "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
+    "@tailwindcss/cli": "catalog:",
+    "@types/d3-geo": "^3.1.0",
+    "@types/node": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "happy-dom": "catalog:",
+    "playwright": "catalog:",
+    "solid-js": "^1.9.14",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-solid": "2.11.13",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "echarts": "^6.0.0",
+    "solid-js": "^1.9.0"
+  }
+}

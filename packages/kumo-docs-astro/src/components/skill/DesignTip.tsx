@@ -1,9 +1,9 @@
-import { CheckCircleIcon, XCircleIcon } from "@phosphor-icons/react";
-import { cn, Text } from "@cloudflare/kumo";
-import type { ReactNode } from "react";
+import { type JSX } from "solid-js";
+import { CheckCircleIcon, XCircleIcon } from "~/components/icons";
+import { cn, Text } from "@photon-ai/kumo-solid";
 
 interface DesignTipProps {
-  children?: ReactNode;
+  children?: JSX.Element;
 }
 
 interface DesignTipRootProps extends DesignTipProps {
@@ -22,7 +22,7 @@ export function DesignTip({ children, id }: DesignTipRootProps) {
   return (
     <article
       id={id}
-      className={cn("grid min-w-0 scroll-mt-24 grid-cols-[minmax(0,1fr)]")}
+      class={cn("grid min-w-0 scroll-mt-24 grid-cols-[minmax(0,1fr)]")}
     >
       {children}
     </article>
@@ -39,7 +39,7 @@ function DesignTipTitle({ children }: DesignTipProps) {
 
 function DesignTipDescription({ children }: DesignTipProps) {
   return (
-    <div className="mt-3 md:mt-4">
+    <div class="mt-3 md:mt-4">
       <Text as="span" DANGEROUS_className="leading-relaxed text-pretty">
         {children}
       </Text>
@@ -52,9 +52,9 @@ function DesignTipExamples({
   orientation = "horizontal",
 }: DesignTipExamplesProps) {
   return (
-    <div className="mt-6 rounded-xl bg-kumo-tint p-2 ring ring-kumo-line md:-mx-2">
+    <div class="mt-6 rounded-xl bg-kumo-tint p-2 ring ring-kumo-line md:-mx-2">
       <div
-        className={cn(
+        class={cn(
           "divide-kumo-line overflow-hidden rounded-lg bg-kumo-base shadow-md ring ring-kumo-line",
           orientation === "horizontal"
             ? "divide-y md:flex md:divide-x md:divide-y-0"
@@ -71,8 +71,8 @@ function DesignTipExample({ children, variant }: DesignTipExampleProps) {
   const isGood = variant === "good";
 
   return (
-    <figure className={cn("relative min-w-0 flex-1")}>
-      <figcaption className={cn("absolute top-2 right-2")}>
+    <figure class={cn("relative min-w-0 flex-1")}>
+      <figcaption class={cn("absolute top-2 right-2")}>
         {isGood ? (
           <CheckCircleIcon
             aria-hidden="true"
@@ -88,12 +88,12 @@ function DesignTipExample({ children, variant }: DesignTipExampleProps) {
             className={cn("text-kumo-danger")}
           />
         )}
-        <span className={cn("sr-only")}>
+        <span class={cn("sr-only")}>
           {isGood ? "Recommended example" : "Example to avoid"}
         </span>
       </figcaption>
       <div
-        className={cn(
+        class={cn(
           "flex h-full min-h-[200px] min-w-0 items-center justify-center p-6 has-[>.code-block]:p-0",
         )}
       >

@@ -1,0 +1,88 @@
+diff --git a/cjs/utils/useTimeout.js b/cjs/utils/useTimeout.js
+index 9d39b631fb09e96f85ef67ca7b1b9e8fbb9db547..467541f850de9c83a4ce178bbde9afd0d0f20e52 100644
+--- a/cjs/utils/useTimeout.js
++++ b/cjs/utils/useTimeout.js
+@@ -28,9 +28,11 @@ function useTimeout() {
+   function isStarted() {
+     return currentId !== EMPTY;
+   }
+-  (0, _solidJs.onCleanup)(() => {
+-    clear();
+-  });
++  if ((0, _solidJs.getOwner)()) {
++    (0, _solidJs.onCleanup)(() => {
++      clear();
++    });
++  }
+   return {
+     start,
+     clear,
+diff --git a/cjs-ssr/utils/useTimeout.js b/cjs-ssr/utils/useTimeout.js
+index 1ce6a8cdfd3fce79b34888fc2ce71b693a561819..72fefb4f9af3c822753a136fe86c215a8a3739c4 100644
+--- a/cjs-ssr/utils/useTimeout.js
++++ b/cjs-ssr/utils/useTimeout.js
+@@ -28,9 +28,11 @@ function useTimeout() {
+   function isStarted() {
+     return currentId !== EMPTY;
+   }
+-  (0, _solidJs.onCleanup)(function () {
+-    clear();
+-  });
++  if ((0, _solidJs.getOwner)()) {
++    (0, _solidJs.onCleanup)(function () {
++      clear();
++    });
++  }
+   return {
+     start: start,
+     clear: clear,
+diff --git a/esm/utils/useTimeout.js b/esm/utils/useTimeout.js
+index 917a6c2b2c9bbbdd15463be31e31490755d3fcec..21bae3c0c58983b98fa14f92e5b524e5eca97c23 100644
+--- a/esm/utils/useTimeout.js
++++ b/esm/utils/useTimeout.js
+@@ -1,4 +1,4 @@
+-import { onCleanup } from 'solid-js';
++import { getOwner, onCleanup } from 'solid-js';
+ const EMPTY = 0;
+ 
+ /**
+@@ -22,9 +22,11 @@ export function useTimeout() {
+   function isStarted() {
+     return currentId !== EMPTY;
+   }
+-  onCleanup(() => {
+-    clear();
+-  });
++  if (getOwner()) {
++    onCleanup(() => {
++      clear();
++    });
++  }
+   return {
+     start,
+     clear,
+diff --git a/ssr/utils/useTimeout.js b/ssr/utils/useTimeout.js
+index 6dd09ac0142552b3c6d02798efc9a36fdaa5de2e..6a68e942db11d0dfc1b1658e6117eebfdd2f6169 100644
+--- a/ssr/utils/useTimeout.js
++++ b/ssr/utils/useTimeout.js
+@@ -1,4 +1,4 @@
+-import { onCleanup } from 'solid-js';
++import { getOwner, onCleanup } from 'solid-js';
+ var EMPTY = 0;
+ 
+ /**
+@@ -22,9 +22,11 @@ export function useTimeout() {
+   function isStarted() {
+     return currentId !== EMPTY;
+   }
+-  onCleanup(function () {
+-    clear();
+-  });
++  if (getOwner()) {
++    onCleanup(function () {
++      clear();
++    });
++  }
+   return {
+     start: start,
+     clear: clear,

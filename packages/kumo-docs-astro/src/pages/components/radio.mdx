@@ -43,13 +43,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Radio } from "@cloudflare/kumo";
+import { Radio } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Radio } from "@cloudflare/kumo/components/radio";
+import { Radio } from "@photon-ai/kumo-solid/components/radio";
 ```
 
 </ComponentSection>
@@ -61,7 +61,7 @@ import { Radio } from "@cloudflare/kumo/components/radio";
 ## Usage
 
 ```tsx
-import { Radio } from "@cloudflare/kumo";
+import { Radio } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -138,7 +138,7 @@ export default function Example() {
 ### Rich Label Content
 
 <p>
-  The `label` prop on `Radio.Item` accepts React nodes, so you can embed icons,
+  The `label` prop on `Radio.Item` accepts JSX content, so you can embed icons,
   badges, or other markup alongside the text.
 </p>
 <ComponentExample demo="RadioRichLabelDemo">
@@ -172,7 +172,7 @@ export default function Example() {
 ### Visually Hidden Legend
 
 <p>
-  Use `Radio.Legend` with `className="sr-only"` to keep the legend accessible to
+  Use `Radio.Legend` with `class="sr-only"` to keep the legend accessible to
   screen readers while hiding it visually. This is useful when the radio group
   is already labeled by a parent `Field` or heading, and showing the legend
   would create a redundant label.
@@ -203,20 +203,22 @@ export default function Example() {
 <ComponentExample
   vrSection="radio-typed-value"
   vrTitle="Radio Typed Value"
-  code={`enum ThemeType {
+  code={`import { createSignal } from "solid-js";
+
+enum ThemeType {
     dark = "dark",
     light = "light",
     system = "system",
 }
 
 export function RadioTypedValueDemo() {
-    const [pageSize, setPageSize] = useState<number>(10);
-    const [theme, setTheme] = useState<ThemeType>(ThemeType.system);
+    const [pageSize, setPageSize] = createSignal<number>(10);
+    const [theme, setTheme] = createSignal<ThemeType>(ThemeType.system);
     return (
-      <div className="grid grid-cols-2 gap-6">
+      <div class="grid grid-cols-2 gap-6">
         <Radio.Group<number>
           legend="Items per page"
-          value={pageSize}
+          value={pageSize()}
           onValueChange={setPageSize}
         >
           <Radio.Item<number> label="10" value={10} />
@@ -225,7 +227,7 @@ export function RadioTypedValueDemo() {
         </Radio.Group>
         <Radio.Group<ThemeType>
           legend="Theme"
-          value={theme}
+          value={theme()}
           onValueChange={setTheme}
         >
           <Radio.Item<ThemeType> label="Light" value={ThemeType.light} />
@@ -256,7 +258,7 @@ export function RadioTypedValueDemo() {
 
 <p>
   Composable legend sub-component for Radio.Group. Accepts `className` for full
-  styling control (e.g. `className="sr-only"` to visually hide). Use instead of
+  styling control (e.g. `class="sr-only"` to visually hide). Use instead of
   the `legend` string prop when you need custom legend styling.
 </p>
 <PropsTable component="Radio.Legend" />

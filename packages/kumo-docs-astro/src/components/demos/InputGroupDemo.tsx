@@ -1,5 +1,7 @@
-import { useRef, useState } from "react";
-import { InputGroup, Loader } from "@cloudflare/kumo";
+import { createRef } from "~/lib/solid-reactivity";
+import { createSignal } from "solid-js";
+
+import { InputGroup, Loader } from "@photon-ai/kumo-solid";
 import {
   MagnifyingGlassIcon,
   CheckCircleIcon,
@@ -9,17 +11,19 @@ import {
   LinkIcon,
   QuestionIcon,
   XIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 export function InputGroupDemo() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success">(
+  const [status, setStatus] = createSignal<"idle" | "loading" | "success">(
     "success",
   );
-  const [value, setValue] = useState("kumo");
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const [value, setValue] = createSignal("kumo");
+  const timerRef = createRef<ReturnType<typeof setTimeout>>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const next = e.target.value;
+  const handleChange = (
+    e: InputEvent & { currentTarget: HTMLInputElement },
+  ) => {
+    const next = e.currentTarget.value;
 
     setValue(next);
 
@@ -35,17 +39,18 @@ export function InputGroupDemo() {
   };
 
   return (
-    <div className="w-full max-w-2xs">
+    <div class="w-full max-w-2xs">
       <InputGroup>
         <InputGroup.Input
+          aria-label="Subdomain"
           maxLength={20}
-          onChange={handleChange}
-          value={value}
+          onInput={handleChange}
+          value={value()}
         />
         <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
-        {status !== "idle" && (
+        {status() !== "idle" && (
           <InputGroup.Addon align="end">
-            {status === "loading" ? (
+            {status() === "loading" ? (
               <Loader />
             ) : (
               <CheckCircleIcon weight="duotone" className="text-kumo-success" />
@@ -70,7 +75,7 @@ export function InputGroupIconsDemo() {
 
 export function InputGroupTextDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <InputGroup className="w-full max-w-3xs">
         <InputGroup.Addon>@</InputGroup.Addon>
         <InputGroup.Input placeholder="username" aria-label="Username" />
@@ -91,14 +96,14 @@ export function InputGroupTextDemo() {
 }
 
 export function InputGroupButtonsDemo() {
-  const [show, setShow] = useState(false);
-  const [searchValue, setSearchValue] = useState("search");
+  const [show, setShow] = createSignal(false);
+  const [searchValue, setSearchValue] = createSignal("search");
 
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <InputGroup className="w-full max-w-3xs">
         <InputGroup.Input
-          type={show ? "text" : "password"}
+          type={show() ? "text" : "password"}
           defaultValue="password"
           aria-label="Password"
         />
@@ -106,9 +111,9 @@ export function InputGroupButtonsDemo() {
           <InputGroup.Button
             shape="square"
             className="text-kumo-subtle"
-            icon={show ? EyeSlashIcon : EyeIcon}
-            aria-label={show ? "Hide password" : "Show password"}
-            onClick={() => setShow(!show)}
+            icon={show() ? EyeSlashIcon : EyeIcon}
+            aria-label={show() ? "Hide password" : "Show password"}
+            onClick={() => setShow(!show())}
           />
         </InputGroup.Addon>
       </InputGroup>
@@ -118,12 +123,12 @@ export function InputGroupButtonsDemo() {
           <MagnifyingGlassIcon />
         </InputGroup.Addon>
         <InputGroup.Input
-          value={searchValue}
+          value={searchValue()}
           placeholder="Search"
           aria-label="Search"
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        {searchValue && (
+        {searchValue() && (
           <InputGroup.Addon align="end" className="pr-1">
             <InputGroup.Button
               shape="square"
@@ -173,7 +178,7 @@ export function InputGroupKbdDemo() {
       </InputGroup.Addon>
       <InputGroup.Input placeholder="Search..." aria-label="Search" />
       <InputGroup.Addon align="end">
-        <kbd className="border-none! bg-none!">⌘K</kbd>
+        <kbd class="border-none! bg-none!">⌘K</kbd>
       </InputGroup.Addon>
     </InputGroup>
   );
@@ -192,7 +197,7 @@ export function InputGroupLoadingDemo() {
 
 export function InputGroupSuffixDemo() {
   return (
-    <div className="flex w-full max-w-2xs flex-col gap-4">
+    <div class="flex w-full max-w-2xs flex-col gap-4">
       <InputGroup label="Subdomain">
         <InputGroup.Input
           aria-label="Subdomain"
@@ -225,7 +230,7 @@ export function InputGroupSuffixDemo() {
 
 export function InputGroupSizesDemo() {
   return (
-    <div className="flex w-full max-w-3xs flex-col gap-4">
+    <div class="flex w-full max-w-3xs flex-col gap-4">
       <InputGroup size="xs" label="Extra Small">
         <InputGroup.Addon>
           <MagnifyingGlassIcon />
@@ -290,10 +295,10 @@ export function InputGroupSizesDemo() {
 }
 
 export function InputGroupStatesDemo() {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = createSignal(false);
 
   return (
-    <div className="flex w-full max-w-3xs flex-col gap-4">
+    <div class="flex w-full max-w-3xs flex-col gap-4">
       <InputGroup
         label="Error State"
         error={{ message: "Please enter a valid email address", match: true }}
@@ -320,16 +325,16 @@ export function InputGroupStatesDemo() {
         labelTooltip="Your password is stored securely"
       >
         <InputGroup.Input
-          type={show ? "text" : "password"}
+          type={show() ? "text" : "password"}
           placeholder="Password"
         />
         <InputGroup.Addon align="end">
           <InputGroup.Button
             shape="square"
             className="text-kumo-subtle"
-            icon={show ? EyeSlashIcon : EyeIcon}
-            aria-label={show ? "Hide password" : "Show password"}
-            onClick={() => setShow(!show)}
+            icon={show() ? EyeSlashIcon : EyeIcon}
+            aria-label={show() ? "Hide password" : "Show password"}
+            onClick={() => setShow(!show())}
           />
         </InputGroup.Addon>
       </InputGroup>

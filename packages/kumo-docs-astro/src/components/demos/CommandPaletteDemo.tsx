@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { CommandPalette, Button } from "@cloudflare/kumo";
+import { createMemo, createSignal, type JSX } from "solid-js";
+
+import { CommandPalette, Button } from "@photon-ai/kumo-solid";
 import {
   GearIcon,
   FileIcon,
@@ -8,13 +9,13 @@ import {
   HouseIcon,
   ChartLineIcon,
   UsersIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 // Types for our demo data
 interface CommandItem {
   id: string;
   title: string;
-  icon?: React.ReactNode;
+  icon?: JSX.Element;
 }
 
 interface CommandGroup {
@@ -58,7 +59,7 @@ const sampleGroups: CommandGroup[] = [
 ];
 
 // Helper to flatten groups into selectable items
-const getSelectableItems = (groups: CommandGroup[]) =>
+const getSelectableItems = (groups: readonly CommandGroup[]) =>
   groups.flatMap((group) => group.items);
 
 // Helper to filter groups and their items based on search query
@@ -79,9 +80,9 @@ const filterGroupsWithItems = (
 };
 
 export function CommandPaletteBasicDemo() {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [open, setOpen] = createSignal(false);
+  const [search, setSearch] = createSignal("");
+  const [selectedItem, setSelectedItem] = createSignal<string | null>(null);
 
   const handleSelect = (item: CommandItem) => {
     setSelectedItem(item.title);
@@ -90,23 +91,24 @@ export function CommandPaletteBasicDemo() {
   };
 
   // Filter groups based on search
-  const filteredGroups = filterGroupsWithItems(sampleGroups, search);
+  const filteredGroups = createMemo(() =>
+    filterGroupsWithItems(sampleGroups, search()),
+  );
 
   return (
-    <div className="flex flex-col items-start gap-4">
+    <div class="flex flex-col items-start gap-4">
       <Button onClick={() => setOpen(true)}>Open Command Palette</Button>
-      {selectedItem && (
-        <p className="text-sm text-kumo-subtle">
-          Last selected:{" "}
-          <span className="text-kumo-default">{selectedItem}</span>
+      {selectedItem() && (
+        <p class="text-sm text-kumo-subtle">
+          Last selected: <span class="text-kumo-default">{selectedItem()}</span>
         </p>
       )}
 
       <CommandPalette.Root
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
-        items={filteredGroups}
-        value={search}
+        items={filteredGroups()}
+        value={search()}
         onValueChange={setSearch}
         itemToStringValue={(group) => group.label}
         onSelect={(item, { newTab }) => {
@@ -119,20 +121,19 @@ export function CommandPaletteBasicDemo() {
         <CommandPalette.List>
           <CommandPalette.Results>
             {(group: CommandGroup) => (
-              <CommandPalette.Group key={group.id} items={group.items}>
+              <CommandPalette.Group items={group.items}>
                 <CommandPalette.GroupLabel>
                   {group.label}
                 </CommandPalette.GroupLabel>
                 <CommandPalette.Items>
                   {(item: CommandItem) => (
                     <CommandPalette.Item
-                      key={item.id}
                       value={item}
                       onClick={() => handleSelect(item)}
                     >
-                      <span className="flex items-center gap-3">
+                      <span class="flex items-center gap-3">
                         {item.icon && (
-                          <span className="text-kumo-subtle">{item.icon}</span>
+                          <span class="text-kumo-subtle">{item.icon}</span>
                         )}
                         <span>{item.title}</span>
                       </span>
@@ -145,14 +146,14 @@ export function CommandPaletteBasicDemo() {
           <CommandPalette.Empty>No commands found</CommandPalette.Empty>
         </CommandPalette.List>
         <CommandPalette.Footer>
-          <span className="flex items-center gap-2">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
+          <span class="flex items-center gap-2">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
               ↑↓
             </kbd>
             <span>Navigate</span>
           </span>
-          <span className="flex items-center gap-2">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
+          <span class="flex items-center gap-2">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
               ↵
             </kbd>
             <span>Select</span>
@@ -178,32 +179,31 @@ const simpleItems: SimpleItem[] = [
 ];
 
 export function CommandPaletteSimpleDemo() {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [open, setOpen] = createSignal(false);
+  const [search, setSearch] = createSignal("");
 
   return (
     <div>
       <Button onClick={() => setOpen(true)}>Open Simple Palette</Button>
 
       <CommandPalette.Root
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
         items={simpleItems}
-        value={search}
+        value={search()}
         onValueChange={setSearch}
         itemToStringValue={(item) => item.title}
         onSelect={(item) => {
           console.log("Selected:", item.title);
           setOpen(false);
         }}
-        getSelectableItems={(items) => items}
+        getSelectableItems={(items) => [...items]}
       >
         <CommandPalette.Input placeholder="Search actions..." />
         <CommandPalette.List>
           <CommandPalette.Results>
             {(item: SimpleItem) => (
               <CommandPalette.Item
-                key={item.id}
                 value={item}
                 onClick={() => {
                   console.log("Clicked:", item.title);
@@ -223,9 +223,9 @@ export function CommandPaletteSimpleDemo() {
 
 // With loading state
 export function CommandPaletteLoadingDemo() {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
+  const [open, setOpen] = createSignal(false);
+  const [loading, setLoading] = createSignal(false);
+  const [search, setSearch] = createSignal("");
 
   const handleOpen = () => {
     setOpen(true);
@@ -235,45 +235,44 @@ export function CommandPaletteLoadingDemo() {
   };
 
   // Filter groups based on search
-  const filteredGroups = filterGroupsWithItems(sampleGroups, search);
+  const filteredGroups = createMemo(() =>
+    filterGroupsWithItems(sampleGroups, search()),
+  );
 
   return (
     <div>
       <Button onClick={handleOpen}>Open with Loading</Button>
 
       <CommandPalette.Root
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
-        items={loading ? [] : filteredGroups}
-        value={search}
+        items={loading() ? [] : filteredGroups()}
+        value={search()}
         onValueChange={setSearch}
         itemToStringValue={(group) => group.label}
         getSelectableItems={getSelectableItems}
       >
         <CommandPalette.Input placeholder="Search..." />
         <CommandPalette.List>
-          {loading ? (
+          {loading() ? (
             <CommandPalette.Loading />
           ) : (
             <>
               <CommandPalette.Results>
                 {(group: CommandGroup) => (
-                  <CommandPalette.Group key={group.id} items={group.items}>
+                  <CommandPalette.Group items={group.items}>
                     <CommandPalette.GroupLabel>
                       {group.label}
                     </CommandPalette.GroupLabel>
                     <CommandPalette.Items>
                       {(item: CommandItem) => (
                         <CommandPalette.Item
-                          key={item.id}
                           value={item}
                           onClick={() => setOpen(false)}
                         >
-                          <span className="flex items-center gap-3">
+                          <span class="flex items-center gap-3">
                             {item.icon && (
-                              <span className="text-kumo-subtle">
-                                {item.icon}
-                              </span>
+                              <span class="text-kumo-subtle">{item.icon}</span>
                             )}
                             <span>{item.title}</span>
                           </span>
@@ -294,22 +293,24 @@ export function CommandPaletteLoadingDemo() {
 
 /** Demonstrates disabling browser autocomplete and spellcheck on the command palette input. */
 export function CommandPaletteNoAutocompleteDemo() {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [open, setOpen] = createSignal(false);
+  const [search, setSearch] = createSignal("");
 
-  const filteredGroups = filterGroupsWithItems(sampleGroups, search);
+  const filteredGroups = createMemo(() =>
+    filterGroupsWithItems(sampleGroups, search()),
+  );
 
   return (
-    <div className="flex flex-col items-start gap-4">
+    <div class="flex flex-col items-start gap-4">
       <Button onClick={() => setOpen(true)}>
         Open Palette (No Autocomplete)
       </Button>
 
       <CommandPalette.Root
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
-        items={filteredGroups}
-        value={search}
+        items={filteredGroups()}
+        value={search()}
         onValueChange={setSearch}
         itemToStringValue={(group) => group.label}
         onSelect={(item) => {
@@ -322,32 +323,31 @@ export function CommandPaletteNoAutocompleteDemo() {
         <CommandPalette.Input
           placeholder="Search commands..."
           autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="none"
-          spellCheck={false}
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck={false}
           data-1p-ignore="true"
           data-lpignore="true"
         />
         <CommandPalette.List>
           <CommandPalette.Results>
             {(group: CommandGroup) => (
-              <CommandPalette.Group key={group.id} items={group.items}>
+              <CommandPalette.Group items={group.items}>
                 <CommandPalette.GroupLabel>
                   {group.label}
                 </CommandPalette.GroupLabel>
                 <CommandPalette.Items>
                   {(item: CommandItem) => (
                     <CommandPalette.Item
-                      key={item.id}
                       value={item}
                       onClick={() => {
                         setOpen(false);
                         setSearch("");
                       }}
                     >
-                      <span className="flex items-center gap-3">
+                      <span class="flex items-center gap-3">
                         {item.icon && (
-                          <span className="text-kumo-subtle">{item.icon}</span>
+                          <span class="text-kumo-subtle">{item.icon}</span>
                         )}
                         <span>{item.title}</span>
                       </span>
@@ -369,7 +369,7 @@ interface SearchResult {
   id: string;
   title: string;
   breadcrumbs: string[];
-  icon?: React.ReactNode;
+  icon?: JSX.Element;
 }
 
 const searchResults: SearchResult[] = [
@@ -394,28 +394,27 @@ const searchResults: SearchResult[] = [
 ];
 
 export function CommandPaletteResultItemDemo() {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [open, setOpen] = createSignal(false);
+  const [search, setSearch] = createSignal("");
 
   return (
     <div>
       <Button onClick={() => setOpen(true)}>Open with ResultItem</Button>
 
       <CommandPalette.Root
-        open={open}
+        open={open()}
         onOpenChange={setOpen}
         items={searchResults}
-        value={search}
+        value={search()}
         onValueChange={setSearch}
         itemToStringValue={(item) => item.title}
-        getSelectableItems={(items) => items}
+        getSelectableItems={(items) => [...items]}
       >
         <CommandPalette.Input placeholder="Search documentation..." />
         <CommandPalette.List>
           <CommandPalette.Results>
             {(item: SearchResult) => (
               <CommandPalette.ResultItem
-                key={item.id}
                 value={item}
                 title={item.title}
                 breadcrumbs={item.breadcrumbs}
@@ -430,14 +429,14 @@ export function CommandPaletteResultItemDemo() {
           <CommandPalette.Empty>No pages found</CommandPalette.Empty>
         </CommandPalette.List>
         <CommandPalette.Footer>
-          <span className="flex items-center gap-2">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
+          <span class="flex items-center gap-2">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
               ↑↓
             </kbd>
             <span>Navigate</span>
           </span>
-          <span className="flex items-center gap-2">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
+          <span class="flex items-center gap-2">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5 text-[10px]">
               ⌘↵
             </kbd>
             <span>Open in new tab</span>

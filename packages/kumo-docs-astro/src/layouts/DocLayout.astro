@@ -3,7 +3,7 @@ import MainLayout from "./MainLayout.astro";
 import { StickyDocHeader } from "../components/docs/StickyDocHeader";
 import { CopyPageButton } from "../components/docs/CopyPageButton";
 import { BaseUIIcon } from "../components/docs/icons/BaseUIIcon";
-import { GithubLogoIcon } from "@phosphor-icons/react";
+import { GithubLogoIcon } from "~/components/icons";
 import { TableOfContents } from "../components/docs/TableOfContents";
 
 interface Props {
@@ -27,8 +27,21 @@ const {
   headings = [],
 } = Astro.props;
 
-const baseUIUrl = baseUIComponent
-  ? `https://base-ui.com/react/components/${baseUIComponent}`
+const solidBaseUIComponents = new Set([
+  "checkbox",
+  "collapsible",
+  "dialog",
+  "input",
+  "menu",
+  "popover",
+  "radio-group",
+  "select",
+  "switch",
+  "tooltip",
+]);
+
+const baseUIUrl = baseUIComponent && solidBaseUIComponents.has(baseUIComponent)
+  ? `https://github.com/msviderok/base-ui-solid/tree/master/packages/solid/src/${baseUIComponent}`
   : null;
 
 // Extract the component name from the path (e.g., "components/button" -> "button")
@@ -36,7 +49,7 @@ const baseUIUrl = baseUIComponent
 // If sourceFile already has a file extension, use it as-is.
 const githubSourceUrl = sourceFile
   ? (() => {
-      const base = `https://github.com/cloudflare/kumo/blob/main/packages/kumo/src/`;
+      const base = `https://github.com/photon-hq/kumo-solidjs/blob/main/packages/kumo-solid/src/`;
       if (/\.\w+$/.test(sourceFile)) {
         return `${base}${sourceFile}`;
       }

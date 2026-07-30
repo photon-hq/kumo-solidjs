@@ -1,7 +1,7 @@
 ---
 layout: ~/layouts/MdxDocLayout.astro
 title: "Streaming UI"
-description: "Render AI-generated UI from JSON using Kumo's auto-generated schemas. Enable progressive rendering as LLM responses stream in."
+description: "The planned Solid catalog API for validating and rendering AI-generated UI from JSON."
 ---
 
 import Callout from "~/components/docs/Callout.astro";
@@ -10,14 +10,21 @@ import Callout from "~/components/docs/Callout.astro";
 
 The Kumo catalog module enables rendering UI from JSON structures, designed specifically for AI-generated interfaces. It provides runtime validation, data binding, conditional rendering, and action handling for JSON-based UI trees.
 
+<Callout type="warning">
+  The catalog is a framework-independent utility from upstream Kumo, but its
+  generated-schema packaging has not yet moved into
+  `@photon-ai/kumo-solid`. The examples on this page document the target Solid
+  package API and are not currently available as an export.
+</Callout>
+
 #### Schemas Derived from Your Codebase
 
 Unlike approaches that require maintaining separate schema definitions, Kumo automatically derives validation schemas from your actual component TypeScript types. When you update a component's props, the validation schemas update automatically via the component registry codegen process. No manual synchronization required — your schemas are always in sync with your components.
 
 <Callout type="info">
-  Schemas are auto-generated in `@cloudflare/kumo/ai/schemas` from component
-  TypeScript types. Run `pnpm codegen:registry` after modifying component props
-  to regenerate.
+  The shared schemas are currently auto-generated in
+  `packages/kumo/ai/schemas.ts` from component TypeScript types. They must be
+  packaged with the Solid catalog before this API can ship.
 </Callout>
 
 ## How It Works
@@ -41,7 +48,7 @@ import {
   initCatalog,
   resolveProps,
   evaluateVisibility,
-} from "@cloudflare/kumo/catalog";
+} from "@photon-ai/kumo-solid/catalog";
 ```
 
 ## Creating a Catalog
@@ -49,7 +56,7 @@ import {
 Create a catalog instance that validates AI-generated JSON against the auto-generated schemas:
 
 ```ts
-import { createKumoCatalog, initCatalog } from "@cloudflare/kumo/catalog";
+import { createKumoCatalog, initCatalog } from "@photon-ai/kumo-solid/catalog";
 
 // Create a catalog with optional actions
 const catalog = createKumoCatalog({
@@ -129,7 +136,7 @@ The UI tree uses a flat structure optimized for LLM generation and streaming. El
 Props can reference values from a data model using JSON Pointer paths. This allows the AI to declare data bindings that your application resolves at render time.
 
 ```ts
-import { resolveProps, resolveDynamicValue } from "@cloudflare/kumo/catalog";
+import { resolveProps, resolveDynamicValue } from "@photon-ai/kumo-solid/catalog";
 
 // Data model backing the UI
 const dataModel = {
@@ -166,7 +173,7 @@ Elements can be conditionally rendered based on data values, authentication stat
 import {
   evaluateVisibility,
   createVisibilityContext,
-} from "@cloudflare/kumo/catalog";
+} from "@photon-ai/kumo-solid/catalog";
 
 const ctx = createVisibilityContext(
   // Data model
@@ -348,7 +355,7 @@ import type {
   KumoCatalog,
   CatalogConfig,
   ValidationResult,
-} from "@cloudflare/kumo/catalog";
+} from "@photon-ai/kumo-solid/catalog";
 ```
 
 ## Full Example
@@ -362,8 +369,8 @@ import {
   resolveProps,
   evaluateVisibility,
   createVisibilityContext,
-} from "@cloudflare/kumo/catalog";
-import { Button, Text, Surface } from "@cloudflare/kumo";
+} from "@photon-ai/kumo-solid/catalog";
+import { Button, Text, Surface } from "@photon-ai/kumo-solid";
 
 // 1. Create and initialize catalog
 const catalog = createKumoCatalog({

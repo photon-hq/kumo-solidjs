@@ -3,12 +3,16 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Resolve once — points at the sibling kumo package root
+// Resolve once — components come from the Solid port while the canonical
+// stylesheet still lives in the React package until the style generator is
+// shared at the workspace level.
+const kumoSolidRoot = resolve(__dirname, "../../../kumo-solid");
+const kumoSolidSrc = resolve(kumoSolidRoot, "src");
 const kumoRoot = resolve(__dirname, "../../../kumo");
-const kumoSrc = resolve(kumoRoot, "src");
+const kumoStylesSrc = resolve(kumoRoot, "src/styles");
 
 /**
- * Map every `@cloudflare/kumo` sub-path export to its source equivalent.
+ * Map every `@photon-ai/kumo-solid` sub-path export to its source equivalent.
  *
  * In dev mode Vite will resolve these to the raw .ts/.tsx source files,
  * which means file-watcher-based HMR works instantly — no rebuild of
@@ -20,43 +24,24 @@ const kumoSrc = resolve(kumoRoot, "src");
  */
 const aliases: Record<string, string> = {
   // Main barrel — resolves to source index.ts
-  "@cloudflare/kumo": resolve(kumoSrc, "index.ts"),
+  "@photon-ai/kumo-solid": resolve(kumoSolidSrc, "index.ts"),
 
   // CSS styles — resolve to source CSS
-  "@cloudflare/kumo/styles/tailwind": resolve(kumoSrc, "styles/kumo.css"),
-  "@cloudflare/kumo/styles/standalone": resolve(
-    kumoSrc,
-    "styles/kumo-standalone.css",
+  "@photon-ai/kumo-solid/styles/tailwind": resolve(kumoStylesSrc, "kumo.css"),
+  "@photon-ai/kumo-solid/styles/standalone": resolve(
+    kumoStylesSrc,
+    "kumo-standalone.css",
   ),
-  "@cloudflare/kumo/styles": resolve(kumoSrc, "styles/kumo.css"),
-
-  // JSON registry — these live outside src/ and are NOT built, so same
-  // path works in dev and prod.  We alias anyway so Vite can resolve
-  // the workspace:* link correctly and watch the file.
-  "@cloudflare/kumo/ai/component-registry.json": resolve(
-    kumoRoot,
-    "ai/component-registry.json",
-  ),
-
-  // Theme generator — resolve to source TS so the docs color page
-  // always reflects the latest config without a kumo build step.
-  "@cloudflare/kumo/scripts/theme-generator/config": resolve(
-    kumoRoot,
-    "scripts/theme-generator/config.ts",
-  ),
-  "@cloudflare/kumo/scripts/theme-generator/types": resolve(
-    kumoRoot,
-    "scripts/theme-generator/types.ts",
-  ),
+  "@photon-ai/kumo-solid/styles": resolve(kumoStylesSrc, "kumo.css"),
 };
 
 /**
- * Vite plugin that rewires `@cloudflare/kumo` imports to the raw source
+ * Vite plugin that rewires `@photon-ai/kumo-solid` imports to the raw source
  * files of the sibling package during `astro dev`.
  *
  * **Why not just use `resolve.alias`?**
  * `resolve.alias` is a simple prefix match — it can't distinguish
- * `@cloudflare/kumo` from `@cloudflare/kumo-figma` without a trailing
+ * `@photon-ai/kumo-solid` from similarly prefixed packages without a trailing
  * slash, and it can't handle the overlapping sub-path exports cleanly.
  * A plugin gives us exact-match control.
  */
@@ -71,58 +56,35 @@ export function kumoHmrPlugin() {
         return aliases[source];
       }
 
-      // Sub-path component imports: @cloudflare/kumo/components/button
-      // → packages/kumo/src/components/button/index.ts
-      if (source.startsWith("@cloudflare/kumo/components/")) {
+      // Sub-path component imports: @photon-ai/kumo-solid/components/button
+      // → packages/kumo-solid/src/components/button/index.ts
+      if (source.startsWith("@photon-ai/kumo-solid/components/")) {
         const componentName = source.replace(
-          "@cloudflare/kumo/components/",
+          "@photon-ai/kumo-solid/components/",
           "",
         );
-        return resolve(kumoSrc, `components/${componentName}/index.ts`);
-      }
-
-      // Primitives: @cloudflare/kumo/primitives/dialog
-      // → packages/kumo/src/primitives/dialog.ts
-      if (source.startsWith("@cloudflare/kumo/primitives/")) {
-        const primitiveName = source.replace(
-          "@cloudflare/kumo/primitives/",
-          "",
-        );
-        return resolve(kumoSrc, `primitives/${primitiveName}.ts`);
-      }
-      if (source === "@cloudflare/kumo/primitives") {
-        return resolve(kumoSrc, "primitives/index.ts");
+        return resolve(kumoSolidSrc, `components/${componentName}/index.ts`);
       }
 
       // Utils barrel
-      if (source === "@cloudflare/kumo/utils") {
-        return resolve(kumoSrc, "utils/index.ts");
+      if (source === "@photon-ai/kumo-solid/utils") {
+        return resolve(kumoSolidSrc, "utils/index.ts");
       }
 
-      // Catalog barrel
-      if (source === "@cloudflare/kumo/catalog") {
-        return resolve(kumoSrc, "catalog/index.ts");
-      }
-
-      // Registry barrel
-      if (source === "@cloudflare/kumo/registry") {
-        return resolve(kumoSrc, "registry/index.ts");
-      }
-
-      // Catch-all for any other @cloudflare/kumo/styles/* CSS imports
-      if (source.startsWith("@cloudflare/kumo/styles/")) {
-        const styleName = source.replace("@cloudflare/kumo/styles/", "");
-        return resolve(kumoSrc, `styles/${styleName}.css`);
+      // Catch-all for any other @photon-ai/kumo-solid/styles/* CSS imports
+      if (source.startsWith("@photon-ai/kumo-solid/styles/")) {
+        const styleName = source.replace("@photon-ai/kumo-solid/styles/", "");
+        return resolve(kumoStylesSrc, `${styleName}.css`);
       }
 
       return undefined;
     },
 
     configResolved(config: { server: { fs: { allow: string[] } } }) {
-      // Append kumo source to the existing allow list rather than replacing it.
+      // Append Kumo sources to the existing allow list rather than replacing it.
       // Using config() would shallow-merge and override Astro/Vite defaults.
       if (config.server?.fs?.allow) {
-        config.server.fs.allow.push(kumoRoot);
+        config.server.fs.allow.push(kumoSolidRoot, kumoRoot);
       }
     },
   };

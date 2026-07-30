@@ -1,13 +1,18 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { createEffect, createMemo, createSignal } from "solid-js";
+
 import { matchSorter } from "match-sorter";
-import { CommandPalette, Badge, type HighlightRange } from "@cloudflare/kumo";
+import {
+  CommandPalette,
+  Badge,
+  type HighlightRange,
+} from "@photon-ai/kumo-solid";
 import {
   MagnifyingGlassIcon,
   CubeIcon,
   StackIcon,
   SquaresFourIcon,
   BookOpenIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 /**
  * Components in the registry that don't have Astro doc pages yet.
@@ -19,8 +24,8 @@ import {
  * 3. Add its description to COMPONENT_DESCRIPTIONS below
  */
 const COMPONENTS_WITHOUT_DOCS = new Set([
-  "Code", // Deprecated: use CodeHighlighted from @cloudflare/kumo/code
-  "CodeBlock", // Deprecated: use CodeHighlighted from @cloudflare/kumo/code
+  "Code", // Deprecated: use CodeHighlighted from @photon-ai/kumo-solid/code
+  "CodeBlock", // Deprecated: use CodeHighlighted from @photon-ai/kumo-solid/code
   "DateRangePicker", // Deprecated: use DatePicker with mode="range"
   "Field",
   "Icon",
@@ -28,7 +33,7 @@ const COMPONENTS_WITHOUT_DOCS = new Set([
 ]);
 
 /**
- * Chart components are auto-discovered from the @cloudflare/kumo registry, but
+ * Chart components are auto-discovered from the Kumo registry, but
  * they are documented under /charts/* rather than /components/*. Map the ones
  * with a dedicated page to their real docs URL so search results link correctly
  * — e.g. searching "bubble" finds BubbleMap and links to /charts/maps#bubble-map
@@ -373,14 +378,14 @@ function getTypeBadge(
   }
 }
 
-export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
-  const [query, setQuery] = useState("");
-  const [registry, setRegistry] = useState<ComponentRegistry | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function SearchDialog(props: SearchDialogProps) {
+  const [query, setQuery] = createSignal("");
+  const [registry, setRegistry] = createSignal<ComponentRegistry | null>(null);
+  const [loading, setLoading] = createSignal(true);
+  const [error, setError] = createSignal<string | null>(null);
 
   // Fetch component registry
-  useEffect(() => {
+  createEffect(() => {
     async function fetchRegistry() {
       try {
         setLoading(true);
@@ -399,13 +404,13 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
       }
     }
 
-    if (open && !registry) {
+    if (props.open && !registry()) {
       void fetchRegistry();
     }
-  }, [open, registry]);
+  });
 
   // Convert registry to searchable items and include static pages
-  const allItems = useMemo<SearchItem[]>(() => {
+  const allItems = createMemo<SearchItem[]>(() => {
     // Always include static pages
     const staticItems: SearchItem[] = STATIC_PAGES.map((page) => ({
       name: page.name,
@@ -415,9 +420,10 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
       url: page.url,
     }));
 
-    if (!registry?.components) return staticItems;
+    const components = registry()?.components;
+    if (!components) return staticItems;
 
-    const componentItems = Object.values(registry.components)
+    const componentItems = Object.values(components)
       .filter(
         (component) =>
           !COMPONENTS_WITHOUT_DOCS.has(component.name) &&
@@ -432,15 +438,15 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
       }));
 
     return [...staticItems, ...componentItems];
-  }, [registry]);
+  });
 
   // Filter and group items based on query using match-sorter
-  const filteredGroups = useMemo<SearchGroup[]>(() => {
-    if (!query.trim()) {
-      return groupByCategory(allItems);
+  const filteredGroups = createMemo<SearchGroup[]>(() => {
+    if (!query().trim()) {
+      return groupByCategory(allItems());
     }
 
-    const filtered = matchSorter(allItems, query, {
+    const filtered = matchSorter(allItems(), query(), {
       keys: [
         { key: "name", threshold: matchSorter.rankings.CONTAINS },
         { key: "description", threshold: matchSorter.rankings.CONTAINS },
@@ -449,47 +455,41 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
     });
 
     return asSearchResults(filtered);
-  }, [allItems, query]);
+  });
 
   // Get flat list of all filtered items for keyboard navigation
-  const getSelectableItems = useCallback(
-    (groups: SearchGroup[]) => groups.flatMap((g) => g.items),
-    [],
-  );
+  const getSelectableItems = (groups: readonly SearchGroup[]) =>
+    groups.flatMap((group) => group.items);
 
   // Handle item selection
-  const handleSelect = useCallback(
-    (item: SearchItem, options: { newTab: boolean }) => {
-      if (options.newTab) {
-        window.open(item.url, "_blank");
-      } else {
-        window.location.href = item.url;
-      }
-      onOpenChange(false);
-    },
-    [onOpenChange],
-  );
+  const handleSelect = (item: SearchItem, options: { newTab: boolean }) => {
+    if (options.newTab) {
+      window.open(item.url, "_blank");
+    } else {
+      window.location.href = item.url;
+    }
+    props.onOpenChange(false);
+  };
 
   // Reset query when dialog closes
-  useEffect(() => {
-    if (!open) {
+  createEffect(() => {
+    if (!props.open) {
       setQuery("");
     }
-  }, [open]);
+  });
 
-  const hasResults = filteredGroups.some((g) => g.items.length > 0);
-  const totalResults = filteredGroups.reduce(
-    (sum, g) => sum + g.items.length,
-    0,
-  );
-  const isSearching = query.trim().length > 0;
+  const hasResults = () =>
+    filteredGroups().some((group) => group.items.length > 0);
+  const totalResults = () =>
+    filteredGroups().reduce((sum, group) => sum + group.items.length, 0);
+  const isSearching = () => query().trim().length > 0;
 
   return (
     <CommandPalette.Root<SearchGroup, SearchItem>
-      open={open}
-      onOpenChange={onOpenChange}
-      items={filteredGroups}
-      value={query}
+      open={props.open}
+      onOpenChange={props.onOpenChange}
+      items={filteredGroups()}
+      value={query()}
       onValueChange={setQuery}
       itemToStringValue={(group: SearchGroup) => group.label}
       onSelect={handleSelect}
@@ -506,53 +506,55 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
         }
       />
       <CommandPalette.List>
-        {loading ? (
+        {loading() ? (
           <CommandPalette.Loading />
-        ) : error ? (
-          <div className="p-8 text-center">
-            <p className="text-kumo-subtle">{error}</p>
+        ) : error() ? (
+          <div class="p-8 text-center">
+            <p class="text-kumo-subtle">{error()}</p>
           </div>
-        ) : !hasResults ? (
+        ) : !hasResults() ? (
           <CommandPalette.Empty>
-            {query.trim()
-              ? `No results found for "${query}"`
+            {query().trim()
+              ? `No results found for "${query()}"`
               : "Type to search docs"}
           </CommandPalette.Empty>
         ) : (
           <CommandPalette.Results>
             {(group: SearchGroup) => (
-              <CommandPalette.Group key={group.label} items={group.items}>
+              <CommandPalette.Group items={group.items}>
                 <CommandPalette.GroupLabel>
                   {group.label}
                 </CommandPalette.GroupLabel>
                 <CommandPalette.Items>
                   {(item: SearchItem) => (
                     <CommandPalette.Item<SearchItem>
-                      key={item.name}
                       value={item}
-                      onClick={(e: React.MouseEvent) => {
+                      onClick={(e: MouseEvent) => {
                         const newTab = e.metaKey || e.ctrlKey;
                         handleSelect(item, { newTab });
                       }}
                     >
-                      <div className="flex w-full items-center gap-3">
-                        <div className="flex-shrink-0 text-kumo-subtle">
+                      <div class="flex w-full items-center gap-3">
+                        <div class="flex-shrink-0 text-kumo-subtle">
                           {getTypeIcon(item.type)}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2">
                             <CommandPalette.HighlightedText
                               text={item.name}
-                              highlights={findHighlightRanges(item.name, query)}
+                              highlights={findHighlightRanges(
+                                item.name,
+                                query(),
+                              )}
                               className="text-base font-medium text-kumo-default"
                             />
-                            {getTypeBadge(item.type, isSearching)}
+                            {getTypeBadge(item.type, isSearching())}
                           </div>
                           <CommandPalette.HighlightedText
                             text={item.description}
                             highlights={findHighlightRanges(
                               item.description,
-                              query,
+                              query(),
                             )}
                             className="block truncate text-sm text-kumo-subtle"
                           />
@@ -567,35 +569,35 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
         )}
       </CommandPalette.List>
       <CommandPalette.Footer>
-        <span className="text-kumo-subtle">
-          {hasResults
-            ? `${totalResults} result${totalResults === 1 ? "" : "s"}`
+        <span class="text-kumo-subtle">
+          {hasResults()
+            ? `${totalResults()} result${totalResults() === 1 ? "" : "s"}`
             : ""}
         </span>
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
               ↑
             </kbd>
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
               ↓
             </kbd>
             <span>navigate</span>
           </span>
-          <span className="flex items-center gap-1">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
+          <span class="flex items-center gap-1">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
               ↵
             </kbd>
             <span>open</span>
           </span>
-          <span className="flex items-center gap-1">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
+          <span class="flex items-center gap-1">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
               ⌘↵
             </kbd>
             <span>new tab</span>
           </span>
-          <span className="flex items-center gap-1">
-            <kbd className="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
+          <span class="flex items-center gap-1">
+            <kbd class="rounded border border-kumo-hairline bg-kumo-base px-1.5 py-0.5">
               esc
             </kbd>
             <span>close</span>

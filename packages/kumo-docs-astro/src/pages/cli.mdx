@@ -1,53 +1,43 @@
 ---
 layout: ~/layouts/MdxDocLayout.astro
 title: "CLI"
-description: "Access component documentation and install blocks from your terminal."
+description: "Explore Solid Kumo component metadata and the planned block workflow."
 ---
 
+import Callout from "~/components/docs/Callout.astro";
 import { CLITerminal } from "~/components/demos/CLIDemo";
 
-## Installation
+## Status
 
-The Kumo CLI is available via npx. No installation required.
+The SolidJS package does not yet publish a command-line executable.
 
-```bash
-npx @cloudflare/kumo help
+<Callout type="warning">
+  The existing `npx @cloudflare/kumo` CLI belongs to the React package and
+  emits React block source. Do not use it to install blocks into a SolidJS
+  application.
+</Callout>
+
+## Current Workflow
+
+Use package imports for versioned components:
+
+```tsx
+import { Button, Dialog, Input } from "@photon-ai/kumo-solid";
 ```
 
-## Commands
-
-### Blocks
-
-Install copy-paste blocks into your project for full customization.
-
-```bash
-# Initialize kumo.json configuration
-npx @cloudflare/kumo init
-
-# List all available blocks
-npx @cloudflare/kumo blocks
-
-# Install a block to your project
-npx @cloudflare/kumo add PageHeader
-```
-
-### Component Registry
-
-Access component documentation directly from your terminal.
+Solid blocks are currently copied from
+`packages/kumo-docs-astro/src/components/kumo/` into the consuming project.
+The [component registry](/registry) remains available through this site's JSON
+endpoint:
 
 ```bash
-# List all Kumo components with categories
-npx @cloudflare/kumo ls
-
-# Get detailed documentation for a component
-npx @cloudflare/kumo doc Button
-
-# Get documentation for all components
-npx @cloudflare/kumo docs
+curl http://localhost:4321/api/component-registry
 ```
 
-## Try it out
+## Registry Explorer
 
-Type commands in the interactive terminal below to explore the CLI.
+The interactive terminal below runs entirely in the browser. It previews the
+component-registry and block commands intended for a future Solid-aware CLI; it
+does not install files.
 
 <CLITerminal client:load />

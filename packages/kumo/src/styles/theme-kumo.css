@@ -166,6 +166,51 @@
     var(--color-kumo-neutral-150, oklch(93.5% 0 0))
   );
 
+  --color-kumo-switch-track: light-dark(
+    var(--color-neutral-200, oklch(92.2% 0 0)),
+    var(--color-neutral-700, oklch(37.1% 0 0))
+  );
+
+  --color-kumo-switch-track-checked: light-dark(
+    var(--color-blue-500, oklch(62.3% 0.214 259.815)),
+    var(--color-blue-600, oklch(54.6% 0.245 262.881))
+  );
+
+  --color-kumo-switch-ring: light-dark(
+    var(--color-neutral-300, oklch(87% 0 0)),
+    var(--color-neutral-600, oklch(43.9% 0 0))
+  );
+
+  --color-kumo-switch-ring-checked: light-dark(
+    var(--color-blue-600, oklch(54.6% 0.245 262.881)),
+    var(--color-blue-500, oklch(62.3% 0.214 259.815))
+  );
+
+  --color-kumo-switch-neutral-track: light-dark(
+    transparent,
+    var(--color-kumo-neutral-925, oklch(17% 0 0))
+  );
+
+  --color-kumo-switch-neutral-track-checked: light-dark(
+    var(--color-neutral-500, oklch(55.6% 0 0)),
+    var(--color-kumo-neutral-925, oklch(17% 0 0))
+  );
+
+  --color-kumo-switch-neutral-ring-checked: light-dark(
+    var(--color-neutral-600, oklch(43.9% 0 0)),
+    var(--color-neutral-700, oklch(37.1% 0 0))
+  );
+
+  --color-kumo-switch-thumb-checked: light-dark(
+    var(--color-white, #fff),
+    var(--color-blue-300, oklch(80.9% 0.105 251.813))
+  );
+
+  --color-kumo-switch-neutral-thumb-checked: light-dark(
+    var(--color-white, #fff),
+    var(--color-neutral-400, oklch(70.8% 0 0))
+  );
+
   --color-kumo-shadow-edge: light-dark(
     oklch(0% 0 0 / 0.12),
     oklch(100% 0 0 / 0.1)
@@ -339,6 +384,27 @@
     --color-kumo-line: oklch(14.5% 0 0 / 0.1);
     --color-kumo-hairline: var(--color-kumo-neutral-150, oklch(93.5% 0 0));
     --color-kumo-focus: var(--color-kumo-neutral-950, oklch(15% 0 0));
+    --color-kumo-switch-track: var(--color-neutral-200, oklch(92.2% 0 0));
+    --color-kumo-switch-track-checked: var(
+      --color-blue-500,
+      oklch(62.3% 0.214 259.815)
+    );
+    --color-kumo-switch-ring: var(--color-neutral-300, oklch(87% 0 0));
+    --color-kumo-switch-ring-checked: var(
+      --color-blue-600,
+      oklch(54.6% 0.245 262.881)
+    );
+    --color-kumo-switch-neutral-track: transparent;
+    --color-kumo-switch-neutral-track-checked: var(
+      --color-neutral-500,
+      oklch(55.6% 0 0)
+    );
+    --color-kumo-switch-neutral-ring-checked: var(
+      --color-neutral-600,
+      oklch(43.9% 0 0)
+    );
+    --color-kumo-switch-thumb-checked: var(--color-white, #fff);
+    --color-kumo-switch-neutral-thumb-checked: var(--color-white, #fff);
     --color-kumo-shadow-edge: oklch(0% 0 0 / 0.12);
     --color-kumo-shadow-drop: oklch(0% 0 0 / 0.08);
     --color-kumo-tip-shadow: var(--color-gray-200, oklch(92.8% 0.006 264.531));
@@ -425,6 +491,36 @@
     --color-kumo-line: var(--color-kumo-neutral-750, oklch(32% 0 0));
     --color-kumo-hairline: var(--color-neutral-800, oklch(26.9% 0 0));
     --color-kumo-focus: var(--color-kumo-neutral-150, oklch(93.5% 0 0));
+    --color-kumo-switch-track: var(--color-neutral-700, oklch(37.1% 0 0));
+    --color-kumo-switch-track-checked: var(
+      --color-blue-600,
+      oklch(54.6% 0.245 262.881)
+    );
+    --color-kumo-switch-ring: var(--color-neutral-600, oklch(43.9% 0 0));
+    --color-kumo-switch-ring-checked: var(
+      --color-blue-500,
+      oklch(62.3% 0.214 259.815)
+    );
+    --color-kumo-switch-neutral-track: var(
+      --color-kumo-neutral-925,
+      oklch(17% 0 0)
+    );
+    --color-kumo-switch-neutral-track-checked: var(
+      --color-kumo-neutral-925,
+      oklch(17% 0 0)
+    );
+    --color-kumo-switch-neutral-ring-checked: var(
+      --color-neutral-700,
+      oklch(37.1% 0 0)
+    );
+    --color-kumo-switch-thumb-checked: var(
+      --color-blue-300,
+      oklch(80.9% 0.105 251.813)
+    );
+    --color-kumo-switch-neutral-thumb-checked: var(
+      --color-neutral-400,
+      oklch(70.8% 0 0)
+    );
     --color-kumo-shadow-edge: oklch(100% 0 0 / 0.1);
     --color-kumo-shadow-drop: oklch(0% 0 0 / 0.3);
     --color-kumo-tip-shadow: transparent;

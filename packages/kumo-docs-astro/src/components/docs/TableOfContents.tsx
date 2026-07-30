@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { createEffect, createMemo, createSignal, Show } from "solid-js";
+
 import {
   TableOfContents as TOC,
   useTableOfContentsActiveId,
-} from "@cloudflare/kumo";
-import { CaretDownIcon } from "@phosphor-icons/react";
+} from "@photon-ai/kumo-solid";
+import { CaretDownIcon } from "~/components/icons";
 
 export interface TocHeading {
   depth: number;
@@ -66,111 +67,108 @@ export function TableOfContents({
   layout = "sidebar",
 }: TableOfContentsProps) {
   // Track whether we've hydrated to avoid SSR/client mismatch when scraping
-  const [hasMounted, setHasMounted] = useState(false);
+  const [hasMounted, setHasMounted] = createSignal(false);
 
-  useEffect(() => {
+  createEffect(() => {
     setHasMounted(true);
-  }, []);
+  });
 
-  const headings = useMemo(() => {
+  const headings = createMemo(() => {
     if (headingsProp && headingsProp.length > 0) {
       return headingsProp.filter((h) => h.depth <= 3);
     }
     // Only scrape after mount to avoid hydration mismatch
-    if (!hasMounted) return [];
+    if (!hasMounted()) return [];
     return scrapeHeadings();
-  }, [headingsProp, hasMounted]);
+  });
 
   // Scroll tracking + hash deep-linking via the shared kumo hook. It
   // highlights the topmost heading in view (offset by the fixed header) and
   // pins a clicked heading until the smooth scroll settles, so short trailing
   // sections stay reachable.
   const { activeId, selectSection } = useTableOfContentsActiveId({
-    ids: headings.map((h) => h.slug),
+    ids: () => headings().map((heading) => heading.slug),
     offset: 96, // sticky header height (top-24)
   });
 
-  if (headings.length === 0) return null;
+  const renderContent = () => {
+    if (layout === "select") {
+      return (
+        <nav aria-label="Table of contents" class="relative">
+          <select
+            aria-label="Jump to section"
+            value={activeId() ?? headings()[0]?.slug ?? ""}
+            onChange={(e) => {
+              const slug = e.target.value;
+              selectSection(slug);
+              document
+                .getElementById(slug)
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+            class="w-full appearance-none p-4 text-base md:px-6 lg:px-12"
+          >
+            {groupHeadings(headings()).map((group) => (
+              <optgroup label={group.h2.text}>
+                <option value={group.h2.slug}>{group.h2.text}</option>
+                {group.h3s.map((h3) => (
+                  <option value={h3.slug}>
+                    {"  "}
+                    {h3.text}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+          <CaretDownIcon
+            size={16}
+            weight="bold"
+            className="pointer-events-none absolute top-1/2 right-4.5 -translate-y-1/2 text-kumo-subtle md:right-6 lg:right-12"
+          />
+        </nav>
+      );
+    }
 
-  // Compact jump menu for smaller screens
-  if (layout === "select") {
     return (
-      <nav aria-label="Table of contents" className="relative">
-        <select
-          aria-label="Jump to section"
-          value={activeId ?? headings[0]?.slug ?? ""}
-          onChange={(e) => {
-            const slug = e.target.value;
-            selectSection(slug);
-            document
-              .getElementById(slug)
-              ?.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="w-full appearance-none p-4 text-base md:px-6 lg:px-12"
-        >
-          {groupHeadings(headings).map((group) => (
-            <optgroup key={group.h2.slug} label={group.h2.text}>
-              <option value={group.h2.slug}>{group.h2.text}</option>
-              {group.h3s.map((h3) => (
-                <option key={h3.slug} value={h3.slug}>
-                  {"  "}
-                  {h3.text}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-        <CaretDownIcon
-          size={16}
-          weight="bold"
-          className="pointer-events-none absolute top-1/2 right-4.5 -translate-y-1/2 text-kumo-subtle md:right-6 lg:right-12"
-        />
-      </nav>
-    );
-  }
-
-  // Sidebar layout (default)
-  return (
-    <TOC>
-      <TOC.Title>On this page</TOC.Title>
-      <TOC.List>
-        {groupHeadings(headings).map((group) => {
-          if (group.h3s.length === 0) {
-            return (
-              <TOC.Item
-                key={group.h2.slug}
-                href={`#${group.h2.slug}`}
-                active={activeId === group.h2.slug}
-                onClick={() => selectSection(group.h2.slug)}
-                className="overflow-visible text-pretty whitespace-pre-wrap"
-              >
-                {group.h2.text}
-              </TOC.Item>
-            );
-          }
-          return (
-            <TOC.Group
-              key={group.h2.slug}
-              label={group.h2.text}
-              href={`#${group.h2.slug}`}
-              active={activeId === group.h2.slug}
-              onClick={() => selectSection(group.h2.slug)}
-            >
-              {group.h3s.map((h3) => (
+      <TOC>
+        <TOC.Title>On this page</TOC.Title>
+        <TOC.List>
+          {groupHeadings(headings()).map((group) => {
+            if (group.h3s.length === 0) {
+              return (
                 <TOC.Item
-                  key={h3.slug}
-                  href={`#${h3.slug}`}
-                  active={activeId === h3.slug}
-                  onClick={() => selectSection(h3.slug)}
+                  href={`#${group.h2.slug}`}
+                  active={activeId() === group.h2.slug}
+                  onClick={() => selectSection(group.h2.slug)}
                   className="overflow-visible text-pretty whitespace-pre-wrap"
                 >
-                  {h3.text}
+                  {group.h2.text}
                 </TOC.Item>
-              ))}
-            </TOC.Group>
-          );
-        })}
-      </TOC.List>
-    </TOC>
-  );
+              );
+            }
+            return (
+              <TOC.Group
+                label={group.h2.text}
+                href={`#${group.h2.slug}`}
+                active={activeId() === group.h2.slug}
+                onClick={() => selectSection(group.h2.slug)}
+              >
+                {group.h3s.map((h3) => (
+                  <TOC.Item
+                    href={`#${h3.slug}`}
+                    active={activeId() === h3.slug}
+                    onClick={() => selectSection(h3.slug)}
+                    className="overflow-visible text-pretty whitespace-pre-wrap"
+                  >
+                    {h3.text}
+                  </TOC.Item>
+                ))}
+              </TOC.Group>
+            );
+          })}
+        </TOC.List>
+      </TOC>
+    );
+  };
+
+  return <Show when={headings()[0]}>{(_heading) => renderContent()}</Show>;
 }

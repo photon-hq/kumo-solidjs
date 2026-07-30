@@ -1,19 +1,20 @@
-import { Button, LayerCard, Text } from "@cloudflare/kumo";
-import { CodeHighlighted } from "@cloudflare/kumo/code";
-import { WarningIcon } from "@phosphor-icons/react";
-import type { ReactNode } from "react";
+import { type JSX } from "solid-js";
+import { Button, LayerCard, Text } from "@photon-ai/kumo-solid";
+import { CodeHighlighted } from "@photon-ai/kumo-solid/code";
+import { WarningIcon } from "~/components/icons";
 import { CollapseSizeExample } from "./CollapseSizeExample";
 
 export interface DesignTipExample {
   variant: "good" | "bad";
   exampleCode?: string;
-  jsx: ReactNode;
+  jsx: () => JSX.Element;
 }
 
 export interface DesignTip {
   id: string;
   title: string;
   description?: string;
+  orientation?: "horizontal" | "vertical";
   examples: DesignTipExample[];
 }
 
@@ -41,7 +42,7 @@ export const designTips = [
       {
         variant: "good",
         exampleCode: `<Text>Content text</Text>`,
-        jsx: (
+        jsx: () => (
           <LayerCard className="grid w-full gap-1 p-5">
             <Text as="h3" variant="heading3">
               API tokens
@@ -53,7 +54,7 @@ export const designTips = [
       {
         variant: "bad",
         exampleCode: `<Text size="lg">Content text</Text>`,
-        jsx: (
+        jsx: () => (
           <LayerCard className="grid w-full gap-1 p-5">
             <Text as="h3" variant="heading3">
               API tokens
@@ -73,7 +74,7 @@ export const designTips = [
       {
         variant: "good",
         exampleCode: `<Text as="h2">Recent requests</Text>`,
-        jsx: (
+        jsx: () => (
           <LayerCard>
             <LayerCard.Secondary>Recent requests</LayerCard.Secondary>
             <LayerCard.Primary />
@@ -83,10 +84,10 @@ export const designTips = [
       {
         variant: "bad",
         exampleCode: `<Text as="h2">Recent Requests</Text>`,
-        jsx: (
+        jsx: () => (
           <LayerCard>
             <LayerCard.Secondary>
-              <span className="capitalize">Recent Requests</span>
+              <span class="capitalize">Recent Requests</span>
             </LayerCard.Secondary>
             <LayerCard.Primary />
           </LayerCard>
@@ -95,10 +96,10 @@ export const designTips = [
       {
         variant: "bad",
         exampleCode: `<Text as="h2" DANGEROUS_className="uppercase">Recent requests</Text>`,
-        jsx: (
+        jsx: () => (
           <LayerCard>
             <LayerCard.Secondary>
-              <span className="uppercase">Recent Requests</span>
+              <span class="uppercase">Recent Requests</span>
             </LayerCard.Secondary>
             <LayerCard.Primary />
           </LayerCard>
@@ -114,11 +115,11 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        jsx: <span className="text-lg">Worker Metrics</span>,
+        jsx: () => <span class="text-lg">Worker Metrics</span>,
       },
       {
         variant: "bad",
-        jsx: <span className="text-lg tracking-tight">Worker Metrics</span>,
+        jsx: () => <span class="text-lg tracking-tight">Worker Metrics</span>,
       },
     ],
   },
@@ -132,8 +133,8 @@ export const designTips = [
         variant: "good",
         exampleCode: `<Text as="h3" variant="heading3">Account settings</Text>
 <Text as="strong" bold>required</Text>`,
-        jsx: (
-          <div className="grid gap-1">
+        jsx: () => (
+          <div class="grid gap-1">
             <Text as="h3" variant="heading3">
               Account settings
             </Text>
@@ -151,8 +152,8 @@ export const designTips = [
         variant: "bad",
         exampleCode: `<Text as="h3" DANGEROUS_className="font-bold">Account settings</Text>
 <Text as="strong" DANGEROUS_className="font-bold">required</Text>`,
-        jsx: (
-          <div className="grid gap-1">
+        jsx: () => (
+          <div class="grid gap-1">
             <Text as="h3" DANGEROUS_className="text-lg font-bold">
               Account settings
             </Text>
@@ -176,17 +177,17 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        exampleCode: `<div className="grid gap-6">
-  <div className="grid gap-1.5">
+        exampleCode: `<div class="grid gap-6">
+  <div class="grid gap-1.5">
     <Text as="h3">Web Analytics</Text>
     <Text>Measure site traffic without changing your code.</Text>
   </div>
   <Button>Configure</Button>
 </div>`,
-        jsx: (
+        jsx: () => (
           <LayerCard className="w-full p-5">
-            <div className="grid gap-6">
-              <div className="grid gap-1.5">
+            <div class="grid gap-6">
+              <div class="grid gap-1.5">
                 <Text as="h3" variant="heading3">
                   Web Analytics
                 </Text>
@@ -201,14 +202,14 @@ export const designTips = [
       },
       {
         variant: "bad",
-        exampleCode: `<div className="grid gap-4">
+        exampleCode: `<div class="grid gap-4">
   <Text as="h3">Web Analytics</Text>
   <Text>Measure site traffic without changing your code.</Text>
   <Button>Configure</Button>
 </div>`,
-        jsx: (
+        jsx: () => (
           <LayerCard className="w-full p-5">
-            <div className="grid gap-4">
+            <div class="grid gap-4">
               <Text as="h3" variant="heading3">
                 Web Analytics
               </Text>
@@ -230,8 +231,8 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        exampleCode: `<LayerCard className="px-5 py-4">...</LayerCard>`,
-        jsx: (
+        exampleCode: `<LayerCard class="px-5 py-4">...</LayerCard>`,
+        jsx: () => (
           <LayerCard className="px-5 py-4">
             <Text bold>Production</Text>
           </LayerCard>
@@ -239,8 +240,8 @@ export const designTips = [
       },
       {
         variant: "bad",
-        exampleCode: `<LayerCard className="p-5">...</LayerCard>`,
-        jsx: (
+        exampleCode: `<LayerCard class="p-5">...</LayerCard>`,
+        jsx: () => (
           <LayerCard className="p-5">
             <Text bold>Production</Text>
           </LayerCard>
@@ -256,11 +257,11 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        exampleCode: `<button className="hover:bg-kumo-tint">...</button>`,
-        jsx: (
+        exampleCode: `<button class="hover:bg-kumo-tint">...</button>`,
+        jsx: () => (
           <button
             type="button"
-            className="cursor-pointer rounded-lg bg-kumo-base px-4 py-2 font-medium ring ring-kumo-line hover:bg-kumo-tint"
+            class="cursor-pointer rounded-lg bg-kumo-base px-4 py-2 font-medium ring ring-kumo-line hover:bg-kumo-tint"
           >
             Hover me
           </button>
@@ -268,11 +269,11 @@ export const designTips = [
       },
       {
         variant: "bad",
-        exampleCode: `<button className="transition-colors duration-300 hover:bg-kumo-tint">...</button>`,
-        jsx: (
+        exampleCode: `<button class="transition-colors duration-300 hover:bg-kumo-tint">...</button>`,
+        jsx: () => (
           <button
             type="button"
-            className="cursor-pointer rounded-lg bg-kumo-base px-4 py-2 font-medium ring ring-kumo-line transition-colors duration-300 hover:bg-kumo-tint"
+            class="cursor-pointer rounded-lg bg-kumo-base px-4 py-2 font-medium ring ring-kumo-line transition-colors duration-300 hover:bg-kumo-tint"
           >
             Hover me
           </button>
@@ -288,8 +289,8 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        exampleCode: `<LayerCard className="shadow-md ring ring-kumo-line">...</LayerCard>`,
-        jsx: (
+        exampleCode: `<LayerCard class="shadow-md ring ring-kumo-line">...</LayerCard>`,
+        jsx: () => (
           <LayerCard className="w-full shadow-md ring ring-kumo-line">
             <LayerCard.Primary className="grid gap-1 p-5">
               <Text as="h3" variant="heading3">
@@ -302,8 +303,8 @@ export const designTips = [
       },
       {
         variant: "bad",
-        exampleCode: `<LayerCard className="border border-kumo-line shadow-md">...</LayerCard>`,
-        jsx: (
+        exampleCode: `<LayerCard class="border border-kumo-line shadow-md">...</LayerCard>`,
+        jsx: () => (
           <LayerCard className="w-full border border-kumo-line shadow-md ring-0">
             <LayerCard.Primary className="grid gap-1 p-5 ring-0">
               <Text as="h3" variant="heading3">
@@ -324,26 +325,26 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        exampleCode: `<div className="rounded-xl p-1">
-  <div className="rounded-lg">...</div>
+        exampleCode: `<div class="rounded-xl p-1">
+  <div class="rounded-lg">...</div>
 </div>`,
-        jsx: (
-          <div className="size-40 overflow-hidden">
-            <div className="size-80 rounded-[48px] bg-kumo-tint p-4 ring-2 ring-kumo-line ring-inset">
-              <div className="size-full rounded-4xl bg-kumo-base ring-2 ring-kumo-line ring-inset" />
+        jsx: () => (
+          <div class="size-40 overflow-hidden">
+            <div class="size-80 rounded-[48px] bg-kumo-tint p-4 ring-2 ring-kumo-line ring-inset">
+              <div class="size-full rounded-4xl bg-kumo-base ring-2 ring-kumo-line ring-inset" />
             </div>
           </div>
         ),
       },
       {
         variant: "bad",
-        exampleCode: `<div className="rounded-xl p-1">
-  <div className="rounded-xl">...</div>
+        exampleCode: `<div class="rounded-xl p-1">
+  <div class="rounded-xl">...</div>
 </div>`,
-        jsx: (
-          <div className="size-40 overflow-hidden">
-            <div className="size-80 rounded-[48px] bg-kumo-tint p-4 ring-2 ring-kumo-line ring-inset">
-              <div className="size-full rounded-[48px] bg-kumo-base ring-2 ring-kumo-line ring-inset" />
+        jsx: () => (
+          <div class="size-40 overflow-hidden">
+            <div class="size-80 rounded-[48px] bg-kumo-tint p-4 ring-2 ring-kumo-line ring-inset">
+              <div class="size-full rounded-[48px] bg-kumo-base ring-2 ring-kumo-line ring-inset" />
             </div>
           </div>
         ),
@@ -358,13 +359,13 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        exampleCode: `<div className="flex items-start gap-2">
-  <span className="h-lh flex items-center"><Icon /></span>
+        exampleCode: `<div class="flex items-start gap-2">
+  <span class="h-lh flex items-center"><Icon /></span>
   <Text>Text that may wrap onto multiple lines</Text>
 </div>`,
-        jsx: (
-          <div className="flex max-w-64 items-start gap-2">
-            <span className="flex h-lh shrink-0 items-center">
+        jsx: () => (
+          <div class="flex max-w-64 items-start gap-2">
+            <span class="flex h-lh shrink-0 items-center">
               <WarningIcon aria-hidden="true" size={14} />
             </span>
             <Text>API token permissions cannot be changed after creation.</Text>
@@ -373,13 +374,13 @@ export const designTips = [
       },
       {
         variant: "bad",
-        exampleCode: `<div className="flex items-start gap-2">
-  <span className="flex items-center"><Icon /></span>
+        exampleCode: `<div class="flex items-start gap-2">
+  <span class="flex items-center"><Icon /></span>
   <Text>Text that may wrap onto multiple lines</Text>
 </div>`,
-        jsx: (
-          <div className="flex max-w-64 items-start gap-2">
-            <span className="flex shrink-0 items-center">
+        jsx: () => (
+          <div class="flex max-w-64 items-start gap-2">
+            <span class="flex shrink-0 items-center">
               <WarningIcon aria-hidden="true" size={14} />
             </span>
             <Text>API token permissions cannot be changed after creation.</Text>
@@ -388,12 +389,12 @@ export const designTips = [
       },
       {
         variant: "bad",
-        exampleCode: `<div className="flex items-center gap-2">
+        exampleCode: `<div class="flex items-center gap-2">
   <Icon />
   <Text>Text that may wrap onto multiple lines</Text>
 </div>`,
-        jsx: (
-          <div className="flex max-w-64 items-center gap-2">
+        jsx: () => (
+          <div class="flex max-w-64 items-center gap-2">
             <WarningIcon aria-hidden="true" className="shrink-0" size={14} />
             <Text>API token permissions cannot be changed after creation.</Text>
           </div>
@@ -409,18 +410,18 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        jsx: (
+        jsx: () => (
           <Text size="lg">
-            Edit <span className="font-mono text-[0.9em]">wrangler.toml</span>{" "}
-            to continue.
+            Edit <span class="font-mono text-[0.9em]">wrangler.toml</span> to
+            continue.
           </Text>
         ),
       },
       {
         variant: "bad",
-        jsx: (
+        jsx: () => (
           <Text size="lg">
-            Edit <span className="font-mono">wrangler.toml</span> to continue.
+            Edit <span class="font-mono">wrangler.toml</span> to continue.
           </Text>
         ),
       },
@@ -432,14 +433,14 @@ export const designTips = [
     examples: [
       {
         variant: "good",
-        exampleCode: `<div className="sticky top-0 border-b border-kumo-line">...</div>`,
-        jsx: (
+        exampleCode: `<div class="sticky top-0 border-b border-kumo-line">...</div>`,
+        jsx: () => (
           <LayerCard className="h-56 w-full overflow-auto">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-kumo-line bg-kumo-base px-3 py-2">
+            <div class="sticky top-0 z-10 flex items-center justify-between border-b border-kumo-line bg-kumo-base px-3 py-2">
               <Text bold>API tokens</Text>
               <Button size="sm">Create</Button>
             </div>
-            <div className="grid gap-4 p-3">
+            <div class="grid gap-4 p-3">
               <Text>Production token</Text>
               <Text>Preview token</Text>
               <Text>Staging token</Text>
@@ -456,14 +457,14 @@ export const designTips = [
       },
       {
         variant: "bad",
-        exampleCode: `<div className="sticky top-0">...</div>`,
-        jsx: (
+        exampleCode: `<div class="sticky top-0">...</div>`,
+        jsx: () => (
           <LayerCard className="h-56 w-full overflow-auto">
-            <div className="sticky top-0 z-10 flex items-center justify-between bg-kumo-base px-3 py-2">
+            <div class="sticky top-0 z-10 flex items-center justify-between bg-kumo-base px-3 py-2">
               <Text bold>API tokens</Text>
               <Button size="sm">Create</Button>
             </div>
-            <div className="grid gap-4 p-3">
+            <div class="grid gap-4 p-3">
               <Text>Production token</Text>
               <Text>Preview token</Text>
               <Text>Staging token</Text>
@@ -489,16 +490,16 @@ export const designTips = [
       {
         variant: "good",
         exampleCode: `<motion.div animate={{ width: open ? 256 : 0 }}>
-  <div className="w-64">...</div>
+  <div class="w-64">...</div>
 </motion.div>`,
-        jsx: <CollapseSizeExample preserveContentSize />,
+        jsx: () => <CollapseSizeExample preserveContentSize />,
       },
       {
         variant: "bad",
         exampleCode: `<motion.div animate={{ width: open ? 256 : 0 }}>
-  <div className="w-full min-w-0">...</div>
+  <div class="w-full min-w-0">...</div>
 </motion.div>`,
-        jsx: <CollapseSizeExample />,
+        jsx: () => <CollapseSizeExample />,
       },
     ],
   },
@@ -512,9 +513,9 @@ export const designTips = [
   <Text as="h3">Recent requests</Text>
   <LayerCard>...</LayerCard>
 </div>`,
-        jsx: (
-          <div className="grid w-full">
-            <div className="flex h-10 items-center">
+        jsx: () => (
+          <div class="grid w-full">
+            <div class="flex h-10 items-center">
               <Text as="h3" bold>
                 Recent Requests
               </Text>
@@ -548,9 +549,9 @@ export const designTips = [
   <Text as="h3">Recent requests</Text>
   <LayerCard>...</LayerCard>
 </LayerCard>`,
-        jsx: (
+        jsx: () => (
           <LayerCard className="w-full">
-            <div className="flex h-10 items-center px-3">
+            <div class="flex h-10 items-center px-3">
               <Text as="h3" bold>
                 Recent Requests
               </Text>
@@ -577,10 +578,11 @@ export const designTips = [
     title: "Never conditionally render dialogs",
     description:
       "Conditionally rendering dialogs disables their open/close animation. Use the `open` prop to determine if a dialog should be visible or not.",
+    orientation: "vertical",
     examples: [
       {
         variant: "good",
-        jsx: (
+        jsx: () => (
           <CodeExample
             code={`<Dialog.Root open={open} onOpenChange={setOpen}>
   <Dialog>
@@ -593,7 +595,7 @@ export const designTips = [
       },
       {
         variant: "bad",
-        jsx: (
+        jsx: () => (
           <CodeExample
             code={`{open && (
   <Dialog.Root open>

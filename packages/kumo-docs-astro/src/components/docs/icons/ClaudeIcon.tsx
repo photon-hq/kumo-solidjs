@@ -1,7 +1,7 @@
 export function ClaudeIcon({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`h-4 w-4 ${className}`}
+      class={`h-4 w-4 ${className}`}
       fill="none"
       height="16"
       viewBox="0 0 12 12"

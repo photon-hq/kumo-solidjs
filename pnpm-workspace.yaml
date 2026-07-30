@@ -43,6 +43,8 @@ onlyBuiltDependencies:
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
+patchedDependencies:
+  "@msviderok/base-ui-solid@1.0.0-beta.12": patches/@msviderok__base-ui-solid@1.0.0-beta.12.patch
 peerDependencyRules:
   allowAny:
     - vite

@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
+import { createMemo, createSignal } from "solid-js";
+
 import {
   SankeyChart,
   ChartPalette,
   type SankeyTooltipParams,
   type SankeyNodeData,
-} from "@cloudflare/kumo";
+} from "@photon-ai/kumo-solid";
 import * as echarts from "echarts/core";
 import { SankeyChart as SankeyChartType } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
@@ -56,7 +57,7 @@ export function SankeyChartBasicDemo() {
       nodes={basicNodes}
       links={basicLinks}
       height={350}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -87,7 +88,7 @@ export function SankeyChartPreviewDemo() {
       links={previewLinks}
       height={200}
       showTooltip={false}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -122,7 +123,7 @@ export function SankeyChartMultiLevelDemo() {
       height={350}
       nodeWidth={20}
       nodePadding={15}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -151,7 +152,7 @@ export function SankeyChartCustomColorsDemo() {
       links={links}
       height={250}
       linkOpacity={0.6}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -199,7 +200,7 @@ export function SankeyChartTooltipDemo() {
       nodes={nodes}
       links={links}
       height={300}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -281,7 +282,7 @@ export function SankeyChartRichTooltipDemo() {
       links={links}
       height={300}
       tooltipFormatter={customTooltip}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -297,7 +298,7 @@ export function SankeyChartFullWidthDemo() {
       height={350}
       left={0}
       right={0}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -324,7 +325,7 @@ export function SankeyChartInteractiveDemo() {
       height={350}
       onNodeClick={handleNodeClick}
       onLinkClick={handleLinkClick}
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }
@@ -332,8 +333,8 @@ export function SankeyChartInteractiveDemo() {
 /** Demo showing drill-down behavior by filtering data on node click */
 export function SankeyChartDrillDownDemo() {
   const isDarkMode = useIsDarkMode();
-  const [selectedSource, setSelectedSource] = useState<string | null>(null);
-  const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
+  const [selectedSource, setSelectedSource] = createSignal<string | null>(null);
+  const [selectedTarget, setSelectedTarget] = createSignal<string | null>(null);
 
   // Full dataset
   const allNodes = [
@@ -363,24 +364,24 @@ export function SankeyChartDrillDownDemo() {
 
   // Compute filtered nodes and links together to avoid circular dependencies
   // and properly recalculate node values based on filtered links
-  const { filteredNodes, filteredLinks } = useMemo(() => {
-    if (!selectedSource && !selectedTarget) {
+  const filtered = createMemo(() => {
+    if (!selectedSource() && !selectedTarget()) {
       return { filteredNodes: allNodes, filteredLinks: allLinks };
     }
 
     // First, determine which links to include
     let relevantLinks = allLinks;
-    if (selectedSource && selectedTarget) {
-      const sourceIdx = allNodes.findIndex((n) => n.name === selectedSource);
-      const targetIdx = allNodes.findIndex((n) => n.name === selectedTarget);
+    if (selectedSource() && selectedTarget()) {
+      const sourceIdx = allNodes.findIndex((n) => n.name === selectedSource());
+      const targetIdx = allNodes.findIndex((n) => n.name === selectedTarget());
       relevantLinks = allLinks.filter(
         (l) => l.source === sourceIdx && l.target === targetIdx,
       );
-    } else if (selectedSource) {
-      const sourceIdx = allNodes.findIndex((n) => n.name === selectedSource);
+    } else if (selectedSource()) {
+      const sourceIdx = allNodes.findIndex((n) => n.name === selectedSource());
       relevantLinks = allLinks.filter((l) => l.source === sourceIdx);
-    } else if (selectedTarget) {
-      const targetIdx = allNodes.findIndex((n) => n.name === selectedTarget);
+    } else if (selectedTarget()) {
+      const targetIdx = allNodes.findIndex((n) => n.name === selectedTarget());
       relevantLinks = allLinks.filter((l) => l.target === targetIdx);
     }
 
@@ -426,7 +427,7 @@ export function SankeyChartDrillDownDemo() {
     }));
 
     return { filteredNodes: nodes, filteredLinks: links };
-  }, [selectedSource, selectedTarget]);
+  });
 
   const handleNodeClick = (node: { name: string }) => {
     if (sourceNames.includes(node.name)) {
@@ -443,20 +444,20 @@ export function SankeyChartDrillDownDemo() {
     setSelectedTarget(null);
   };
 
-  const hasSelection = selectedSource || selectedTarget;
+  const hasSelection = () => Boolean(selectedSource() || selectedTarget());
 
   return (
-    <div className="flex w-full flex-col gap-2">
-      <div className="flex items-center gap-2 text-sm text-kumo-subtle">
+    <div class="flex w-full flex-col gap-2">
+      <div class="flex items-center gap-2 text-sm text-kumo-subtle">
         <span>
-          {hasSelection
-            ? `Showing: ${[selectedSource, selectedTarget].filter(Boolean).join(" → ")}`
+          {hasSelection()
+            ? `Showing: ${[selectedSource(), selectedTarget()].filter(Boolean).join(" → ")}`
             : "Click a node to filter"}
         </span>
-        {hasSelection && (
+        {hasSelection() && (
           <button
             onClick={resetFilters}
-            className="text-kumo-brand hover:underline"
+            class="text-kumo-brand hover:underline"
           >
             Reset
           </button>
@@ -464,11 +465,11 @@ export function SankeyChartDrillDownDemo() {
       </div>
       <SankeyChart
         echarts={echarts}
-        nodes={filteredNodes}
-        links={filteredLinks}
+        nodes={filtered().filteredNodes}
+        links={filtered().filteredLinks}
         height={300}
         onNodeClick={handleNodeClick}
-        isDarkMode={isDarkMode}
+        isDarkMode={isDarkMode()}
       />
     </div>
   );
@@ -505,7 +506,7 @@ export function SankeyChartInlineLabelDemo() {
       links={links}
       height={300}
       nodeLabelLayout="inline"
-      isDarkMode={isDarkMode}
+      isDarkMode={isDarkMode()}
     />
   );
 }

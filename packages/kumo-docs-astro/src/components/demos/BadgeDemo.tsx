@@ -1,8 +1,8 @@
-import { Badge } from "@cloudflare/kumo";
+import { Badge } from "@photon-ai/kumo-solid";
 
 export function BadgeSemanticVariantsDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <Badge variant="primary">Primary</Badge>
       <Badge variant="secondary">Secondary</Badge>
       <Badge variant="error">Error</Badge>
@@ -17,7 +17,7 @@ export function BadgeSemanticVariantsDemo() {
 
 export function BadgeColorVariantsDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <Badge variant="neutral">Neutral</Badge>
       <Badge variant="red">Red</Badge>
       <Badge variant="green">Green</Badge>
@@ -31,7 +31,7 @@ export function BadgeColorVariantsDemo() {
 
 export function BadgeInSentenceDemo() {
   return (
-    <p className="flex items-center gap-2">
+    <p class="flex items-center gap-2">
       Workers
       <Badge variant="secondary">New</Badge>
     </p>
@@ -40,7 +40,7 @@ export function BadgeInSentenceDemo() {
 
 export function BadgeDotDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <Badge variant="success" appearance="dot">
         Healthy
       </Badge>

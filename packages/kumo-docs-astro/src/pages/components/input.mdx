@@ -23,8 +23,8 @@ import {
   InputTypesDemo,
   InputOptionalFieldDemo,
   InputLabelTooltipDemo,
-  InputReactNodeLabelDemo,
-  InputControlledOnChangeDemo,
+  InputRichLabelDemo,
+  InputControlledOnInputDemo,
   InputControlledOnValueChangeDemo,
 } from "~/components/demos/InputDemo";
 
@@ -44,12 +44,12 @@ import {
 
 ### Barrel
 
-<CodeBlock code={`import { Input } from "@cloudflare/kumo";`} lang="tsx" />
+<CodeBlock code={`import { Input } from "@photon-ai/kumo-solid";`} lang="tsx" />
 
 ### Granular
 
   <CodeBlock
-    code={`import { Input } from "@cloudflare/kumo/components/input";`}
+    code={`import { Input } from "@photon-ai/kumo-solid/components/input";`}
     lang="tsx"
   />
 </ComponentSection>
@@ -68,7 +68,7 @@ import {
 </p>
 
 ```tsx
-import { Input } from "@cloudflare/kumo";
+import { Input } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -89,7 +89,7 @@ export default function Example() {
 </p>
 
 ```tsx
-import { Input } from "@cloudflare/kumo";
+import { Input } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return <Input placeholder="Search..." aria-label="Search products" />;
@@ -161,21 +161,21 @@ export default function Example() {
   <InputLabelTooltipDemo client:visible />
 </ComponentExample>
 
-### ReactNode Label
+### Rich Label
 
-<p>The `label` prop accepts ReactNode for rich formatting.</p>
-<ComponentExample demo="InputReactNodeLabelDemo">
-  <InputReactNodeLabelDemo client:visible />
+<p>The `label` prop accepts JSX.Element for rich formatting.</p>
+<ComponentExample demo="InputRichLabelDemo">
+  <InputRichLabelDemo client:visible />
 </ComponentExample>
 
-### Controlled with onChange
+### Controlled with onInput
 
 <p>
-  The standard React `onChange` handler receives the full event object. Use
-  `e.target.value` to get the value.
+  Solid's native `onInput` handler receives the input event as the user types.
+  Read `e.currentTarget.value` to get the current value.
 </p>
-<ComponentExample demo="InputControlledOnChangeDemo">
-  <InputControlledOnChangeDemo client:load />
+<ComponentExample demo="InputControlledOnInputDemo">
+  <InputControlledOnInputDemo client:load />
 </ComponentExample>
 
 ### Controlled with onValueChange

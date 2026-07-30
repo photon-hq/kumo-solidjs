@@ -41,12 +41,12 @@ import {
 
 ### Barrel
 
-<CodeBlock code={`import { Combobox } from "@cloudflare/kumo";`} lang="tsx" />
+<CodeBlock code={`import { Combobox } from "@photon-ai/kumo-solid";`} lang="tsx" />
 
 ### Granular
 
   <CodeBlock
-    code={`import { Combobox } from "@cloudflare/kumo/components/combobox";`}
+    code={`import { Combobox } from "@photon-ai/kumo-solid/components/combobox";`}
     lang="tsx"
   />
 </ComponentSection>
@@ -58,22 +58,22 @@ import {
 ## Usage
 
 ```tsx
-import { useState } from "react";
-import { Combobox } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+import { Combobox } from "@photon-ai/kumo-solid";
 
 const fruits = ["Apple", "Banana", "Cherry", "Date", "Elderberry"];
 
 export default function Example() {
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = createSignal<string | null>(null);
 
   return (
-    <Combobox value={value} onValueChange={setValue} items={fruits}>
+    <Combobox value={value()} onValueChange={setValue} items={fruits}>
       <Combobox.TriggerInput placeholder="Select a fruit" />
       <Combobox.Content>
         <Combobox.Empty />
         <Combobox.List>
           {(item) => (
-            <Combobox.Item key={item} value={item}>
+            <Combobox.Item value={item}>
               {item}
             </Combobox.Item>
           )}
@@ -228,12 +228,10 @@ export default function Example() {
 
 ```tsx
 function LanguagePicker() {
-  const { contains } = Combobox.useFilter();
+  const filterUtils = Combobox.useFilter();
 
-  const filter = useCallback(
-    (item: Language, query: string) => contains(item.label, query),
-    [contains],
-  );
+  const filter = (item: Language, query: string) =>
+    filterUtils.contains(item.label, query);
 
   return (
     <Combobox items={languages} filter={filter}>
@@ -269,14 +267,14 @@ function LanguagePicker() {
 
 ```tsx
 // Shorter dropdown (200px)
-<Combobox.Content className="max-h-[200px]">
+<Combobox.Content class="max-h-[200px]">
 
 // Taller dropdown (500px)
-<Combobox.Content className="max-h-[500px]">
+<Combobox.Content class="max-h-[500px]">
 
 // Use Tailwind presets
-<Combobox.Content className="max-h-64">  // 256px
-<Combobox.Content className="max-h-96">  // 384px (same as default)
+<Combobox.Content class="max-h-64">  // 256px
+<Combobox.Content class="max-h-96">  // 384px (same as default)
 ```
 
 </ComponentSection>

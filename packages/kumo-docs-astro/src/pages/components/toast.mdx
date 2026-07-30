@@ -39,13 +39,13 @@ import {
 ### Barrel
 
 ```tsx
-import { Toasty, useKumoToastManager } from "@cloudflare/kumo";
+import { Toasty, useKumoToastManager } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { Toasty, useKumoToastManager } from "@cloudflare/kumo/components/toast";
+import { Toasty, useKumoToastManager } from "@photon-ai/kumo-solid/components/toast";
 ```
 
 </ComponentSection>
@@ -61,7 +61,7 @@ import { Toasty, useKumoToastManager } from "@cloudflare/kumo/components/toast";
   </p>
 
 ```tsx
-import { Toasty, useKumoToastManager, Button } from "@cloudflare/kumo";
+import { Toasty, useKumoToastManager, Button } from "@photon-ai/kumo-solid";
 
 function ToastTrigger() {
   const toastManager = useKumoToastManager();
@@ -104,7 +104,7 @@ export default function App() {
 
 ```tsx
 // In your app root or layout
-import { Toasty } from "@cloudflare/kumo";
+import { Toasty } from "@photon-ai/kumo-solid";
 
 export function Layout({ children }) {
   return <Toasty>{children}</Toasty>;
@@ -269,7 +269,7 @@ toastManager.promise(asyncFn(), {
       </tr>
       <tr class="border-b border-kumo-hairline">
         <td class="py-3 pr-4 font-mono text-kumo-default">content</td>
-        <td class="py-3 pr-4 font-mono">ReactNode</td>
+        <td class="py-3 pr-4 font-mono">JSX.Element</td>
         <td class="py-3 pr-4">—</td>
         <td class="py-3">
           Custom content to render inside the toast. Overrides title and

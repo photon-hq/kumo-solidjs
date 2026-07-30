@@ -1,0 +1,18 @@
+export {
+  Table,
+  KUMO_TABLE_DEFAULT_VARIANTS,
+  KUMO_TABLE_VARIANTS,
+  type KumoTableLayout,
+  type KumoTableRowVariant,
+  type KumoTableStickyColumn,
+  type TableBodyProps,
+  type TableCellProps,
+  type TableCheckCellProps,
+  type TableCheckHeadProps,
+  type TableFooterProps,
+  type TableHeaderProps,
+  type TableHeadProps,
+  type TableProps,
+  type TableResizeHandleProps,
+  type TableRowProps,
+} from "./table";

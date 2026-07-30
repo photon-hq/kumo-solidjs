@@ -1,4 +1,4 @@
-import { Loader } from "@cloudflare/kumo";
+import { Loader } from "@photon-ai/kumo-solid";
 
 export function LoaderBasicDemo() {
   return <Loader />;
@@ -6,7 +6,7 @@ export function LoaderBasicDemo() {
 
 export function LoaderSizesDemo() {
   return (
-    <div className="flex items-center gap-4">
+    <div class="flex items-center gap-4">
       <Loader size="sm" />
       <Loader size="base" />
       <Loader size="lg" />

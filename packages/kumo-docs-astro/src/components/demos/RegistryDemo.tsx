@@ -1,4 +1,5 @@
-import { type FC, useState, useMemo } from "react";
+import { createMemo, createSignal, type Component } from "solid-js";
+
 import { kumoRegistryJson } from "virtual:kumo-registry";
 
 // Types for the registry
@@ -40,7 +41,7 @@ interface ComponentRegistry {
 
 const registry = kumoRegistryJson as unknown as ComponentRegistry;
 
-const ComponentCard: FC<{
+const ComponentCard: Component<{
   component: ComponentInfo;
   isExpanded: boolean;
   onToggle: () => void;
@@ -51,56 +52,51 @@ const ComponentCard: FC<{
   );
 
   return (
-    <div className="rounded-lg border border-kumo-hairline bg-kumo-base">
+    <div class="rounded-lg border border-kumo-hairline bg-kumo-base">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-kumo-overlay"
+        class="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-kumo-overlay"
       >
         <div>
-          <h3 className="font-semibold text-kumo-default">{component.name}</h3>
-          <p className="mt-1 text-sm text-kumo-subtle">
-            {component.description}
-          </p>
+          <h3 class="font-semibold text-kumo-default">{component.name}</h3>
+          <p class="mt-1 text-sm text-kumo-subtle">{component.description}</p>
         </div>
-        <span className="ml-4 text-kumo-subtle">{isExpanded ? "−" : "+"}</span>
+        <span class="ml-4 text-kumo-subtle">{isExpanded ? "−" : "+"}</span>
       </button>
 
       {isExpanded && (
-        <div className="border-t border-kumo-hairline p-4">
+        <div class="border-t border-kumo-hairline p-4">
           {/* Import */}
-          <div className="mb-4">
-            <h4 className="mb-2 text-xs font-medium text-kumo-subtle uppercase">
+          <div class="mb-4">
+            <h4 class="mb-2 text-xs font-medium text-kumo-subtle uppercase">
               Import
             </h4>
-            <code className="block rounded bg-kumo-overlay p-2 text-xs">
+            <code class="block rounded bg-kumo-overlay p-2 text-xs">
               import {"{"} {component.name} {"}"} from "{component.importPath}";
             </code>
           </div>
 
           {/* Variants */}
           {variantProps.length > 0 && (
-            <div className="mb-4">
-              <h4 className="mb-2 text-xs font-medium text-kumo-subtle uppercase">
+            <div class="mb-4">
+              <h4 class="mb-2 text-xs font-medium text-kumo-subtle uppercase">
                 Variants
               </h4>
-              <div className="space-y-2">
+              <div class="space-y-2">
                 {variantProps.map(([propName, prop]) => (
-                  <div key={propName}>
-                    <span className="font-mono text-sm text-kumo-default">
+                  <div>
+                    <span class="font-mono text-sm text-kumo-default">
                       {propName}
                     </span>
                     {prop.default && (
-                      <span className="ml-2 text-xs text-kumo-subtle">
+                      <span class="ml-2 text-xs text-kumo-subtle">
                         (default: {prop.default})
                       </span>
                     )}
-                    <div className="mt-1 flex flex-wrap gap-1">
+                    <div class="mt-1 flex flex-wrap gap-1">
                       {prop.values?.map((value) => (
-                        <span
-                          key={value}
-                          className="rounded bg-kumo-overlay px-2 py-0.5 text-xs text-kumo-default"
-                        >
+                        <span class="rounded bg-kumo-overlay px-2 py-0.5 text-xs text-kumo-default">
                           {value}
                         </span>
                       ))}
@@ -114,16 +110,13 @@ const ComponentCard: FC<{
           {/* Sub-components */}
           {component.subComponents &&
             Object.keys(component.subComponents).length > 0 && (
-              <div className="mb-4">
-                <h4 className="mb-2 text-xs font-medium text-kumo-subtle uppercase">
+              <div class="mb-4">
+                <h4 class="mb-2 text-xs font-medium text-kumo-subtle uppercase">
                   Sub-components
                 </h4>
-                <div className="flex flex-wrap gap-1">
+                <div class="flex flex-wrap gap-1">
                   {Object.keys(component.subComponents).map((subName) => (
-                    <span
-                      key={subName}
-                      className="rounded bg-kumo-overlay px-2 py-0.5 text-xs text-kumo-default"
-                    >
+                    <span class="rounded bg-kumo-overlay px-2 py-0.5 text-xs text-kumo-default">
                       {component.name}.{subName}
                     </span>
                   ))}
@@ -134,15 +127,12 @@ const ComponentCard: FC<{
           {/* Colors */}
           {component.colors && component.colors.length > 0 && (
             <div>
-              <h4 className="mb-2 text-xs font-medium text-kumo-subtle uppercase">
+              <h4 class="mb-2 text-xs font-medium text-kumo-subtle uppercase">
                 Semantic Tokens
               </h4>
-              <div className="flex flex-wrap gap-1">
+              <div class="flex flex-wrap gap-1">
                 {component.colors.map((color) => (
-                  <span
-                    key={color}
-                    className="rounded bg-kumo-overlay px-2 py-0.5 text-xs text-kumo-default"
-                  >
+                  <span class="rounded bg-kumo-overlay px-2 py-0.5 text-xs text-kumo-default">
                     {color}
                   </span>
                 ))}
@@ -155,73 +145,74 @@ const ComponentCard: FC<{
   );
 };
 
-export const ComponentRegistryView: FC = () => {
-  const [expandedComponent, setExpandedComponent] = useState<string | null>(
+export const ComponentRegistryView: Component = () => {
+  const [expandedComponent, setExpandedComponent] = createSignal<string | null>(
     null,
   );
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = createSignal<string | null>(
+    null,
+  );
 
-  const categories = useMemo(() => {
+  const categories = createMemo(() => {
     return Object.keys(registry.search.byCategory).sort();
-  }, []);
+  });
 
-  const filteredComponents = useMemo(() => {
+  const filteredComponents = createMemo(() => {
     const components = Object.values(registry.components);
-    if (!selectedCategory)
+    if (!selectedCategory())
       return components.sort((a, b) => a.name.localeCompare(b.name));
     return components
-      .filter((c) => c.category === selectedCategory)
+      .filter((c) => c.category === selectedCategory())
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [selectedCategory]);
+  });
 
   const toggleComponent = (name: string) => {
     setExpandedComponent((current) => (current === name ? null : name));
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div class="flex flex-col gap-6">
       {/* Stats */}
-      <div className="flex flex-wrap gap-4 text-sm">
-        <div className="rounded-lg border border-kumo-hairline bg-kumo-base px-4 py-2">
-          <span className="font-semibold text-kumo-default">
+      <div class="flex flex-wrap gap-4 text-sm">
+        <div class="rounded-lg border border-kumo-hairline bg-kumo-base px-4 py-2">
+          <span class="font-semibold text-kumo-default">
             {Object.keys(registry.components).length}
           </span>
-          <span className="ml-1 text-kumo-subtle">components</span>
+          <span class="ml-1 text-kumo-subtle">components</span>
         </div>
-        <div className="rounded-lg border border-kumo-hairline bg-kumo-base px-4 py-2">
-          <span className="font-semibold text-kumo-default">
-            {categories.length}
+        <div class="rounded-lg border border-kumo-hairline bg-kumo-base px-4 py-2">
+          <span class="font-semibold text-kumo-default">
+            {categories().length}
           </span>
-          <span className="ml-1 text-kumo-subtle">categories</span>
+          <span class="ml-1 text-kumo-subtle">categories</span>
         </div>
-        <div className="rounded-lg border border-kumo-hairline bg-kumo-base px-4 py-2">
-          <span className="text-kumo-subtle">v</span>
-          <span className="font-semibold text-kumo-default">
+        <div class="rounded-lg border border-kumo-hairline bg-kumo-base px-4 py-2">
+          <span class="text-kumo-subtle">v</span>
+          <span class="font-semibold text-kumo-default">
             {registry.version}
           </span>
         </div>
       </div>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => setSelectedCategory(null)}
-          className={`rounded-full px-3 py-1 text-sm transition-colors ${
-            selectedCategory === null
+          class={`rounded-full px-3 py-1 text-sm transition-colors ${
+            selectedCategory() === null
               ? "bg-kumo-brand text-white"
               : "bg-kumo-overlay text-kumo-default hover:bg-kumo-recessed"
           }`}
         >
           All
         </button>
-        {categories.map((category) => (
+        {categories().map((category) => (
           <button
-            key={category}
             type="button"
             onClick={() => setSelectedCategory(category)}
-            className={`rounded-full px-3 py-1 text-sm transition-colors ${
-              selectedCategory === category
+            class={`rounded-full px-3 py-1 text-sm transition-colors ${
+              selectedCategory() === category
                 ? "bg-kumo-brand text-white"
                 : "bg-kumo-overlay text-kumo-default hover:bg-kumo-recessed"
             }`}
@@ -232,12 +223,11 @@ export const ComponentRegistryView: FC = () => {
       </div>
 
       {/* Component List */}
-      <div className="space-y-2">
-        {filteredComponents.map((component) => (
+      <div class="space-y-2">
+        {filteredComponents().map((component) => (
           <ComponentCard
-            key={component.name}
             component={component}
-            isExpanded={expandedComponent === component.name}
+            isExpanded={expandedComponent() === component.name}
             onToggle={() => toggleComponent(component.name)}
           />
         ))}

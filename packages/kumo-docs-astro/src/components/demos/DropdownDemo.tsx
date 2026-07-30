@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { DropdownMenu, Button } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { DropdownMenu, Button } from "@photon-ai/kumo-solid";
 import {
   PlusIcon,
   UserIcon,
@@ -12,12 +13,18 @@ import {
   CopyIcon,
   PencilSimpleIcon,
   TrashIcon,
-} from "@phosphor-icons/react";
+} from "~/components/icons";
 
 export function DropdownBasicDemo() {
   return (
     <DropdownMenu>
-      <DropdownMenu.Trigger render={<Button icon={PlusIcon}>Add</Button>} />
+      <DropdownMenu.Trigger
+        render={(renderProps) => (
+          <Button {...renderProps} icon={PlusIcon}>
+            Add
+          </Button>
+        )}
+      />
       <DropdownMenu.Content>
         <DropdownMenu.Item>Worker</DropdownMenu.Item>
         <DropdownMenu.Item>Pages</DropdownMenu.Item>
@@ -51,30 +58,32 @@ const timezones = [
 ];
 
 export function DropdownCheckboxDemo() {
-  const [showSidebar, setShowSidebar] = useState(true);
-  const [showLineNumbers, setShowLineNumbers] = useState(false);
-  const [wordWrap, setWordWrap] = useState(true);
+  const [showSidebar, setShowSidebar] = createSignal(true);
+  const [showLineNumbers, setShowLineNumbers] = createSignal(false);
+  const [wordWrap, setWordWrap] = createSignal(true);
 
   return (
     <DropdownMenu>
-      <DropdownMenu.Trigger render={<Button>View Options</Button>} />
+      <DropdownMenu.Trigger
+        render={(renderProps) => <Button {...renderProps}>View Options</Button>}
+      />
       <DropdownMenu.Content>
         <DropdownMenu.Group>
           <DropdownMenu.Label>Display</DropdownMenu.Label>
           <DropdownMenu.CheckboxItem
-            checked={showSidebar}
+            checked={showSidebar()}
             onCheckedChange={setShowSidebar}
           >
             Show sidebar
           </DropdownMenu.CheckboxItem>
           <DropdownMenu.CheckboxItem
-            checked={showLineNumbers}
+            checked={showLineNumbers()}
             onCheckedChange={setShowLineNumbers}
           >
             Show line numbers
           </DropdownMenu.CheckboxItem>
           <DropdownMenu.CheckboxItem
-            checked={wordWrap}
+            checked={wordWrap()}
             onCheckedChange={setWordWrap}
           >
             Word wrap
@@ -86,12 +95,18 @@ export function DropdownCheckboxDemo() {
 }
 
 export function DropdownNestedDemo() {
-  const [language, setLanguage] = useState("en");
-  const [timezone, setTimezone] = useState("America/Los_Angeles");
+  const [language, setLanguage] = createSignal("en");
+  const [timezone, setTimezone] = createSignal("America/Los_Angeles");
 
   return (
     <DropdownMenu>
-      <DropdownMenu.Trigger render={<Button icon={UserIcon}>Account</Button>} />
+      <DropdownMenu.Trigger
+        render={(renderProps) => (
+          <Button {...renderProps} icon={UserIcon}>
+            Account
+          </Button>
+        )}
+      />
       <DropdownMenu.Content>
         <DropdownMenu.Item icon={UserIcon}>Profile</DropdownMenu.Item>
         <DropdownMenu.Item icon={CreditCardIcon}>Billing</DropdownMenu.Item>
@@ -103,11 +118,11 @@ export function DropdownNestedDemo() {
           <DropdownMenu.SubContent>
             <DropdownMenu.Group>
               <DropdownMenu.RadioGroup
-                value={language}
+                value={language()}
                 onValueChange={setLanguage}
               >
                 {languages.map((lang) => (
-                  <DropdownMenu.RadioItem key={lang.code} value={lang.code}>
+                  <DropdownMenu.RadioItem value={lang.code}>
                     {lang.label}
                     <DropdownMenu.RadioItemIndicator />
                   </DropdownMenu.RadioItem>
@@ -123,11 +138,11 @@ export function DropdownNestedDemo() {
           <DropdownMenu.SubContent>
             <DropdownMenu.Group>
               <DropdownMenu.RadioGroup
-                value={timezone}
+                value={timezone()}
                 onValueChange={setTimezone}
               >
                 {timezones.map((tz) => (
-                  <DropdownMenu.RadioItem key={tz.value} value={tz.value}>
+                  <DropdownMenu.RadioItem value={tz.value}>
                     {tz.label}
                     <DropdownMenu.RadioItemIndicator />
                   </DropdownMenu.RadioItem>
@@ -152,7 +167,9 @@ export function DropdownNestedDemo() {
 export function DropdownInsetDemo() {
   return (
     <DropdownMenu>
-      <DropdownMenu.Trigger render={<Button>Edit</Button>} />
+      <DropdownMenu.Trigger
+        render={(renderProps) => <Button {...renderProps}>Edit</Button>}
+      />
       <DropdownMenu.Content>
         <DropdownMenu.Item icon={PencilSimpleIcon}>Rename</DropdownMenu.Item>
         <DropdownMenu.Item icon={CopyIcon}>Duplicate</DropdownMenu.Item>
@@ -170,15 +187,17 @@ export function DropdownInsetDemo() {
 
 /**
  * Use `onClick` on `DropdownMenu.Item` to handle item actions.
- * Each item receives a standard React mouse event handler.
+ * Each item receives a native MouseEvent.
  */
 export function DropdownOnClickDemo() {
-  const [lastAction, setLastAction] = useState<string | null>(null);
+  const [lastAction, setLastAction] = createSignal<string | null>(null);
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div class="flex flex-col items-start gap-2">
       <DropdownMenu>
-        <DropdownMenu.Trigger render={<Button>Actions</Button>} />
+        <DropdownMenu.Trigger
+          render={(renderProps) => <Button {...renderProps}>Actions</Button>}
+        />
         <DropdownMenu.Content>
           <DropdownMenu.Item
             icon={CopyIcon}
@@ -202,9 +221,9 @@ export function DropdownOnClickDemo() {
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu>
-      {lastAction && (
-        <p className="text-sm text-kumo-subtle">
-          Last action: <span className="text-kumo-default">{lastAction}</span>
+      {lastAction() && (
+        <p class="text-sm text-kumo-subtle">
+          Last action: <span class="text-kumo-default">{lastAction()}</span>
         </p>
       )}
     </div>
@@ -220,9 +239,11 @@ export function DropdownAvatarTriggerDemo() {
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger
-        render={<button type="button" className="rounded-full" />}
+        render={(renderProps) => (
+          <button {...renderProps} type="button" class="rounded-full" />
+        )}
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-kumo-brand text-sm font-medium text-white">
+        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-kumo-brand text-sm font-medium text-white">
           MR
         </span>
       </DropdownMenu.Trigger>
@@ -247,10 +268,14 @@ export function DropdownLongListDemo() {
 
   return (
     <DropdownMenu>
-      <DropdownMenu.Trigger render={<Button>Open long list</Button>} />
+      <DropdownMenu.Trigger
+        render={(renderProps) => (
+          <Button {...renderProps}>Open long list</Button>
+        )}
+      />
       <DropdownMenu.Content>
         {items.map((item) => (
-          <DropdownMenu.Item key={item}>{item}</DropdownMenu.Item>
+          <DropdownMenu.Item>{item}</DropdownMenu.Item>
         ))}
       </DropdownMenu.Content>
     </DropdownMenu>
@@ -263,7 +288,9 @@ export function DropdownLongListDemo() {
 export function DropdownLinkItemDemo() {
   return (
     <DropdownMenu>
-      <DropdownMenu.Trigger render={<Button>Resources</Button>} />
+      <DropdownMenu.Trigger
+        render={(renderProps) => <Button {...renderProps}>Resources</Button>}
+      />
       <DropdownMenu.Content>
         <DropdownMenu.LinkItem href="/settings" icon={GearIcon}>
           Settings

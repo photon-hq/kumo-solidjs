@@ -9,7 +9,6 @@ import {
   SankeyChartBasicDemo,
   SankeyChartMultiLevelDemo,
   SankeyChartFullWidthDemo,
-  SankeyChartTooltipDemo,
   SankeyChartRichTooltipDemo,
   SankeyChartInteractiveDemo,
   SankeyChartDrillDownDemo,
@@ -38,10 +37,10 @@ import {
     <CodeBlock code={`npm install echarts`} lang="bash" />
     
     <Heading level={3} class="mb-2 mt-6 text-lg">Barrel</Heading>
-    <CodeBlock code={`import { SankeyChart } from "@cloudflare/kumo";`} lang="tsx" />
+    <CodeBlock code={`import { SankeyChart } from "@photon-ai/kumo-solid";`} lang="tsx" />
     <Heading level={3} class="mb-2 mt-4 text-lg">Granular</Heading>
     <CodeBlock
-      code={`import { SankeyChart } from "@cloudflare/kumo/components/chart";`}
+      code={`import { SankeyChart } from "@photon-ai/kumo-solid/components/chart";`}
       lang="tsx"
     />
   </ComponentSection>
@@ -50,7 +49,7 @@ import {
   <ComponentSection>
     <Heading level={2}>Usage</Heading>
     <CodeBlock
-      code={`import { SankeyChart, ChartPalette } from "@cloudflare/kumo";
+      code={`import { SankeyChart, ChartPalette } from "@photon-ai/kumo-solid";
 import * as echarts from "echarts/core";
 import { SankeyChart as SankeyChartType } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
@@ -126,7 +125,7 @@ export default function Example() {
         <p class="mb-4 text-kumo-subtle">
           Use <code class="text-kumo-default">tooltipFormatter</code> for full control over tooltip content.
         </p>
-        <ComponentExample code={`import { SankeyChart, type SankeyTooltipParams } from "@cloudflare/kumo";
+        <ComponentExample code={`import { SankeyChart, type SankeyTooltipParams } from "@photon-ai/kumo-solid";
 
 const customTooltip = (params: SankeyTooltipParams) => {
   if (params.type === "node" && params.node) {
@@ -167,7 +166,7 @@ const customTooltip = (params: SankeyTooltipParams) => {
         <p class="mb-4 text-kumo-subtle">
           Click a source node to filter the chart and show only its connections. Click again or use the reset button to restore the full view.
         </p>
-        <ComponentExample code={`const [selectedSource, setSelectedSource] = useState<string | null>(null);
+        <ComponentExample code={`const [selectedSource, setSelectedSource] = createSignal<string | null>(null);
 
 const handleNodeClick = (node: { name: string }) => {
   if (sourceNames.includes(node.name)) {
@@ -176,8 +175,8 @@ const handleNodeClick = (node: { name: string }) => {
 };
 
 <SankeyChart
-  nodes={filteredNodes}
-  links={filteredLinks}
+  nodes={filteredNodes()}
+  links={filteredLinks()}
   onNodeClick={handleNodeClick}
 />`}>
           <SankeyChartDrillDownDemo client:load />

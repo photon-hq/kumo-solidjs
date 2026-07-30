@@ -1,8 +1,8 @@
-import { Label, Input, Select, Checkbox } from "@cloudflare/kumo";
+import { Label, Input, Select, Checkbox } from "@photon-ai/kumo-solid";
 
 export function LabelBasicDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <Label>Default Label</Label>
       <Label showOptional>Optional Label</Label>
       <Label tooltip="More information about this field">
@@ -28,7 +28,7 @@ export function LabelWithTooltipDemo() {
   );
 }
 
-export function LabelReactNodeDemo() {
+export function LabelRichContentDemo() {
   return (
     <Checkbox
       label={
@@ -42,7 +42,7 @@ export function LabelReactNodeDemo() {
 
 export function LabelFormMixedDemo() {
   return (
-    <div className="flex max-w-md flex-col gap-4">
+    <div class="flex max-w-md flex-col gap-4">
       <Input label="Full Name" placeholder="John Doe" />
       <Input
         label="Email"
@@ -62,7 +62,7 @@ export function LabelFormMixedDemo() {
 
 export function LabelStandaloneDemo() {
   return (
-    <div className="flex flex-col gap-3">
+    <div class="flex flex-col gap-3">
       <Label>Default</Label>
       <Label showOptional>Optional</Label>
       <Label tooltip="Important field">With Tooltip</Label>

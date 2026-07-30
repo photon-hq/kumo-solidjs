@@ -20,7 +20,7 @@ import {
   InputAreaAutoResizeDemo,
   InputAreaOptionalFieldDemo,
   InputAreaLabelTooltipDemo,
-  InputAreaReactNodeLabelDemo,
+  InputAreaRichLabelDemo,
 } from "~/components/demos/InputAreaDemo";
 
 {/* Hero Demo */}
@@ -40,13 +40,13 @@ import {
 ### Barrel
 
 ```tsx
-import { InputArea } from "@cloudflare/kumo";
+import { InputArea } from "@photon-ai/kumo-solid";
 ```
 
 ### Granular
 
 ```tsx
-import { InputArea } from "@cloudflare/kumo/components/input";
+import { InputArea } from "@photon-ai/kumo-solid/components/input";
 ```
 
 `Textarea` is also exported as an alias for `InputArea` for discoverability when migrating from other libraries.
@@ -67,7 +67,7 @@ import { InputArea } from "@cloudflare/kumo/components/input";
 </p>
 
 ```tsx
-import { InputArea } from "@cloudflare/kumo";
+import { InputArea } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (
@@ -88,7 +88,7 @@ export default function Example() {
 </p>
 
 ```tsx
-import { InputArea } from "@cloudflare/kumo";
+import { InputArea } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return <InputArea placeholder="Add notes..." aria-label="Notes" rows={3} />;
@@ -178,11 +178,11 @@ export default function Example() {
   <InputAreaLabelTooltipDemo client:visible />
 </ComponentExample>
 
-### React Node Label
+### Rich Label
 
-<p>The `label` prop accepts ReactNode for rich formatting.</p>
-<ComponentExample demo="InputAreaReactNodeLabelDemo">
-  <InputAreaReactNodeLabelDemo client:visible />
+<p>The `label` prop accepts JSX.Element for rich formatting.</p>
+<ComponentExample demo="InputAreaRichLabelDemo">
+  <InputAreaRichLabelDemo client:visible />
 </ComponentExample>
 
 </ComponentSection>

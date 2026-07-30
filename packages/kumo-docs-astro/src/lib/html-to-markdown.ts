@@ -19,7 +19,7 @@ export function createTurndownService(): TurndownService {
   // Remove script/style tags
   turndown.remove(["script", "style"]);
 
-  // Remove Astro island/slot elements (React hydration wrappers)
+  // Remove Astro island/slot hydration wrappers.
   turndown.remove((node) => {
     const tag = node.nodeName.toLowerCase();
     return tag === "astro-island" || tag === "astro-slot";

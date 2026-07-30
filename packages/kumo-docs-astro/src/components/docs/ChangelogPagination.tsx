@@ -1,4 +1,4 @@
-import { Pagination } from "@cloudflare/kumo";
+import { Pagination } from "@photon-ai/kumo-solid";
 
 interface ChangelogPaginationProps {
   page: number;

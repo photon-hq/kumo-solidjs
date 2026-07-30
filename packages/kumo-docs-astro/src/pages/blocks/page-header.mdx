@@ -8,6 +8,7 @@ sourceFile: "blocks/page-header"
 import ComponentSection from "~/components/docs/ComponentSection.astro";
 import ComponentExample from "~/components/docs/ComponentExample.astro";
 import PropsTable from "~/components/docs/PropsTable.astro";
+import Callout from "~/components/docs/Callout.astro";
 import {
   PageHeaderHeroDemo,
   PageHeaderBasicDemo,
@@ -34,33 +35,26 @@ import {
 ## Installation
 
   <p>
-    PageHeader is a <strong>block</strong> - a CLI-installed component that you
-    own and can customize. Unlike regular components, blocks are copied into
-    your project so you have full control over the code.
+    PageHeader is a <strong>block</strong>: a source-distributed Solid
+    component that you own and customize.
   </p>
+  <Callout type="warning">
+    The published Kumo CLI currently emits React source. Until a Solid-aware
+    installer is available, copy this block from the repository.
+  </Callout>
   <div class="space-y-4">
     <div>
-      <p>**1. Initialize Kumo config (first time only)**</p>
+      <p>**1. Copy the Solid block directory**</p>
 
-```bash
-npx @cloudflare/kumo init
+```text
+packages/kumo-docs-astro/src/components/kumo/page-header/
 ```
 
 </div>
 <div>
-<p>**2. Install the block**</p>
-
-```bash
-npx @cloudflare/kumo add PageHeader
-```
-
-</div>
-<div>
-<p>**3. Import from your local path**</p>
+<p>**2. Import from your local path**</p>
 
 ```tsx
-// The path depends on your kumo.json blocksDir setting
-// Default: src/components/kumo/
 import { PageHeader } from "./components/kumo/page-header/page-header";
 ```
 
@@ -77,7 +71,7 @@ import { PageHeader } from "./components/kumo/page-header/page-header";
 
 ```tsx
 import { PageHeader } from "./components/kumo/page-header/page-header";
-import { Breadcrumbs } from "@cloudflare/kumo";
+import { Breadcrumbs } from "@photon-ai/kumo-solid";
 
 export default function Example() {
   return (

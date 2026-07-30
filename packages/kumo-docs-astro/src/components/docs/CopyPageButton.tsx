@@ -1,22 +1,24 @@
-import { useState } from "react";
-import { Button, DropdownMenu } from "@cloudflare/kumo";
+import { createSignal, onCleanup } from "solid-js";
+
+import { Button, DropdownMenu } from "@photon-ai/kumo-solid";
 import {
   CopySimpleIcon,
   LinkSimpleIcon,
   FileMdIcon,
   CaretDownIcon,
   CheckIcon,
-} from "@phosphor-icons/react";
-import { OpenAiLogo } from "@phosphor-icons/react";
+} from "~/components/icons";
+import { OpenAiLogo } from "~/components/icons";
 import { ClaudeIcon } from "./icons/ClaudeIcon";
-import { cn } from "@cloudflare/kumo";
+import { cn } from "@photon-ai/kumo-solid";
 
 interface CopyPageButtonProps {
   align?: "start" | "center" | "end";
 }
 
 export function CopyPageButton({ align = "end" }: CopyPageButtonProps) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = createSignal(false);
+  let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 
   const getMarkdownUrl = () => {
     const url = new URL(window.location.href);
@@ -31,8 +33,8 @@ export function CopyPageButton({ align = "end" }: CopyPageButtonProps) {
 
   const onCopySuccess = () => {
     setCopied(true);
-
-    setTimeout(() => setCopied(false), 2000); // 2 seconds
+    if (copyResetTimer) clearTimeout(copyResetTimer);
+    copyResetTimer = setTimeout(() => setCopied(false), 2000);
   };
 
   const handleCopyMarkdown = async () => {
@@ -74,34 +76,15 @@ export function CopyPageButton({ align = "end" }: CopyPageButtonProps) {
   const handleOpenInChatGPT = () =>
     window.open(getAIPromptUrl("https://chatgpt.com"), "_blank");
 
-  const ButtonIcon = copied ? CheckIcon : CopySimpleIcon;
-
-  const dropdownItems = (
-    <>
-      <DropdownMenu.Item icon={LinkSimpleIcon} onClick={handleCopyPageLink}>
-        Copy page link
-      </DropdownMenu.Item>
-      <DropdownMenu.Item icon={FileMdIcon} onClick={handleViewMarkdown}>
-        View Page as Markdown
-      </DropdownMenu.Item>
-      <DropdownMenu.Separator />
-      <DropdownMenu.Item
-        icon={<ClaudeIcon className="mr-2" />}
-        onClick={handleOpenInClaude}
-      >
-        Open in Claude
-      </DropdownMenu.Item>
-      <DropdownMenu.Item icon={OpenAiLogo} onClick={handleOpenInChatGPT}>
-        Open in ChatGPT
-      </DropdownMenu.Item>
-    </>
-  );
+  onCleanup(() => {
+    if (copyResetTimer) clearTimeout(copyResetTimer);
+  });
 
   return (
-    <div className="flex items-center" data-copy-ignore>
+    <div class="flex items-center" data-copy-ignore>
       <Button
         className="gap-1.5 rounded-r-none border-r-0"
-        icon={<ButtonIcon size={16} />}
+        icon={copied() ? <CheckIcon size={16} /> : <CopySimpleIcon size={16} />}
         onClick={handleCopyMarkdown}
         size="sm"
         variant="secondary"
@@ -110,8 +93,9 @@ export function CopyPageButton({ align = "end" }: CopyPageButtonProps) {
       </Button>
       <DropdownMenu>
         <DropdownMenu.Trigger
-          render={
+          render={(renderProps) => (
             <Button
+              {...renderProps}
               variant="secondary"
               size="sm"
               shape="square"
@@ -120,10 +104,25 @@ export function CopyPageButton({ align = "end" }: CopyPageButtonProps) {
             >
               <CaretDownIcon size={12} />
             </Button>
-          }
+          )}
         />
         <DropdownMenu.Content align={align}>
-          {dropdownItems}
+          <DropdownMenu.Item icon={LinkSimpleIcon} onClick={handleCopyPageLink}>
+            Copy page link
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={FileMdIcon} onClick={handleViewMarkdown}>
+            View Page as Markdown
+          </DropdownMenu.Item>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item
+            icon={<ClaudeIcon className="mr-2" />}
+            onClick={handleOpenInClaude}
+          >
+            Open in Claude
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={OpenAiLogo} onClick={handleOpenInChatGPT}>
+            Open in ChatGPT
+          </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu>
     </div>

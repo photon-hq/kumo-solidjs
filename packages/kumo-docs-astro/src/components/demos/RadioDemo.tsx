@@ -1,13 +1,14 @@
-import { useState } from "react";
-import { Badge, Radio } from "@cloudflare/kumo";
+import { createSignal } from "solid-js";
+
+import { Badge, Radio } from "@photon-ai/kumo-solid";
 
 /** Shows a basic controlled radio group */
 export function RadioBasicDemo() {
-  const [value, setValue] = useState("email");
+  const [value, setValue] = createSignal("email");
   return (
     <Radio.Group
       legend="Notification preference"
-      value={value}
+      value={value()}
       onValueChange={setValue}
     >
       <Radio.Item label="Email" value="email" />
@@ -19,9 +20,9 @@ export function RadioBasicDemo() {
 
 /** Shows the default vertical radio group layout */
 export function RadioDefaultDemo() {
-  const [value, setValue] = useState("personal");
+  const [value, setValue] = createSignal("personal");
   return (
-    <Radio.Group legend="Account type" value={value} onValueChange={setValue}>
+    <Radio.Group legend="Account type" value={value()} onValueChange={setValue}>
       <Radio.Item label="Personal" value="personal" />
       <Radio.Item label="Business" value="business" />
       <Radio.Item label="Enterprise" value="enterprise" />
@@ -31,12 +32,12 @@ export function RadioDefaultDemo() {
 
 /** Shows a horizontal radio group layout */
 export function RadioHorizontalDemo() {
-  const [value, setValue] = useState("md");
+  const [value, setValue] = createSignal("md");
   return (
     <Radio.Group
       legend="Size"
       orientation="horizontal"
-      value={value}
+      value={value()}
       onValueChange={setValue}
     >
       <Radio.Item label="Small" value="sm" />
@@ -48,12 +49,12 @@ export function RadioHorizontalDemo() {
 
 /** Shows a radio group with helper description text */
 export function RadioDescriptionDemo() {
-  const [value, setValue] = useState("standard");
+  const [value, setValue] = createSignal("standard");
   return (
     <Radio.Group
       legend="Shipping method"
       description="Choose how you'd like to receive your order"
-      value={value}
+      value={value()}
       onValueChange={setValue}
     >
       <Radio.Item label="Standard (5-7 days)" value="standard" />
@@ -66,7 +67,7 @@ export function RadioDescriptionDemo() {
 /** Shows error state for both default and card radio groups */
 export function RadioErrorDemo() {
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-2 gap-6">
       <Radio.Group
         legend="Payment method"
         error="Please select a payment method to continue"
@@ -99,7 +100,7 @@ export function RadioErrorDemo() {
 /** Shows disabled state for both default and card radio groups */
 export function RadioDisabledDemo() {
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-2 gap-6">
       <Radio.Group legend="Disabled group" disabled defaultValue="a">
         <Radio.Item label="Option A" value="a" />
         <Radio.Item label="Option B" value="b" />
@@ -158,12 +159,12 @@ export function RadioControlPositionDemo() {
 
 /** Shows radio card appearance with Cloudflare plan options */
 export function RadioCardDemo() {
-  const [value, setValue] = useState("free");
+  const [value, setValue] = createSignal("free");
   return (
     <Radio.Group
       legend="Choose a plan"
       appearance="card"
-      value={value}
+      value={value()}
       onValueChange={setValue}
     >
       <Radio.Item
@@ -192,9 +193,9 @@ export function RadioCardDemo() {
 
 /** Shows Radio.Legend with sr-only to visually hide the legend while keeping it accessible, useful when a parent Field already provides a visible label */
 export function RadioLegendSrOnlyDemo() {
-  const [value, setValue] = useState("all");
+  const [value, setValue] = createSignal("all");
   return (
-    <Radio.Group defaultValue="all" value={value} onValueChange={setValue}>
+    <Radio.Group defaultValue="all" value={value()} onValueChange={setValue}>
       <Radio.Legend className="sr-only">Paths</Radio.Legend>
       <Radio.Item label="Allow all paths" value="all" />
       <Radio.Item label="Restrict to specific paths" value="specific" />
@@ -204,9 +205,9 @@ export function RadioLegendSrOnlyDemo() {
 
 /** Shows Radio.Legend with custom styling for full control over legend presentation */
 export function RadioLegendCustomDemo() {
-  const [value, setValue] = useState("email");
+  const [value, setValue] = createSignal("email");
   return (
-    <Radio.Group value={value} onValueChange={setValue}>
+    <Radio.Group value={value()} onValueChange={setValue}>
       <Radio.Legend className="text-sm font-normal text-kumo-subtle">
         Notification preference
       </Radio.Legend>
@@ -219,13 +220,13 @@ export function RadioLegendCustomDemo() {
 
 /** Shows radio card appearance with the control positioned on the left via controlPosition="start" */
 export function RadioCardControlStartDemo() {
-  const [value, setValue] = useState("free");
+  const [value, setValue] = createSignal("free");
   return (
     <Radio.Group
       legend="Choose a plan"
       appearance="card"
       controlPosition="start"
-      value={value}
+      value={value()}
       onValueChange={setValue}
     >
       <Radio.Item
@@ -250,13 +251,13 @@ enum ThemeType {
 
 /** Shows Radio.Group with typed values: a numeric union and a TypeScript enum. */
 export function RadioTypedValueDemo() {
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [theme, setTheme] = useState<ThemeType>(ThemeType.system);
+  const [pageSize, setPageSize] = createSignal<number>(10);
+  const [theme, setTheme] = createSignal<ThemeType>(ThemeType.system);
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-2 gap-6">
       <Radio.Group<number>
         legend="Items per page"
-        value={pageSize}
+        value={pageSize()}
         onValueChange={setPageSize}
       >
         <Radio.Item<number> label="10" value={10} />
@@ -265,7 +266,7 @@ export function RadioTypedValueDemo() {
       </Radio.Group>
       <Radio.Group<ThemeType>
         legend="Theme"
-        value={theme}
+        value={theme()}
         onValueChange={setTheme}
       >
         <Radio.Item<ThemeType> label="Light" value={ThemeType.light} />
@@ -276,19 +277,19 @@ export function RadioTypedValueDemo() {
   );
 }
 
-/** Shows Radio.Item labels with rich ReactNode content (icons, badges, or additional markup) */
+/** Shows Radio.Item labels with rich JSX.Element content (icons, badges, or additional markup) */
 export function RadioRichLabelDemo() {
-  const [value, setValue] = useState("pro");
+  const [value, setValue] = createSignal("pro");
   return (
     <Radio.Group
       legend="Choose a plan"
       appearance="card"
-      value={value}
+      value={value()}
       onValueChange={setValue}
     >
       <Radio.Item
         label={
-          <span className="flex items-center gap-2">
+          <span class="flex items-center gap-2">
             Free
             <Badge variant="neutral">$0</Badge>
           </span>
@@ -298,7 +299,7 @@ export function RadioRichLabelDemo() {
       />
       <Radio.Item
         label={
-          <span className="flex items-center gap-2">
+          <span class="flex items-center gap-2">
             Pro
             <Badge variant="primary">Popular</Badge>
           </span>
@@ -312,13 +313,13 @@ export function RadioRichLabelDemo() {
 
 /** Shows radio card appearance in horizontal layout */
 export function RadioCardHorizontalDemo() {
-  const [value, setValue] = useState("free");
+  const [value, setValue] = createSignal("free");
   return (
     <Radio.Group
       legend="Choose a plan"
       appearance="card"
       orientation="horizontal"
-      value={value}
+      value={value()}
       onValueChange={setValue}
     >
       <Radio.Item

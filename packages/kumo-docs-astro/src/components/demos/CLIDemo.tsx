@@ -1,4 +1,6 @@
-import { type FC, useState, useRef, useEffect, useCallback } from "react";
+import { createRef } from "~/lib/solid-reactivity";
+import { createEffect, createSignal, type Component } from "solid-js";
+
 import { kumoRegistryJson } from "virtual:kumo-registry";
 
 // Types for the registry
@@ -56,12 +58,12 @@ interface TerminalLine {
   content: string;
 }
 
-const HELP_TEXT = `Kumo CLI - Component registry and blocks distribution
+const HELP_TEXT = `Kumo Solid registry explorer (preview)
 
 BLOCKS:
-  kumo init            Initialize kumo.json configuration file
-  kumo blocks          List all available blocks for CLI installation
-  kumo add <block>     Install a block to your project
+  kumo init            Preview kumo.json configuration
+  kumo blocks          List available block metadata
+  kumo add <block>     Preview a block installation
 
 COMPONENT REGISTRY:
   kumo ls              List all Kumo components with categories
@@ -219,8 +221,8 @@ function executeCommand(
   // Parse kumo command
   let commandIndex = 1;
   if (baseCommand === "npx") {
-    // Skip "@cloudflare/kumo" part
-    if (parts[1] === "@cloudflare/kumo") {
+    // Skip the package name when previewing an npx-style invocation.
+    if (parts[1] === "@photon-ai/kumo-solid") {
       commandIndex = 2;
     } else {
       return {
@@ -466,11 +468,13 @@ function executeCommand(
       if (block.dependencies && block.dependencies.length > 0) {
         output.push("This block depends on the following Kumo components:");
         for (const dep of block.dependencies) {
-          output.push(`  - ${dep} (from @cloudflare/kumo)`);
+          output.push(`  - ${dep} (from @photon-ai/kumo-solid)`);
         }
         output.push("");
-        output.push("Make sure @cloudflare/kumo is installed in your project:");
-        output.push("  pnpm add @cloudflare/kumo");
+        output.push(
+          "Make sure @photon-ai/kumo-solid is available in your workspace:",
+        );
+        output.push('  "@photon-ai/kumo-solid": "workspace:*"');
         output.push("");
       }
 
@@ -512,8 +516,8 @@ function executeCommand(
 /**
  * Interactive CLI Terminal component
  */
-export const CLITerminal: FC = () => {
-  const [lines, setLines] = useState<TerminalLine[]>([
+export const CLITerminal: Component = () => {
+  const [lines, setLines] = createSignal<TerminalLine[]>([
     {
       type: "output",
       content:
@@ -522,34 +526,34 @@ export const CLITerminal: FC = () => {
         ' - Type "kumo help" for commands',
     },
   ]);
-  const [currentInput, setCurrentInput] = useState("");
-  const [historyIndex, setHistoryIndex] = useState(-1);
-  const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const [currentInput, setCurrentInput] = createSignal("");
+  const [historyIndex, setHistoryIndex] = createSignal(-1);
+  const [commandHistory, setCommandHistory] = createSignal<string[]>([]);
+  const inputRef = createRef<HTMLInputElement>(null);
+  const terminalRef = createRef<HTMLDivElement>(null);
 
   const registry = kumoRegistryJson as unknown as ComponentRegistry;
 
   // Auto-scroll to bottom
-  useEffect(() => {
+  createEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
-  }, [lines]);
+  });
 
   // Focus input on click
-  const handleTerminalClick = useCallback(() => {
+  const handleTerminalClick = () => {
     inputRef.current?.focus({ preventScroll: true });
-  }, []);
+  };
 
-  const handleSubmit = useCallback(() => {
-    if (!currentInput.trim() && !currentInput) {
+  const handleSubmit = () => {
+    if (!currentInput().trim() && !currentInput()) {
       // Empty enter, just add new prompt
       setLines((prev) => [...prev, { type: "input", content: "" }]);
       return;
     }
 
-    const input = currentInput;
+    const input = currentInput();
     setCurrentInput("");
 
     // Add to history
@@ -579,47 +583,44 @@ export const CLITerminal: FC = () => {
     }
 
     setLines((prev) => [...prev, ...newLines]);
-  }, [currentInput, registry]);
+  };
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleSubmit();
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        if (commandHistory.length > 0) {
-          const newIndex =
-            historyIndex === -1
-              ? commandHistory.length - 1
-              : Math.max(0, historyIndex - 1);
-          setHistoryIndex(newIndex);
-          setCurrentInput(commandHistory[newIndex]);
-        }
-      } else if (e.key === "ArrowDown") {
-        e.preventDefault();
-        if (historyIndex !== -1) {
-          const newIndex = historyIndex + 1;
-          if (newIndex >= commandHistory.length) {
-            setHistoryIndex(-1);
-            setCurrentInput("");
-          } else {
-            setHistoryIndex(newIndex);
-            setCurrentInput(commandHistory[newIndex]);
-          }
-        }
-      } else if (e.key === "l" && e.ctrlKey) {
-        e.preventDefault();
-        setLines([]);
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (commandHistory().length > 0) {
+        const newIndex =
+          historyIndex() === -1
+            ? commandHistory().length - 1
+            : Math.max(0, historyIndex() - 1);
+        setHistoryIndex(newIndex);
+        setCurrentInput(commandHistory()[newIndex]);
       }
-    },
-    [handleSubmit, commandHistory, historyIndex],
-  );
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (historyIndex() !== -1) {
+        const newIndex = historyIndex() + 1;
+        if (newIndex >= commandHistory().length) {
+          setHistoryIndex(-1);
+          setCurrentInput("");
+        } else {
+          setHistoryIndex(newIndex);
+          setCurrentInput(commandHistory()[newIndex]);
+        }
+      }
+    } else if (e.key === "l" && e.ctrlKey) {
+      e.preventDefault();
+      setLines([]);
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="text-sm text-kumo-default">
-        <div className="flex flex-wrap gap-2">
+    <div class="flex flex-col gap-4">
+      <div class="text-sm text-kumo-default">
+        <div class="flex flex-wrap gap-2">
           {[
             "kumo help",
             "kumo blocks",
@@ -628,13 +629,12 @@ export const CLITerminal: FC = () => {
             "kumo doc Button",
           ].map((cmd) => (
             <button
-              key={cmd}
               type="button"
               onClick={() => {
                 setCurrentInput(cmd);
                 inputRef.current?.focus({ preventScroll: true });
               }}
-              className="rounded bg-kumo-overlay px-2 py-1 font-mono text-xs text-kumo-default transition-colors hover:bg-kumo-recessed"
+              class="rounded bg-kumo-overlay px-2 py-1 font-mono text-xs text-kumo-default transition-colors hover:bg-kumo-recessed"
             >
               {cmd}
             </button>
@@ -643,55 +643,52 @@ export const CLITerminal: FC = () => {
       </div>
 
       <div
-        ref={terminalRef}
+        ref={(element) => (terminalRef.current = element)}
         onClick={handleTerminalClick}
         onKeyDown={undefined}
-        className="relative h-[500px] w-full max-w-[800px] cursor-text overflow-x-auto overflow-y-auto overscroll-contain rounded-lg bg-black p-4 font-mono text-sm text-white"
+        class="relative h-[500px] w-full max-w-[800px] cursor-text overflow-x-auto overflow-y-auto overscroll-contain rounded-lg bg-black p-4 font-mono text-sm text-white"
       >
         {/* Output lines */}
-        {lines.map((line, i) => {
+        {lines().map((line, i) => {
           // Add spacing before output that follows an input line
-          const prevLine = lines[i - 1];
+          const prevLine = lines()[i - 1];
           const isFirstOutputAfterInput =
             line.type !== "input" && prevLine?.type === "input";
           return (
             <div
-              key={i}
-              className={`whitespace-pre-wrap ${isFirstOutputAfterInput ? "mt-1" : ""}`}
+              class={`whitespace-pre-wrap ${isFirstOutputAfterInput ? "mt-1" : ""}`}
             >
               {line.type === "input" ? (
-                <span className="text-kumo-success">
+                <span class="text-kumo-success">
                   <span>$</span> {line.content}
                 </span>
               ) : line.type === "error" ? (
-                <span className="text-kumo-danger">{line.content}</span>
+                <span class="text-kumo-danger">{line.content}</span>
               ) : (
-                <span className="text-kumo-success opacity-90">
-                  {line.content}
-                </span>
+                <span class="text-kumo-success opacity-90">{line.content}</span>
               )}
             </div>
           );
         })}
 
         {/* Current input line */}
-        <div className="flex items-center">
-          <span className="text-kumo-success">$</span>
-          <span className="mx-1 text-kumo-success">{currentInput}</span>
-          <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-white" />
+        <div class="flex items-center">
+          <span class="text-kumo-success">$</span>
+          <span class="mx-1 text-kumo-success">{currentInput()}</span>
+          <span class="ml-0.5 inline-block h-4 w-2 animate-pulse bg-white" />
           <input
-            ref={inputRef}
+            ref={(element) => (inputRef.current = element)}
             type="text"
-            value={currentInput}
-            onChange={(e) => setCurrentInput(e.target.value)}
+            value={currentInput()}
+            onInput={(e) => setCurrentInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="absolute opacity-0"
+            class="absolute opacity-0"
             aria-label="Terminal input"
           />
         </div>
       </div>
 
-      <p className="text-xs text-kumo-subtle">
+      <p class="text-xs text-kumo-subtle">
         Tip: Use arrow keys for command history, Ctrl+L to clear
       </p>
     </div>
