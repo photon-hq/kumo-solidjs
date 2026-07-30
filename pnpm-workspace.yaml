@@ -51,6 +51,7 @@ peerDependencyRules:
     vite: "*"
     vitest: "*"
 minimumReleaseAgeExclude:
+  - "@photon-ai/base-ui-solid"
   - vite-plus
   - "@voidzero-dev/*"
   - oxlint

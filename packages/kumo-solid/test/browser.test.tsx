@@ -492,6 +492,12 @@ describe("Kumo Solid browser behavior", () => {
       screen.getByRole("button", { name: "Hovered trigger" }),
     );
     expect(await screen.findByText("Hovered tooltip")).toBeTruthy();
+
+    // Let delay-group effects settle so a controlled-open sibling cannot
+    // immediately reclaim the group and close the hovered tooltip.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(screen.getByText("Hovered tooltip")).toBeTruthy();
     expect(screen.getByText("Initially open tooltip")).toBeTruthy();
 
     await userEvent.unhover(

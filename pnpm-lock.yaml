@@ -386,8 +386,8 @@ importers:
   packages/kumo-solid:
     dependencies:
       '@photon-ai/base-ui-solid':
-        specifier: ^1.0.0-beta.12
-        version: 1.0.0-beta.12(solid-js@1.9.14)
+        specifier: 1.0.0-beta.13
+        version: 1.0.0-beta.13(solid-js@1.9.14)
       '@shikijs/langs':
         specifier: ^4.0.0
         version: 4.3.1
@@ -1798,12 +1798,6 @@ packages:
   '@mixmark-io/domino@2.2.0':
     resolution: {integrity: sha512-Y28PR25bHXUg88kCV7nivXrP2Nj2RueZ3/l/jdx6J9f8J4nsEGcgX0Qe6lt7Pa+J79+kPiJU3LguR6O/6zrLOw==}
 
-  '@photon-ai/base-ui-solid@1.0.0-beta.12':
-    resolution: {integrity: sha512-0+hnI0eXEEk0Oqu6ljZKo5PvYxW1a7rMf4L2XZOcdHAgy5SMJ3R1IkYSQtXfc6cifeTXf8aQ4JaDUSc/C3lDIA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      solid-js: ^1.8
-
   '@mswjs/interceptors@0.40.0':
     resolution: {integrity: sha512-EFd6cVbHsgLa6wa4RljGj6Wk75qoHxUSyc5asLyyPSyuhIcdS2Q3Phw6ImS1q+CkALthJRShiYfKANcQMuMqsQ==}
     engines: {node: '>=18'}
@@ -2272,6 +2266,12 @@ packages:
     peerDependencies:
       react: '>= 16.8'
       react-dom: '>= 16.8'
+
+  '@photon-ai/base-ui-solid@1.0.0-beta.13':
+    resolution: {integrity: sha512-PjhWhuL4voNBtyo+7wkkDVZ3v8eX9NLM4hzz3HYox0uHasQqbKZPBp/UsCGXgN/OGprJLnG2AHG99uPPAqcCMg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      solid-js: ^1.8
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -7415,16 +7415,6 @@ snapshots:
 
   '@mixmark-io/domino@2.2.0': {}
 
-  '@photon-ai/base-ui-solid@1.0.0-beta.12(solid-js@1.9.14)':
-    dependencies:
-      '@babel/runtime': 7.29.2
-      '@floating-ui/dom': 1.7.6
-      '@floating-ui/utils': 0.2.11
-      '@solid-primitives/props': 3.2.4(solid-js@1.9.14)
-      '@solidjs/router': 0.15.4(solid-js@1.9.14)
-      solid-js: 1.9.14
-      tabbable: 6.5.0
-
   '@mswjs/interceptors@0.40.0':
     dependencies:
       '@open-draft/deferred-promise': 2.2.0
@@ -7734,6 +7724,16 @@ snapshots:
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
+
+  '@photon-ai/base-ui-solid@1.0.0-beta.13(solid-js@1.9.14)':
+    dependencies:
+      '@babel/runtime': 7.29.2
+      '@floating-ui/dom': 1.7.6
+      '@floating-ui/utils': 0.2.11
+      '@solid-primitives/props': 3.2.4(solid-js@1.9.14)
+      '@solidjs/router': 0.15.4(solid-js@1.9.14)
+      solid-js: 1.9.14
+      tabbable: 6.5.0
 
   '@polka/url@1.0.0-next.29': {}
 
