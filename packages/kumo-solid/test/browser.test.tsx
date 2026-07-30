@@ -60,7 +60,7 @@ import { Empty } from "../src/components/empty";
 import { Input, InputArea } from "../src/components/input";
 import { Link } from "../src/components/link";
 import { Meter } from "../src/components/meter";
-import { Tooltip } from "../src/components/tooltip";
+import { Tooltip, TooltipProvider } from "../src/components/tooltip";
 
 declare const __KUMO_SOLID_HYDRATION_HTML__: string;
 
@@ -453,9 +453,7 @@ describe("Kumo Solid browser behavior", () => {
       <Tooltip
         content="Browser tooltip"
         delay={0}
-        render={(triggerProps) => (
-          <Button {...triggerProps}>Details</Button>
-        )}
+        render={(triggerProps) => <Button {...triggerProps}>Details</Button>}
       />
     ));
     const trigger = screen.getByRole("button", { name: "Details" });
@@ -467,6 +465,37 @@ describe("Kumo Solid browser behavior", () => {
     await userEvent.unhover(popup);
     await waitFor(() => {
       expect(screen.queryByText("Browser tooltip")).toBeNull();
+    });
+  });
+
+  it("lets a hovered tooltip replace a default-open sibling", async () => {
+    render(() => (
+      <TooltipProvider>
+        <Tooltip
+          content="Initially open tooltip"
+          defaultOpen
+          delay={0}
+          render={(triggerProps) => (
+            <Button {...triggerProps}>Initial trigger</Button>
+          )}
+        />
+        <Tooltip
+          content="Hovered tooltip"
+          delay={0}
+          render={(triggerProps) => (
+            <Button {...triggerProps}>Hovered trigger</Button>
+          )}
+        />
+      </TooltipProvider>
+    ));
+
+    expect(await screen.findByText("Initially open tooltip")).toBeTruthy();
+    await userEvent.hover(
+      screen.getByRole("button", { name: "Hovered trigger" }),
+    );
+    expect(await screen.findByText("Hovered tooltip")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.queryByText("Initially open tooltip")).toBeNull();
     });
   });
 
@@ -1081,9 +1110,7 @@ describe("Kumo Solid browser behavior", () => {
     fireEvent.click(input);
     const london = await screen.findByRole("option", { name: "London" });
     fireEvent.pointerMove(london, { pointerType: "mouse" });
-    await waitFor(() =>
-      expect(london).toHaveAttribute("data-highlighted", ""),
-    );
+    await waitFor(() => expect(london).toHaveAttribute("data-highlighted", ""));
     fireEvent.click(london);
     expect(onValueChange).toHaveBeenCalledWith("London", expect.anything());
     expect(input.value).toBe("London");

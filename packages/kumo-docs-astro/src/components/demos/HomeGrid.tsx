@@ -286,7 +286,7 @@ export function HomeGrid() {
           <div class="flex gap-2">
             <Tooltip
               content="Add"
-              open
+              defaultOpen
               render={(renderProps) => (
                 <Button
                   {...renderProps}
