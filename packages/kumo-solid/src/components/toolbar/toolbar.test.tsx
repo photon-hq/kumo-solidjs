@@ -25,6 +25,21 @@ describe("Toolbar", () => {
     expect(directInput.className).not.toContain("rounded-none");
   });
 
+  it("lets Toolbar.Input consume space before trailing controls", () => {
+    render(() => (
+      <Toolbar class="w-80">
+        <Toolbar.Input aria-label="Search" />
+        <Toolbar.Button>Add</Toolbar.Button>
+      </Toolbar>
+    ));
+
+    const input = screen.getByRole("textbox", { name: "Search" });
+    const button = screen.getByRole("button", { name: "Add" });
+
+    expect(input.className).toContain("flex-1");
+    expect(button.className).toContain("shrink-0");
+  });
+
   it("passes toolbar sizing and styles directly to Toolbar.InputGroup", () => {
     const { container } = render(() => (
       <Toolbar size="sm">

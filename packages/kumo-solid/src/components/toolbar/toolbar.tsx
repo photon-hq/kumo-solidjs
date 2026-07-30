@@ -322,7 +322,9 @@ function Input(inputProps: ToolbarInputProps) {
   const inputRender = {
     component: KumoInput,
     get className() {
-      return toolbarControlClassName(cn(props.class, props.className));
+      return toolbarControlClassName(
+        cn("flex-1", props.class, props.className),
+      );
     },
     get size() {
       return toolbar.size();
